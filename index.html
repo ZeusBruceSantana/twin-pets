@@ -251,6 +251,58 @@ body[data-scene="game"] #gamebar { display: flex; }
 .seesaw-base { position: absolute; z-index: 8; }
 .seesaw-base svg { width: 100%; height: 100%; }
 
+/* ---------- thought bubbles ---------- */
+.thought {
+  position: absolute; left: 50%; bottom: 93%; z-index: 29; width: 19vmin; padding: 1.6vmin 1vmin 1.2vmin;
+  background: #fff; border-radius: 50% / 45%; box-shadow: 0 1vmin 0 rgba(0,0,0,.08);
+  display: flex; flex-direction: column; align-items: center; transform: translateX(-50%);
+}
+.thought::before, .thought::after { content: ''; position: absolute; background: #fff; border-radius: 50%; box-shadow: 0 .5vmin 0 rgba(0,0,0,.06); }
+.thought::before { width: 3.4vmin; height: 3.4vmin; left: 44%; bottom: -3.2vmin; }
+.thought::after  { width: 2vmin; height: 2vmin; left: 52%; bottom: -5.6vmin; }
+.thought .pic { width: 10vmin; height: 10vmin; pointer-events: none; }
+.thought .pic svg { width: 100%; height: 100%; overflow: visible; }
+.thought .say-word { font: 900 5.6vmin/1 var(--font); color: var(--ink); pointer-events: none; }
+.thought.word.said { animation: said-bubble .45s ease; }
+@keyframes said-bubble { 40% { transform: translateX(-50%) scale(1.15); } }
+body:not([data-scene="play"]) .thought, .pet.saying .thought { visibility: hidden; }
+
+/* ---------- memory book ---------- */
+#book-spot { position: absolute; left: 50%; bottom: 3vmin; transform: translateX(-50%); display: none; transition: opacity .4s ease; }
+#book-spot.show { display: block; }
+body:not([data-scene="play"]) #book-spot { opacity: 0; pointer-events: none; }
+#book { align-items: center; justify-content: center; background: rgba(60,50,80,.45); z-index: 70; }
+.book {
+  position: relative; width: min(74vw, 112vmin); height: 66vmin; display: flex;
+  background: #fffdf8; border-radius: 3vmin; border: 1vmin solid #ecd9b8;
+  box-shadow: 0 1.6vmin 0 #d4bd96, 0 3vmin 8vmin rgba(0,0,0,.3);
+}
+.book::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: .6vmin; margin-left: -.3vmin; background: #ecd9b8; }
+.page { flex: 1; padding: 3vmin; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.6vmin; min-width: 0; }
+.page.lp { background: linear-gradient(90deg, #fffdf8 70%, #f6ecdb); border-radius: 2vmin 0 0 2vmin; }
+.page.rp { background: linear-gradient(270deg, #fffdf8 70%, #f6ecdb); border-radius: 0 2vmin 2vmin 0; }
+.book-pets { display: flex; gap: 1vmin; }
+.book-pets > div { position: relative; width: 21vmin; height: 21vmin; }
+.book-pets > div > svg { width: 100%; height: 100%; overflow: visible; }
+.book-pics { display: flex; flex-wrap: wrap; gap: 1.4vmin; justify-content: center; max-width: 40vmin; }
+.book-pics > div { width: 8vmin; height: 8vmin; }
+.book-pics svg { width: 100%; height: 100%; overflow: visible; }
+.book-day { font: 900 4.6vmin/1 var(--font); color: #b0884f; }
+.book-line { font: 900 5.4vmin/1.35 var(--font); text-align: center; color: var(--ink); }
+.book-line .word { margin: 0 .2vmin; }
+.say-all { width: 11vmin; height: 11vmin; border-radius: 50%; background: #fff3d6; border: .8vmin solid #ffd27a; padding: 1.8vmin; }
+.say-all svg { width: 100%; height: 100%; pointer-events: none; }
+.book-btn {
+  position: absolute; width: 12vmin; height: 12vmin; border-radius: 50%; background: #fff; padding: 2.4vmin;
+  border: .8vmin solid #ecd9b8; box-shadow: 0 1vmin 0 #d4bd96; z-index: 2;
+}
+.book-btn svg { width: 100%; height: 100%; pointer-events: none; }
+.book-btn.down { transform: translateY(.8vmin); box-shadow: 0 .2vmin 0 #d4bd96; }
+.book-btn.off { opacity: .25; pointer-events: none; }
+.book-prev { left: -6vmin; top: 50%; margin-top: -6vmin; }
+.book-next { right: -6vmin; top: 50%; margin-top: -6vmin; }
+.book-close { right: -4.5vmin; top: -4.5vmin; width: 10.5vmin; height: 10.5vmin; padding: 2.4vmin; }
+
 /* ---------- big round buttons and overlays ---------- */
 .round-btn {
   width: 18vmin; height: 18vmin; border-radius: 50%; background: #5cc77a; border: 1vmin solid #fff;
@@ -272,9 +324,9 @@ body[data-scene="game"] #gamebar { display: flex; }
 .pick-name { font: 900 8vmin/1 var(--font); color: var(--pdark, #6f6880); }
 .pick-pet { position: relative; width: 25vmin; height: 25vmin; }
 .pick-pet > svg { width: 100%; height: 100%; overflow: visible; }
-.swatches { display: grid; grid-template-columns: repeat(4, 11.5vmin); gap: 2.3vmin; }
+.swatches { display: grid; grid-template-columns: repeat(4, 11vmin); gap: 2.2vmin; }
 .swatch {
-  width: 11.5vmin; height: 11.5vmin; border-radius: 50%; background: var(--sw);
+  width: 11vmin; height: 11vmin; border-radius: 50%; background: var(--sw);
   border: .9vmin solid #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.14);
   display: flex; align-items: center; justify-content: center; transition: transform .2s ease, opacity .3s ease;
 }
@@ -347,6 +399,7 @@ body[data-scene="game"] #gamebar { display: flex; }
     <div id="jar"></div>
     <div id="games"></div>
     <div id="gamebar"><div id="dots"></div><div class="cbtn" id="home-btn"></div></div>
+    <div id="book-spot"><div class="cbtn" id="book-btn"></div></div>
   </div>
   <div id="world"></div>
   <div id="goodnight"></div>
@@ -362,6 +415,9 @@ body[data-scene="game"] #gamebar { display: flex; }
     <div class="pick-mid"><div class="round-btn" id="go-btn"></div></div>
     <div class="pick-half" data-side="right"><div class="pick-name"></div><div class="pick-pet art happy"></div><div class="swatches"></div></div>
   </div>
+
+  <!-- the memory book -->
+  <div class="overlay" id="book"><div class="book"></div></div>
 
   <!-- grown-ups only -->
   <div class="overlay" id="parent"><div class="panel"></div></div>
@@ -517,9 +573,12 @@ const SETTINGS = {
   togetherWindowMs: 4000,
   // How many together moments it takes before each new thing appears.
   // They appear one at a time, in this order.
-  unlockAt: { treat: 1, jar: 3, ball: 5, seesaw: 7, highfive: 9 },
+  unlockAt: { treat: 1, jar: 3, ball: 5, seesaw: 7, highfive: 9, bubbles: 11, book: 13 },
   // How many hearts fill the friendship jar (3 to 12 look best).
   jarSize: 10,
+  // Words a pet can ask for in a thought bubble. Each one has a picture.
+  // apple, fish, bone -> tap Eat.  ball -> Play.  nap -> Sleep.  hug -> tap the pet.
+  wishes: ['apple', 'ball', 'nap', 'hug', 'fish', 'bone'],
 };
 
 /* =====================================================================
@@ -581,6 +640,14 @@ const ICONS = {
   disco: '<svg viewBox="0 0 100 130"><line x1="50" y1="0" x2="50" y2="34" stroke="#9a94a8" stroke-width="3"/><circle cx="50" cy="80" r="44" fill="#c3cde3" stroke="#8d97b3" stroke-width="3"/><g stroke="#8d97b3" stroke-width="2" fill="none"><ellipse cx="50" cy="80" rx="44" ry="14"/><ellipse cx="50" cy="80" rx="44" ry="30"/><ellipse cx="50" cy="80" rx="14" ry="44"/><ellipse cx="50" cy="80" rx="30" ry="44"/></g><g fill="#fff"><rect x="28" y="56" width="9" height="9"/><rect x="58" y="70" width="9" height="9"/><rect x="40" y="92" width="9" height="9"/><rect x="66" y="98" width="7" height="7"/><rect x="22" y="84" width="7" height="7"/></g></svg>',
   seesawBase: '<svg viewBox="0 0 100 80" preserveAspectRatio="none"><path d="M50 6 L94 76 H6Z" fill="#c99a6b" stroke="#a8743f" stroke-width="5" stroke-linejoin="round"/><circle cx="50" cy="14" r="8" fill="#a8743f"/></svg>',
   giftBig: '<svg viewBox="0 0 120 120"><g class="gift-box"><rect x="14" y="52" width="92" height="64" rx="8" fill="#ffd23f" stroke="#e0a800" stroke-width="4"/><rect x="52" y="52" width="16" height="64" fill="#fff"/></g><g class="gift-lid"><rect x="8" y="36" width="104" height="22" rx="7" fill="#ffe27a" stroke="#e0a800" stroke-width="4"/><rect x="52" y="36" width="16" height="22" fill="#fff"/></g><g class="bow-left"><path d="M60 36 C 40 4, 12 12, 24 30 C 31 40, 47 38, 60 36Z" style="fill:var(--L)" stroke="#fff" stroke-width="3"/></g><g class="bow-right"><path d="M60 36 C 80 4, 108 12, 96 30 C 89 40, 73 38, 60 36Z" style="fill:var(--R)" stroke="#fff" stroke-width="3"/></g><circle class="bow-knot" cx="60" cy="36" r="6" fill="#fff"/></svg>',
+  nap: '<svg viewBox="0 0 100 100"><rect x="8" y="44" width="84" height="40" rx="18" fill="#d6e7ff" stroke="#7aa7e0" stroke-width="4"/><path d="M22 58 q28 10 56 0" fill="none" stroke="#a9c8f2" stroke-width="4" stroke-linecap="round"/><path d="M62 8 A17 17 0 1 0 82 30 A13 13 0 0 1 62 8Z" fill="#ffd54a"/><path d="M22 14 h14 l-14 16 h14" fill="none" stroke="#7aa7e0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  hug: '<svg viewBox="0 0 100 100"><path d="M50 84 C 20 64, 10 46, 16 32 C 22 18, 42 16, 50 32 C 58 16, 78 18, 84 32 C 90 46, 80 64, 50 84Z" fill="#ff8fab" stroke="#f0668e" stroke-width="3"/><g fill="none" stroke-linecap="round"><path d="M6 52 C 18 76, 40 76, 52 62" stroke="#9aa3b2" stroke-width="15"/><path d="M6 52 C 18 76, 40 76, 52 62" stroke="#eef1f6" stroke-width="10"/><path d="M94 52 C 82 76, 60 76, 48 62" stroke="#cbb9a8" stroke-width="15"/><path d="M94 52 C 82 76, 60 76, 48 62" stroke="#fffaf3" stroke-width="10"/></g></svg>',
+  book: '<svg viewBox="0 0 100 100"><path d="M50 26 C 38 16, 20 16, 8 22 V82 C 20 76, 38 76, 50 86 C 62 76, 80 76, 92 82 V22 C 80 16, 62 16, 50 26Z" fill="#fffdf8" stroke="#b0884f" stroke-width="5" stroke-linejoin="round"/><path d="M50 26 V86" stroke="#b0884f" stroke-width="4"/><path d="M18 36 h22 M18 48 h22 M18 60 h16 M60 36 h22 M60 48 h22" stroke="#e6d3ae" stroke-width="4" stroke-linecap="round"/><svg x="61" y="54" width="22" height="22" viewBox="0 0 100 100"><path d="M50 30 C 42 12, 18 14, 12 30 C 6 46, 18 66, 50 88Z" style="fill:var(--L)"/><path d="M50 30 C 58 12, 82 14, 88 30 C 94 46, 82 66, 50 88Z" style="fill:var(--R)"/></svg></svg>',
+  speaker: '<svg viewBox="0 0 100 100"><path d="M14 38h16l22-18v60L30 62H14z" fill="#e0a43a" stroke="#e0a43a" stroke-width="4" stroke-linejoin="round"/><path d="M64 36q10 14 0 28M75 25q19 25 0 50" stroke="#e0a43a" stroke-width="7" fill="none" stroke-linecap="round"/></svg>',
+  prev: '<svg viewBox="0 0 100 100"><path d="M64 14 L28 50 L64 86" fill="none" stroke="#b0884f" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  next: '<svg viewBox="0 0 100 100"><path d="M36 14 L72 50 L36 86" fill="none" stroke="#b0884f" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  close: '<svg viewBox="0 0 100 100"><path d="M22 22 L78 78 M78 22 L22 78" stroke="#b0884f" stroke-width="15" stroke-linecap="round"/></svg>',
+  balloon: '<svg viewBox="0 0 100 100"><path d="M50 72 q-6 10 2 22" fill="none" stroke="#9a94a8" stroke-width="3"/><ellipse cx="50" cy="38" rx="26" ry="31" fill="#a77bff"/><path d="M45 68 L55 68 L50 75Z" fill="#a77bff"/><ellipse cx="40" cy="26" rx="5" ry="9" fill="#fff" opacity=".45"/></svg>',
   blanket: '<svg viewBox="0 0 200 60" preserveAspectRatio="none"><defs><pattern id="picnic-check" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#fff"/><rect width="12" height="12" fill="#ff9a9a"/><rect x="12" y="12" width="12" height="12" fill="#ff9a9a"/></pattern></defs><ellipse cx="100" cy="30" rx="97" ry="27" fill="url(#picnic-check)" stroke="#e57373" stroke-width="3"/></svg>',
 };
 const FOODS = ['apple', 'fish', 'bone'];
@@ -618,7 +685,11 @@ function loadSave() {
   return freshSave();
 }
 let S = loadSave();
-function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
+let erasing = false;   // true while "Start over" is wiping everything
+function save() {
+  if (erasing) return;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ }
+}
 
 /* =====================================================================
    5. LITTLE HELPERS
@@ -878,6 +949,9 @@ const Sound = (() => {
       for (let i = 0; i < 32; i++) tone(NOTE(up[i % 8] - (Math.floor(i / 8) % 2) * 5), i * 0.25, 0.3, { vol: 0.05, echo: 1, music: 1 });
       [[48, 0], [53, 2], [55, 4], [48, 6]].forEach(([m, at]) => tone(NOTE(m), at, 2, { vol: 0.04, attack: 0.3, music: 1 }));
     },
+    bubble() { tone(NOTE(72), 0, 0.22, { vol: 0.06, to: NOTE(74) }); tone(NOTE(76), 0.2, 0.3, { vol: 0.06, to: NOTE(79) }); },
+    wish() { [84, 88, 91, 96].forEach((m, i) => tone(NOTE(m), i * 0.07, 0.45, { vol: 0.055, echo: 1 })); },
+    page() { noise(0, 0.25, { freq: 2500, to: 1200, q: 0.8, vol: 0.04 }); },
     morning() { [67, 72, 76, 79, 84].forEach((m, i) => tone(NOTE(m), i * 0.12, 0.5, { type: 'triangle', vol: 0.07, echo: 1 })); },
   };
 
@@ -1053,6 +1127,7 @@ function buildScene() {
       lean: root.querySelector('.lean'), bounce: root.querySelector('.bounce'),
       art: root.querySelector('.art'), tag: root.querySelector('.tag'),
       x: 0, y: 0, asleep: false, token: 0, busyUntil: 0, moodTimer: 0, anims: [],
+      wish: null, lastWish: null, wishUntil: 0, nextWishAt: now() + rand(6000, 14000),
     };
     pets[side] = p;
     fillArt(p.art, side);
@@ -1122,6 +1197,9 @@ function sayBubble(p, text, ms = 2800) {
   const b = el('div', 'say');
   wordsInto(b, text);
   p.root.append(b);
+  p.root.classList.add('saying');
+  clearTimeout(p.sayTimer);
+  p.sayTimer = setTimeout(() => p.root.classList.remove('saying'), ms + 400);
   animate(b, [{ transform: 'translateX(-50%) scale(0)' }, { transform: 'translateX(-50%) scale(1.08)' }, { transform: 'translateX(-50%) scale(1)' }], { duration: 350, easing: 'ease-out' });
   setTimeout(() => {
     animate(b, [{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }).then(() => b.remove());
@@ -1161,7 +1239,9 @@ async function feed(side, food) {
   const p = pets[side];
   if (p.asleep) wakePet(side, true);
   const alive = begin(p, 1900);
-  food = food || pick(FOODS);
+  const wished = foodWish(p);
+  food = food || wished || pick(FOODS);
+  if (wished) grantWish(p, 'eat');
   const pt = petPoint(p, 0.5, 0.72);
   const f = prop(ICONS[food], 12, pt.x, pt.y);
   f.dataset.owner = side;
@@ -1188,6 +1268,7 @@ async function playBall(side) {
   if (!canAct()) return;
   const p = pets[side], o = other(side);
   if (p.asleep) wakePet(side, true);
+  grantWish(p, 'play');
   // Both girls tapped Play close together? Chase time!
   const t = now();
   lastPlay[side] = t;
@@ -1222,6 +1303,7 @@ function goSleep(side) {
   if (!canAct()) return;
   const p = pets[side];
   begin(p, 800);
+  if (!grantWish(p, 'sleep') && p.wish) clearWish(p, true);
   p.asleep = true; S.pets[side].asleep = true; save();
   p.root.classList.add('asleep');
   $('#night-' + side).classList.add('on');
@@ -1252,6 +1334,7 @@ function petTapped(side) {
   if (!canAct()) return;
   if (p.asleep) { wakePet(side); return; }
   begin(p, 1000);
+  grantWish(p, 'hug');
   mood(p, 'happy', 1100);
   Sound.play('giggle');
   floatHearts(p, 2);
@@ -1457,7 +1540,17 @@ async function reveal(key) {
   } else if (GAMES[key]) {
     newUntil[key] = Date.now() + 6000;
     renderGames();
+  } else if (key === 'bubbles') {
+    pets.left.nextWishAt = now() + 2500;
+    pets.right.nextWishAt = now() + 9500;
+  } else if (key === 'book') {
+    newUntil.book = Date.now() + 6000;
+    renderBookButton();
   }
+}
+function renderBookButton() {
+  $('#book-spot').classList.toggle('show', !!S.unlocked.book);
+  $('#book-btn').classList.toggle('new', (newUntil.book || 0) > Date.now());
 }
 
 /* =====================================================================
@@ -1708,13 +1801,14 @@ function renderDots() {
 async function startGame(kind, starter, btn) {
   if (scene !== 'play') return;
   if (pets.left.asleep || pets.right.asleep) { nudge(btn); return; }   // a pet is sleeping
-  game = { kind, goal: GAMES[kind].goal, count: 0, turn: starter, busy: true, ready: false, lastPress: now(), cleanup: [], raised: { left: -1e9, right: -1e9 } };
+  const g = game = { kind, goal: GAMES[kind].goal, count: 0, turn: starter, busy: true, ready: false, lastPress: now(), cleanup: [], raised: { left: -1e9, right: -1e9 } };
   SIDES.forEach(s => begin(pets[s], 1e9));
   setScene('game');
   renderDots();
   Sound.play('gameStart');
-  await GAME_SETUP[kind](game);
-  game.busy = false; game.ready = true;
+  await GAME_SETUP[kind](g);
+  if (game !== g) { g.cleanup.forEach(f => f()); return; }   // stopped while getting ready
+  g.busy = false; g.ready = true;
   showTurn();
 }
 /* Glow the button of whoever's turn it is (both glow for high five). */
@@ -1735,6 +1829,7 @@ function hopPet(side) {
   petAnim(pets[side], [{ transform: 'translateY(0)' }, { transform: 'translateY(-6%)' }, { transform: 'translateY(0)' }], { duration: 350, easing: 'ease-out' });
 }
 async function scorePoint() {
+  if (!game || game.ending) return;
   game.count++;
   renderDots();
   if (game.count >= game.goal) await finishGame(true);
@@ -1900,7 +1995,132 @@ function pawSpot(side, raised) {
 }
 
 /* =====================================================================
-   12. THE BUTTON STRIPS
+   14. THOUGHT BUBBLES: a pet asks for something (picture + one word)
+   ===================================================================== */
+const WISHES = {
+  apple: { icon: 'apple', act: 'eat' },
+  fish:  { icon: 'fish',  act: 'eat' },
+  bone:  { icon: 'bone',  act: 'eat' },
+  ball:  { icon: 'ball',  act: 'play' },
+  nap:   { icon: 'nap',   act: 'sleep' },
+  hug:   { icon: 'hug',   act: 'hug' },    // tap the pet
+};
+function wishTick() {
+  if (!S.unlocked.bubbles || scene !== 'play' || $('#book').classList.contains('show')) return;
+  SIDES.forEach(side => {
+    const p = pets[side];
+    if (p.wish && now() > p.wishUntil) { clearWish(p); return; }       // no wish lasts forever; no one is sad
+    if (p.wish || p.asleep || now() < p.nextWishAt || now() < p.busyUntil) return;
+    const choices = SETTINGS.wishes.filter(w => WISHES[w] && w !== p.lastWish);
+    if (!choices.length) return;
+    showWish(p, pick(choices));
+    const o = pets[other(side)];
+    o.nextWishAt = Math.max(o.nextWishAt, now() + 7000);               // one at a time is easier
+  });
+}
+function showWish(p, word) {
+  clearWish(p, true);
+  p.wish = word; p.lastWish = word; p.wishUntil = now() + 25000;
+  const b = el('div', 'thought word', `<div class="pic">${ICONS[WISHES[word].icon]}</div><div class="say-word">${word}</div>`);
+  b.dataset.say = word;
+  p.root.append(b);
+  animate(b, [{ transform: 'translateX(-50%) scale(0)' }, { transform: 'translateX(-50%) scale(1.1)' }, { transform: 'translateX(-50%) scale(1)' }], { duration: 400, easing: 'ease-out' });
+  Sound.play('bubble');
+}
+function clearWish(p, quick) {
+  const b = p.root.querySelector('.thought');
+  p.wish = null;
+  p.nextWishAt = now() + rand(18000, 32000);
+  if (!b) return;
+  if (quick) { b.remove(); return; }
+  animate(b, [{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: 'forwards' }).then(() => b.remove());
+}
+/* Did this action give the pet what it was wishing for? */
+function grantWish(p, act) {
+  if (!p.wish || WISHES[p.wish].act !== act) return false;
+  const b = p.root.querySelector('.thought');
+  if (b) {
+    const r = b.getBoundingClientRect();
+    sparkles(r.left + r.width / 2, r.top + r.height / 2, 12);
+  }
+  clearWish(p, true);
+  floatHearts(p, 4);
+  setTimeout(() => Sound.play('wish'), 450);
+  return true;
+}
+const foodWish = p => (p.wish && WISHES[p.wish].act === 'eat' ? p.wish : null);
+
+/* =====================================================================
+   15. THE MEMORY BOOK: one short sentence a day, shared by both girls
+   ===================================================================== */
+// Most special first: the book uses the first one that happened that day.
+const BOOK_LINES = {
+  balloons: { line: 'had a balloon party.', icon: 'balloon' },
+  dance:    { line: 'had a dance party.',   icon: 'note' },
+  picnic:   { line: 'had a picnic.',        icon: 'basket' },
+  highfive: { line: 'did high fives.',      icon: 'hand' },
+  seesaw:   { line: 'rode the seesaw.',     icon: 'seesaw' },
+  ball:     { line: 'played catch.',        icon: 'catch' },
+  sleep:    { line: 'took a nap together.', icon: 'moon' },
+  chase:    { line: 'played chase.',        icon: 'ball' },
+  treat:    { line: 'shared treats.',       icon: 'treat' },
+};
+let bookPage = 0;
+const bookDays = () => Object.keys(S.book).filter(k => S.book[k].length).sort();
+function bookSentence(types) {
+  const both = SETTINGS.players.left.pet + ' and ' + SETTINGS.players.right.pet;
+  const best = Object.keys(BOOK_LINES).find(k => types.includes(k));
+  return both + ' ' + (best ? BOOK_LINES[best].line : 'are best friends.');
+}
+function dayWord(key) {
+  if (!key) return 'Today';
+  const [y, m, d] = key.split('-').map(Number), day = new Date(y, m - 1, d);
+  const diff = Math.round((new Date(new Date().toDateString()) - day) / 86400000);
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day.getDay()];
+}
+function openBook() {
+  if (scene !== 'play') return;
+  const days = bookDays();
+  bookPage = Math.max(0, days.length - 1);       // open on the newest page
+  $('#book').classList.add('show');
+  Sound.play('page');
+  renderBook();
+}
+function closeBook() { $('#book').classList.remove('show'); }
+function turnPage(dir) {
+  const days = bookDays(), next = bookPage + dir;
+  if (next < 0 || next >= days.length) return;
+  bookPage = next;
+  Sound.play('page');
+  renderBook();
+  animate($('#book .book'), [{ transform: `translateX(${dir * 3}vmin)`, opacity: .5 }, { transform: 'none', opacity: 1 }], { duration: 300, easing: 'ease-out' });
+}
+function renderBook() {
+  const days = bookDays(), key = days[bookPage], types = key ? S.book[key] : [];
+  const sentence = bookSentence(types);
+  const box = $('#book .book');
+  box.innerHTML = `
+    <div class="page lp"><div class="book-pets"><div class="art happy"></div><div class="art happy"></div></div><div class="book-pics"></div></div>
+    <div class="page rp"><div class="book-day"></div><div class="book-line"></div><div class="say-all word">${ICONS.speaker}</div></div>
+    <div class="book-btn book-close">${ICONS.close}</div>
+    <div class="book-btn book-prev ${bookPage > 0 ? '' : 'off'}">${ICONS.prev}</div>
+    <div class="book-btn book-next ${bookPage < days.length - 1 ? '' : 'off'}">${ICONS.next}</div>`;
+  const petBoxes = box.querySelectorAll('.book-pets > div');
+  fillArt(petBoxes[0], 'left'); fillArt(petBoxes[1], 'right');
+  const pics = box.querySelector('.book-pics');
+  Object.keys(BOOK_LINES).filter(k => types.includes(k)).forEach(k => pics.append(el('div', '', ICONS[BOOK_LINES[k].icon])));
+  sayableInto(box.querySelector('.book-day'), dayWord(key));
+  wordsInto(box.querySelector('.book-line'), sentence);
+  box.querySelector('.say-all').dataset.say = sentence;
+  onPress(box.querySelector('.book-close'), closeBook);
+  onPress(box.querySelector('.book-prev'), () => turnPage(-1));
+  onPress(box.querySelector('.book-next'), () => turnPage(1));
+}
+
+/* =====================================================================
+   16. THE BUTTON STRIPS
    ===================================================================== */
 const BUTTONS = {
   eat:   { icon: 'apple', label: 'Eat' },
@@ -1968,7 +2188,7 @@ function nudge(elm) {
 }
 
 /* =====================================================================
-   13. PETS WAIT HAPPILY (little idle wiggles)
+   17. PETS WAIT HAPPILY (little idle wiggles)
    ===================================================================== */
 function idleTick() {
   // nobody has tapped the game for a while: go back to normal, gently
@@ -1989,10 +2209,14 @@ function idleTick() {
 }
 
 /* =====================================================================
-   14. FIRST LAUNCH: PICK A COLOR
+   18. FIRST LAUNCH: PICK A COLOR
    ===================================================================== */
 const picking = { left: null, right: null };
 function openPicker() {
+  // tidy away a game or gift that was in the middle of happening
+  if (game) { game.ending = true; game.cleanup.forEach(f => f()); game = null; }
+  if (gift) { gift.el.remove(); gift = null; }
+  closeBook();
   setScene('pick');
   picking.left = S.colors.left; picking.right = S.colors.right;
   $('#title').classList.remove('show');
@@ -2045,7 +2269,7 @@ function finishPicking() {
 }
 
 /* =====================================================================
-   15. START SCREEN, FULL SCREEN, HOME SCREEN ICON
+   19. START SCREEN, FULL SCREEN, HOME SCREEN ICON
    ===================================================================== */
 const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isStandalone = () => navigator.standalone === true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches;
@@ -2113,7 +2337,7 @@ function makeHomeScreenIcon() {
 }
 
 /* =====================================================================
-   16. GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
+   20. GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
    ===================================================================== */
 (function setupCorner() {
   const corner = $('#corner');
@@ -2167,11 +2391,12 @@ function parentAction(what) {
     S.together = Math.max(S.together, ...Object.values(SETTINGS.unlockAt));
     Object.keys(SETTINGS.unlockAt).forEach(k => { S.unlocked[k] = true; });
     queue.length = 0;
-    renderJar(); renderGames(); renderColumns();
+    renderJar(); renderGames(); renderColumns(); renderBookButton();
   } else if (what === 'fs') {
     tryFullscreen();
   } else if (what === 'reset') {
     if (resetArmed && Date.now() - resetArmed < 6000) {
+      erasing = true;
       try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* ignore */ }
       location.reload();
       return;
@@ -2187,7 +2412,7 @@ function parentAction(what) {
 function closeParent() { $('#parent').classList.remove('show'); }
 
 /* =====================================================================
-   17. NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
+   21. NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
    ===================================================================== */
 ['contextmenu', 'selectstart', 'dragstart', 'gesturestart', 'gesturechange', 'dblclick'].forEach(ev =>
   document.addEventListener(ev, e => e.preventDefault()));
@@ -2196,19 +2421,23 @@ document.addEventListener('touchmove', e => e.preventDefault(), { passive: false
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 
 /* =====================================================================
-   18. GO!
+   22. GO!
    ===================================================================== */
 buildScene();
 applyColors();
 $('#home-btn').innerHTML = ICONS.home;
-onPress($('#home-btn'), () => finishGame(false));
+onPress($('#home-btn'), () => { if (game && game.ready) finishGame(false); });
 renderJar();
 renderGames();
+$('#book-btn').innerHTML = ICONS.book;
+onPress($('#book-btn'), openBook);
+onTap($('#book'), e => { if (e.target.id === 'book') closeBook(); });
+renderBookButton();
 Speech.init();
 makeHomeScreenIcon();
 onRelease($('#title'), startPlaying);
 onRelease($('#go-btn'), finishPicking);
-setInterval(idleTick, 1000);
+setInterval(() => { idleTick(); wishTick(); }, 1000);
 restorePets();
 if (S.colors.left && S.colors.right) showTitle(); else openPicker();
 </script>

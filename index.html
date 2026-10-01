@@ -72,7 +72,7 @@ svg { display: block; }
 #night.on { opacity: .82; }
 .star { position: absolute; width: 1.2vmin; height: 1.2vmin; background: #fff6c8; border-radius: 50%; animation: twinkle 2.6s ease-in-out infinite alternate; }
 @keyframes twinkle { from { opacity: .25; transform: scale(.7); } to { opacity: 1; transform: scale(1.1); } }
-#moon { position: absolute; left: 50%; top: calc(6vmin + var(--safe-top)); width: 13vmin; height: 13vmin; transform: translateX(-50%); }
+#moon { position: absolute; left: 61%; top: calc(13vmin + var(--safe-top)); width: 12vmin; height: 12vmin; transform: translateX(-50%); }
 #moon svg { width: 100%; height: 100%; }
 #goodnight {
   position: absolute; left: 50%; top: 27%; transform: translateX(-50%); z-index: 25;
@@ -181,8 +181,8 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
   transition: transform .08s ease, box-shadow .08s ease, opacity .4s ease;
 }
 .btn .ico { width: 9.5vmin; height: 9.5vmin; pointer-events: none; }
-.btn .ico svg { width: 100%; height: 100%; overflow: visible; }
-.btn .lbl { margin-top: .5vmin; pointer-events: none; }
+.btn .ico > svg { width: 100%; height: 100%; overflow: visible; }
+.btn .lbl { margin-top: .5vmin; pointer-events: none; text-align: center; line-height: 1.05; }
 .btn.down { transform: translateY(.9vmin) scale(.96); box-shadow: 0 .3vmin 0 var(--c-dark); }
 .column.big .btn { width: 17vmin; height: 46vmin; border-radius: 6vmin; }
 .column.big .btn .ico { width: 13vmin; height: 13vmin; }
@@ -196,6 +196,60 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
 @keyframes newbtn { 0% { transform: scale(0) rotate(-20deg); } 60% { transform: scale(1.18) rotate(6deg); } 100% { transform: scale(1); } }
 .pulse { animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+
+/* ---------- the shared middle: friendship jar and together games ---------- */
+#center { position: absolute; left: 50%; top: 0; bottom: 0; width: 16vmin; transform: translateX(-50%); z-index: 9; pointer-events: none; }
+#center > * { pointer-events: auto; }
+#jar { position: absolute; left: 50%; top: calc(1.5vmin + var(--safe-top)); width: 15vmin; height: 18.6vmin; transform: translateX(-50%); display: none; transition: opacity .8s ease; }
+#jar.show { display: block; }
+#jar > svg { width: 100%; height: 100%; overflow: visible; }
+#jar.wiggle { animation: jarwiggle .5s ease; }
+@keyframes jarwiggle { 25% { transform: translateX(-50%) rotate(-7deg) scale(1.06); } 75% { transform: translateX(-50%) rotate(6deg) scale(1.06); } }
+#jar.full { animation: jarglow .8s ease-in-out infinite alternate; }
+@keyframes jarglow { from { filter: drop-shadow(0 0 0 #ffd23f); transform: translateX(-50%) scale(1); } to { filter: drop-shadow(0 0 2.5vmin #ffd23f); transform: translateX(-50%) scale(1.08); } }
+#jar.pop { animation: jarpop .9s ease-out; }
+@keyframes jarpop { 0% { transform: translateX(-50%) translateY(-30vmin); } 60% { transform: translateX(-50%) translateY(2vmin); } 100% { transform: translateX(-50%) translateY(0); } }
+#games { position: absolute; left: 50%; top: calc(24vmin + var(--safe-top)); transform: translateX(-50%); display: flex; flex-direction: column; gap: 3vmin; align-items: center; transition: opacity .4s ease; }
+body:not([data-scene="play"]) #games { opacity: 0; pointer-events: none; }
+.cbtn {
+  width: 12.5vmin; height: 12.5vmin; border-radius: 50%; padding: 1.8vmin; flex: none;
+  border: .9vmin solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box, linear-gradient(90deg, var(--L) 50%, var(--R) 50%) border-box;
+  box-shadow: 0 1vmin 0 rgba(0,0,0,.15); transition: transform .08s ease, opacity .4s ease;
+}
+.cbtn > svg { width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.cbtn svg { pointer-events: none; }
+.cbtn.down { transform: translateY(.8vmin); box-shadow: 0 .2vmin 0 rgba(0,0,0,.15); }
+.cbtn.sleepy { opacity: .4; }
+.cbtn.nudge { animation: nudge .4s ease; }
+.cbtn.new { animation: newbtn 1s ease-out, cglow .7s ease-in-out 1s 8 alternate; }
+@keyframes cglow { from { box-shadow: 0 1vmin 0 rgba(0,0,0,.15), 0 0 0 0 rgba(255,210,63,0); } to { box-shadow: 0 1vmin 0 rgba(0,0,0,.15), 0 0 0 1.8vmin rgba(255,210,63,.75); } }
+#gamebar { position: absolute; left: 50%; top: calc(22vmin + var(--safe-top)); transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 2.4vmin; }
+body[data-scene="game"] #gamebar { display: flex; }
+#dots { display: grid; grid-template-columns: repeat(4, 3.4vmin); gap: .8vmin; }
+#dots i { width: 3.4vmin; height: 3.4vmin; display: block; }
+#dots i svg { width: 100%; height: 100%; }
+#home-btn { width: 10vmin; height: 10vmin; padding: 1.4vmin; }
+.column.big .btn.done { opacity: .45; }
+
+/* ---------- surprises ---------- */
+.scenery { position: absolute; pointer-events: none; }
+.scenery svg { width: 100%; height: 100%; overflow: visible; }
+#party { position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0; transition: opacity 1s ease; overflow: hidden; background: linear-gradient(#2a1b4d, #4b2a6e); }
+#party.on { opacity: .82; }
+.light { position: absolute; width: 46vmin; height: 46vmin; border-radius: 50%; mix-blend-mode: screen; opacity: .7; animation: roam 4s ease-in-out infinite alternate; }
+@keyframes roam { from { transform: translate(-12vmin, -6vmin) scale(.8); } to { transform: translate(14vmin, 8vmin) scale(1.15); } }
+.gift { position: absolute; left: 50%; bottom: 12%; width: 26vmin; height: 26vmin; transform: translateX(-50%); z-index: 11; }
+.gift svg { width: 100%; height: 100%; overflow: visible; }
+.gift g { transform-box: fill-box; transform-origin: 50% 100%; }
+.gift.wobble { animation: giftwobble 1.4s ease-in-out infinite; }
+@keyframes giftwobble { 0%, 60%, 100% { transform: translateX(-50%) rotate(0); } 70% { transform: translateX(-50%) rotate(-5deg); } 80% { transform: translateX(-50%) rotate(5deg); } 90% { transform: translateX(-50%) rotate(-3deg); } }
+.seesaw-plank {
+  position: absolute; height: 2.8vmin; z-index: 9; border-radius: 2vmin; border: .5vmin solid #fff;
+  background: linear-gradient(90deg, var(--L) 50%, var(--R) 50%); box-shadow: 0 .6vmin 0 rgba(0,0,0,.15);
+}
+.seesaw-base { position: absolute; z-index: 8; }
+.seesaw-base svg { width: 100%; height: 100%; }
 
 /* ---------- big round buttons and overlays ---------- */
 .round-btn {
@@ -289,6 +343,11 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
   <div id="night"><div id="moon"></div></div>
   <div class="girl-name" id="name-left"></div>
   <div class="girl-name" id="name-right"></div>
+  <div id="center">
+    <div id="jar"></div>
+    <div id="games"></div>
+    <div id="gamebar"><div id="dots"></div><div class="cbtn" id="home-btn"></div></div>
+  </div>
   <div id="world"></div>
   <div id="goodnight"></div>
   <div class="column left" id="col-left"></div>
@@ -457,7 +516,10 @@ const SETTINGS = {
   // Both girls tap Play within this many milliseconds -> the pets chase each other.
   togetherWindowMs: 4000,
   // How many together moments it takes before each new thing appears.
-  unlockAt: { treat: 1 },
+  // They appear one at a time, in this order.
+  unlockAt: { treat: 1, jar: 3, ball: 5, seesaw: 7, highfive: 9 },
+  // How many hearts fill the friendship jar (3 to 12 look best).
+  jarSize: 10,
 };
 
 /* =====================================================================
@@ -504,6 +566,22 @@ const ICONS = {
   go: '<svg viewBox="0 0 100 100"><path d="M32 18 L82 50 L32 82Z" fill="#fff" stroke="#fff" stroke-width="10" stroke-linejoin="round"/></svg>',
   check: '<svg viewBox="0 0 100 100"><path d="M20 52 L42 74 L82 28" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   moonBig: '<svg viewBox="0 0 100 100"><path d="M60 8 A42 42 0 1 0 92 72 A34 34 0 0 1 60 8Z" fill="#fff6c8"/></svg>',
+  twinHeart: '<svg viewBox="0 0 100 100"><path d="M50 30 C 42 12, 18 14, 12 30 C 6 46, 18 66, 50 88Z" style="fill:var(--L)"/><path d="M50 30 C 58 12, 82 14, 88 30 C 94 46, 82 66, 50 88Z" style="fill:var(--R)"/><path d="M50 88 C 18 66, 6 46, 12 30 C 18 14, 42 12, 50 30 C 58 12, 82 14, 88 30 C 94 46, 82 66, 50 88Z" fill="none" stroke="#fff" stroke-width="6" stroke-linejoin="round"/></svg>',
+  emptyHeart: '<svg viewBox="0 0 100 100"><path d="M50 88 C 18 66, 6 46, 12 30 C 18 14, 42 12, 50 30 C 58 12, 82 14, 88 30 C 94 46, 82 66, 50 88Z" fill="rgba(255,255,255,.7)" stroke="#cfc8dc" stroke-width="7" stroke-linejoin="round"/></svg>',
+  catch: '<svg viewBox="0 0 100 100"><path d="M14 80 Q50 -6 86 80" fill="none" stroke="#b9b3c9" stroke-width="5" stroke-dasharray="1 10" stroke-linecap="round"/><circle cx="14" cy="84" r="9" style="fill:var(--L)"/><circle cx="86" cy="84" r="9" style="fill:var(--R)"/><svg x="30" y="10" width="40" height="40" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="#ffd23f"/><path d="M15 42 Q50 58 85 42" stroke="#ff6b6b" stroke-width="9" fill="none"/><path d="M19 66 Q50 80 81 66" stroke="#4dabf7" stroke-width="9" fill="none"/><circle cx="50" cy="50" r="38" fill="none" stroke="#e0a800" stroke-width="5"/></svg></svg>',
+  seesaw: '<svg viewBox="0 0 100 100"><path d="M50 60 L68 90 H32Z" fill="#c99a6b" stroke="#a8743f" stroke-width="4" stroke-linejoin="round"/><g transform="rotate(-14 50 58)"><rect x="6" y="52" width="88" height="11" rx="5.5" fill="#ffd23f" stroke="#e0a800" stroke-width="3"/><circle cx="17" cy="40" r="11" style="fill:var(--L)"/><circle cx="83" cy="40" r="11" style="fill:var(--R)"/></g></svg>',
+  hand: '<svg viewBox="0 0 100 100"><g fill="#d9a07a" stroke="#d9a07a" stroke-width="8" stroke-linejoin="round"><rect x="27" y="16" width="11" height="40" rx="5.5"/><rect x="40" y="8" width="11" height="46" rx="5.5"/><rect x="53" y="10" width="11" height="44" rx="5.5"/><rect x="66" y="18" width="11" height="38" rx="5.5"/><rect x="25" y="44" width="54" height="42" rx="18"/><rect x="12" y="42" width="11" height="32" rx="5.5" transform="rotate(-35 18 70)"/></g><g fill="#ffd9b8"><rect x="27" y="16" width="11" height="40" rx="5.5"/><rect x="40" y="8" width="11" height="46" rx="5.5"/><rect x="53" y="10" width="11" height="44" rx="5.5"/><rect x="66" y="18" width="11" height="38" rx="5.5"/><rect x="25" y="44" width="54" height="42" rx="18"/><rect x="12" y="42" width="11" height="32" rx="5.5" transform="rotate(-35 18 70)"/></g><path d="M86 10 l4 -6 M92 22 l7 -2 M80 4 l0 -4" stroke="#ffb020" stroke-width="4" stroke-linecap="round"/></svg>',
+  gift: '<svg viewBox="0 0 100 100"><rect x="14" y="44" width="72" height="46" rx="6" fill="#ffd23f" stroke="#e0a800" stroke-width="4"/><rect x="8" y="30" width="84" height="18" rx="6" fill="#ffe27a" stroke="#e0a800" stroke-width="4"/><rect x="43" y="30" width="14" height="60" fill="#fff"/><path d="M50 30 C 34 6, 14 14, 22 26 C 28 33, 40 31, 50 30Z" style="fill:var(--c, #ff7eb6)" stroke="#fff" stroke-width="3"/><path d="M50 30 C 66 6, 86 14, 78 26 C 72 33, 60 31, 50 30Z" style="fill:var(--c, #5aa9ff)" stroke="#fff" stroke-width="3"/></svg>',
+  home: '<svg viewBox="0 0 100 100"><path d="M24 46 V84 H76 V46" fill="#efe9ff" stroke="#8b7fd1" stroke-width="7" stroke-linejoin="round"/><path d="M12 52 L50 18 L88 52" fill="none" stroke="#8b7fd1" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><rect x="42" y="60" width="16" height="24" rx="4" fill="#8b7fd1"/></svg>',
+  cupcake: '<svg viewBox="0 0 100 100"><path d="M24 54 L32 88 H68 L76 54Z" fill="#7fc8ff" stroke="#4a9ad6" stroke-width="4" stroke-linejoin="round"/><path d="M20 56 C 14 40, 30 26, 42 30 C 46 18, 62 18, 64 30 C 78 26, 88 42, 80 56Z" fill="#ffc0d6" stroke="#f08bb0" stroke-width="4" stroke-linejoin="round"/><circle cx="52" cy="18" r="7" fill="#ff5d5d"/></svg>',
+  strawberry: '<svg viewBox="0 0 100 100"><path d="M50 90 C 22 70, 14 44, 26 34 C 36 26, 44 32, 50 32 C 56 32, 64 26, 74 34 C 86 44, 78 70, 50 90Z" fill="#ff5d6c" stroke="#d93f4a" stroke-width="4"/><path d="M34 30 L42 20 L50 28 L58 20 L66 30 L50 36Z" fill="#5cc45c"/><g fill="#ffe08a"><circle cx="40" cy="48" r="2.5"/><circle cx="56" cy="46" r="2.5"/><circle cx="48" cy="62" r="2.5"/><circle cx="62" cy="60" r="2.5"/><circle cx="36" cy="62" r="2.5"/></g></svg>',
+  basket: '<svg viewBox="0 0 100 100"><path d="M26 46 C 26 12, 74 12, 74 46" fill="none" stroke="#a8743f" stroke-width="7"/><path d="M12 44 H88 L79 86 H21Z" fill="#d9a35e" stroke="#a8743f" stroke-width="4" stroke-linejoin="round"/><path d="M16 58 H84 M19 72 H81" stroke="#a8743f" stroke-width="3"/></svg>',
+  butterfly: '<svg viewBox="0 0 100 100"><ellipse cx="31" cy="38" rx="22" ry="18" fill="#ffb3d1"/><ellipse cx="34" cy="66" rx="16" ry="13" fill="#ffd2e3"/><ellipse cx="69" cy="38" rx="22" ry="18" fill="#b3d4ff"/><ellipse cx="66" cy="66" rx="16" ry="13" fill="#d2e6ff"/><rect x="46" y="28" width="8" height="46" rx="4" fill="#5d4a66"/><path d="M48 30 Q40 16 34 14 M52 30 Q60 16 66 14" stroke="#5d4a66" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+  note: '<svg viewBox="0 0 100 100"><path d="M40 72 V22 L80 12 V62" fill="none" stroke="currentColor" stroke-width="8" stroke-linejoin="round"/><ellipse cx="30" cy="74" rx="13" ry="10" fill="currentColor"/><ellipse cx="70" cy="64" rx="13" ry="10" fill="currentColor"/></svg>',
+  disco: '<svg viewBox="0 0 100 130"><line x1="50" y1="0" x2="50" y2="34" stroke="#9a94a8" stroke-width="3"/><circle cx="50" cy="80" r="44" fill="#c3cde3" stroke="#8d97b3" stroke-width="3"/><g stroke="#8d97b3" stroke-width="2" fill="none"><ellipse cx="50" cy="80" rx="44" ry="14"/><ellipse cx="50" cy="80" rx="44" ry="30"/><ellipse cx="50" cy="80" rx="14" ry="44"/><ellipse cx="50" cy="80" rx="30" ry="44"/></g><g fill="#fff"><rect x="28" y="56" width="9" height="9"/><rect x="58" y="70" width="9" height="9"/><rect x="40" y="92" width="9" height="9"/><rect x="66" y="98" width="7" height="7"/><rect x="22" y="84" width="7" height="7"/></g></svg>',
+  seesawBase: '<svg viewBox="0 0 100 80" preserveAspectRatio="none"><path d="M50 6 L94 76 H6Z" fill="#c99a6b" stroke="#a8743f" stroke-width="5" stroke-linejoin="round"/><circle cx="50" cy="14" r="8" fill="#a8743f"/></svg>',
+  giftBig: '<svg viewBox="0 0 120 120"><g class="gift-box"><rect x="14" y="52" width="92" height="64" rx="8" fill="#ffd23f" stroke="#e0a800" stroke-width="4"/><rect x="52" y="52" width="16" height="64" fill="#fff"/></g><g class="gift-lid"><rect x="8" y="36" width="104" height="22" rx="7" fill="#ffe27a" stroke="#e0a800" stroke-width="4"/><rect x="52" y="36" width="16" height="22" fill="#fff"/></g><g class="bow-left"><path d="M60 36 C 40 4, 12 12, 24 30 C 31 40, 47 38, 60 36Z" style="fill:var(--L)" stroke="#fff" stroke-width="3"/></g><g class="bow-right"><path d="M60 36 C 80 4, 108 12, 96 30 C 89 40, 73 38, 60 36Z" style="fill:var(--R)" stroke="#fff" stroke-width="3"/></g><circle class="bow-knot" cx="60" cy="36" r="6" fill="#fff"/></svg>',
+  blanket: '<svg viewBox="0 0 200 60" preserveAspectRatio="none"><defs><pattern id="picnic-check" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#fff"/><rect width="12" height="12" fill="#ff9a9a"/><rect x="12" y="12" width="12" height="12" fill="#ff9a9a"/></pattern></defs><ellipse cx="100" cy="30" rx="97" ry="27" fill="url(#picnic-check)" stroke="#e57373" stroke-width="3"/></svg>',
 };
 const FOODS = ['apple', 'fish', 'bone'];
 
@@ -516,6 +594,8 @@ function freshSave() {
     colors: { left: null, right: null },
     pets: { left: { asleep: false }, right: { asleep: false } },
     together: 0,            // how many together moments so far
+    jar: 0,                 // hearts in the friendship jar
+    surprise: 0,            // which surprise comes next
     unlocked: {},           // which new things have appeared
     book: {},               // memory book: { '2026-10-01': ['chase', 'treat'] }
     sound: { muted: false, volume: 0.7 },
@@ -750,6 +830,53 @@ const Sound = (() => {
                     [67, 1], [76, 1], [74, 1], [72, 2], [null, 1], [74, 1], [71, 1], [72, 4]];
       melody(tune, 92, { type: 'sine', vol: 0.09, legato: 1, attack: 0.06, echo: 1, music: 1 });
       [[48, 0, 6], [55, 0, 6], [53, 6.5, 6], [48, 6.5, 6]].forEach(([m, at, d]) => tone(NOTE(m), at, d, { vol: 0.035, attack: 1.2, music: 1 }));
+    },
+    heart() { [88, 91, 96].forEach((m, i) => tone(NOTE(m), i * 0.08, 0.4, { vol: 0.06, echo: 1 })); },
+    gameStart() { [67, 72, 76].forEach((m, i) => tone(NOTE(m), i * 0.09, 0.25, { type: 'triangle', vol: 0.08 })); },
+    throw() { noise(0, 0.35, { freq: 700, to: 2600, q: 1.4, vol: 0.045 }); tone(NOTE(72), 0, 0.25, { to: NOTE(84), vol: 0.06 }); },
+    seesaw() {
+      const k = k3();
+      tone(NOTE(67 + k), 0, 0.4, { to: NOTE(79 + k), vol: 0.09 });
+      tone(NOTE(55 + k), 0.05, 0.35, { to: NOTE(48 + k), type: 'triangle', vol: 0.06 });
+    },
+    pawUp() { tone(NOTE(76), 0, 0.16, { to: NOTE(81), vol: 0.06 }); },
+    clap() {
+      noise(0, 0.12, { filter: 'highpass', freq: 1500, vol: 0.12 });
+      noise(0.025, 0.1, { filter: 'bandpass', freq: 2500, vol: 0.08 });
+      [84, 88, 91].forEach((m, i) => tone(NOTE(m), 0.05 + i * 0.06, 0.4, { vol: 0.06, echo: 1 }));
+    },
+    yay() {
+      [72, 76, 79, 84].forEach((m, i) => tone(NOTE(m), i * 0.1, 0.3, { type: 'triangle', vol: 0.08, echo: 1 }));
+      [72, 76, 79].forEach(m => tone(NOTE(m), 0.42, 0.8, { vol: 0.05, echo: 1 }));
+    },
+    ribbon() { noise(0, 0.3, { freq: 3000, to: 6000, vol: 0.035 }); tone(NOTE(88), 0.08, 0.35, { vol: 0.06, echo: 1 }); },
+    open() {
+      tone(NOTE(60), 0, 0.14, { to: NOTE(84), vol: 0.12 });
+      [96, 93, 91, 88, 84, 88, 91, 96].forEach((m, i) => tone(NOTE(m), 0.12 + i * 0.07, 0.4, { vol: 0.045, echo: 1 }));
+    },
+    picnic() {
+      const tune = [[72, 1], [76, 1], [79, 1], [81, 2], [79, 1], [76, 1], [74, 1], [72, 1], [74, 3],
+                    [76, 1], [79, 1], [81, 1], [84, 2], [81, 1], [79, 1], [76, 1], [74, 1], [72, 3]];
+      melody(tune, 168, { vol: 0.08, legato: 0.55, music: 1, echo: 1 });
+      const bass = [[48, 3], [55, 3], [53, 3], [55, 3], [48, 3], [53, 3], [55, 3], [48, 3]];
+      melody(bass, 168, { vol: 0.07, type: 'sine', legato: 0.4, music: 1 });
+    },
+    dance() {
+      const bpm = 120, beat = 60 / bpm;
+      const bass = [36, 48, 36, 48, 33, 45, 33, 45, 29, 41, 29, 41, 31, 43, 31, 43];
+      for (let i = 0; i < 16; i++) {
+        tone(150, i * beat, 0.2, { to: 45, vol: 0.18, music: 1 });                       // soft kick
+        noise(i * beat + beat / 2, 0.05, { filter: 'highpass', freq: 7000, vol: 0.025, music: 1 }); // tick
+        tone(NOTE(bass[i]), i * beat, 0.25, { type: 'triangle', vol: 0.08, music: 1 });
+      }
+      const riff = [[79, .5], [76, .5], [79, .5], [81, 1], [79, .5], [76, 1], [72, .5], [74, .5], [76, 1], [null, 2],
+                    [79, .5], [76, .5], [79, .5], [84, 1], [81, .5], [79, 1], [76, .5], [74, .5], [72, 1], [null, 2]];
+      melody(riff, bpm, { vol: 0.07, legato: 0.6, music: 1, echo: 1 });
+    },
+    balloons() {
+      const up = [72, 74, 76, 79, 81, 84, 86, 88];
+      for (let i = 0; i < 32; i++) tone(NOTE(up[i % 8] - (Math.floor(i / 8) % 2) * 5), i * 0.25, 0.3, { vol: 0.05, echo: 1, music: 1 });
+      [[48, 0], [53, 2], [55, 4], [48, 6]].forEach(([m, at]) => tone(NOTE(m), at, 2, { vol: 0.04, attack: 0.3, music: 1 }));
     },
     morning() { [67, 72, 76, 79, 84].forEach((m, i) => tone(NOTE(m), i * 0.12, 0.5, { type: 'triangle', vol: 0.07, echo: 1 })); },
   };
@@ -1100,6 +1227,7 @@ function goSleep(side) {
   $('#night-' + side).classList.add('on');
   Sound.play('sleep');
   renderColumn(side);
+  updateGameButtons();
   if (!pets[other(side)].asleep) invite(other(side), 'sleep', 5000);
   checkBothAsleep();
 }
@@ -1115,6 +1243,7 @@ function wakePet(side, quiet) {
     petAnim(p, [{ transform: 'scale(1,1)' }, { transform: 'scale(.94,1.1)' }, { transform: 'scale(1,1)' }], { duration: 700, easing: 'ease-out' });
   }
   renderColumn(side);
+  updateGameButtons();
 }
 
 function petTapped(side) {
@@ -1142,8 +1271,10 @@ function togetherMoment(type) {
   }
   S.together++;
   logDay(type);
+  addHeart();
   checkUnlocks();
   save();
+  setTimeout(runQueue, 1600);
 }
 /* Remember what the pets did together today (for the memory book). */
 function logDay(type) {
@@ -1261,6 +1392,7 @@ function restorePets() {
   pets.right.lean.style.transform = bothAsleep ? 'rotate(-7deg)' : '';
   $('#night').classList.toggle('on', bothAsleep);
   $('#goodnight').classList.toggle('on', bothAsleep);
+  updateGameButtons();
   return bothAsleep ? 'night' : 'play';
 }
 async function goodMorning() {
@@ -1298,10 +1430,14 @@ function checkUnlocks() {
     if (S.together >= at && !S.unlocked[key] && !queue.includes(key)) queue.push(key);
   }
 }
+let queueBusy = false;
 async function runQueue() {
-  if (scene !== 'play' || !queue.length) return;
-  const key = queue.shift();
-  await reveal(key);
+  if (scene !== 'play' || queueBusy) return;
+  if (S.unlocked.jar && S.jar >= SETTINGS.jarSize) { startGift(); return; }   // a full jar comes first
+  if (!queue.length) return;
+  queueBusy = true;
+  await reveal(queue.shift());
+  queueBusy = false;
   setTimeout(runQueue, 1500);
 }
 const newUntil = {};
@@ -1311,7 +1447,456 @@ async function reveal(key) {
   if (key === 'treat') {
     newUntil.treat = Date.now() + 6000;
     renderColumns();
+  } else if (key === 'jar') {
+    renderJar();
+    const jar = $('#jar');
+    jar.classList.add('pop');
+    setTimeout(() => jar.classList.remove('pop'), 1000);
+    await wait(1100);
+    await addHeart();      // the together moment that brought the jar
+  } else if (GAMES[key]) {
+    newUntil[key] = Date.now() + 6000;
+    renderGames();
   }
+}
+
+/* =====================================================================
+   12. THE FRIENDSHIP JAR (one jar, shared by both girls)
+   ===================================================================== */
+function jarSlots() {
+  const n = SETTINGS.jarSize, xs = [30, 50, 70], out = [];
+  for (let i = 0; i < n; i++) {
+    const row = Math.floor(i / 3), inRow = Math.min(3, n - row * 3), col = i % 3;
+    const x = inRow === 1 ? 50 : inRow === 2 ? [40, 60][col] : xs[col];
+    out.push([x, 104 - row * 17]);
+  }
+  return out;
+}
+function renderJar() {
+  const jar = $('#jar');
+  jar.classList.toggle('show', !!S.unlocked.jar);
+  jar.classList.toggle('full', S.jar >= SETTINGS.jarSize);
+  const hearts = jarSlots().map(([x, y], i) => {
+    const inner = (i < S.jar ? ICONS.twinHeart : ICONS.emptyHeart).replace('<svg ', `<svg x="${x - 10.5}" y="${y - 10.5}" width="21" height="21" `);
+    return inner;
+  }).join('');
+  jar.innerHTML = `<svg viewBox="0 0 100 124">
+    <rect x="23" y="3" width="54" height="15" rx="5" fill="#d9a877" stroke="#b07f4f" stroke-width="3"/>
+    <path d="M28 18 H72 V26 C 86 32 92 42 92 56 V102 C 92 114 84 120 72 120 H28 C 16 120 8 114 8 102 V56 C 8 42 14 32 28 26Z" fill="rgba(255,255,255,.6)" stroke="#a9bdd1" stroke-width="3.5"/>
+    ${hearts}
+    <path d="M17 56 C 17 46, 21 40, 29 36" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+    <path d="M15 66 V98" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+  </svg>`;
+}
+function jarSlotPoint(i) {
+  const r = $('#jar').getBoundingClientRect(), [x, y] = jarSlots()[Math.min(i, SETTINGS.jarSize - 1)];
+  return { x: r.left + x / 100 * r.width, y: r.top + y / 124 * r.height };
+}
+const midPets = () => {
+  const a = petPoint(pets.left, 0.5, 0.3), b = petPoint(pets.right, 0.5, 0.3);
+  return { x: (a.x + b.x) / 2, y: Math.min(a.y, b.y) };
+};
+async function addHeart(from = midPets()) {
+  if (!S.unlocked.jar || S.jar >= SETTINGS.jarSize) return;
+  const i = S.jar;
+  S.jar++; save();
+  const to = jarSlotPoint(i);
+  const h = prop(ICONS.twinHeart, 7, from.x, from.y);
+  h.style.zIndex = 40;
+  await animate(h.firstChild, [{ transform: 'scale(0)' }, { transform: 'scale(1.3)' }, { transform: 'scale(1)' }], { duration: 320, easing: 'ease-out', fill: 'both' });
+  await tween(950, t => {
+    h.style.left = from.x + (to.x - from.x) * t + 'px';
+    h.style.top = from.y + (to.y - from.y) * t - H() * 0.12 * Math.sin(Math.PI * t) + 'px';
+    h.firstChild.style.transform = `scale(${1 - 0.6 * t})`;
+  });
+  h.remove();
+  renderJar();
+  const jar = $('#jar');
+  jar.classList.remove('wiggle'); void jar.offsetWidth;
+  if (S.jar < SETTINGS.jarSize) jar.classList.add('wiggle');
+  Sound.play('heart');
+  sparkles(to.x, to.y, 6);
+}
+async function emptyJar() {
+  for (let i = 0; i < S.jar; i++) {
+    const pt = jarSlotPoint(i), h = prop(ICONS.twinHeart, 3, pt.x, pt.y);
+    h.style.zIndex = 40;
+    animate(h.firstChild, [{ transform: 'translateY(0) scale(1)', opacity: 1 }, { transform: `translate(${rand(-12, 12)}vmin, -18vmin) scale(1.6)`, opacity: 0 }],
+      { duration: 1200, delay: i * 60, easing: 'ease-out', fill: 'both' }).then(() => h.remove());
+  }
+  S.jar = 0; save();
+  await wait(300);
+  renderJar();
+}
+
+/* --- A full jar: both girls untie the bow, then a surprise! --- */
+const SURPRISES = ['picnic', 'dance', 'balloons'];
+let gift = null;
+async function startGift() {
+  setScene('gift');
+  gift = { pulled: { left: false, right: false }, el: el('div', 'gift', ICONS.giftBig) };
+  world.append(gift.el);
+  Sound.play('unlock');
+  await animate(gift.el, [{ transform: 'translateX(-50%) translateY(-60vmin)' }, { transform: 'translateX(-50%) translateY(2vmin)', offset: 0.7 }, { transform: 'translateX(-50%) translateY(0)' }], { duration: 900, easing: 'ease-in' });
+  gift.el.classList.add('wobble');
+  SIDES.forEach(s => mood(pets[s], 'happy', 1500));
+  renderColumns();
+}
+async function pullRibbon(side, btn) {
+  if (!gift || gift.pulled[side]) { nudge(btn); return; }
+  gift.pulled[side] = true;
+  Sound.play('ribbon');
+  const bow = gift.el.querySelector('.bow-' + side), dir = side === 'left' ? -1 : 1;
+  animate(bow, [{ transform: 'translate(0,0) rotate(0)', opacity: 1 }, { transform: `translate(${dir * 40}px, -50px) rotate(${dir * 70}deg)`, opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' });
+  const r = gift.el.getBoundingClientRect();
+  sparkles(r.left + r.width * (side === 'left' ? 0.3 : 0.7), r.top + r.height * 0.25, 6);
+  petAnim(pets[side], [{ transform: 'translateY(0)' }, { transform: 'translateY(-10%)' }, { transform: 'translateY(0)' }], { duration: 450, easing: 'ease-out' });
+  renderColumn(side);
+  if (gift.pulled.left && gift.pulled.right) openGift();
+  else invite(other(side), 'gift', 30000);
+}
+async function openGift() {
+  const g = gift;
+  await wait(500);
+  g.el.classList.remove('wobble');
+  Sound.play('open');
+  g.el.querySelector('.bow-knot').style.display = 'none';
+  animate(g.el.querySelector('.gift-lid'), [{ transform: 'translateY(0) rotate(0)' }, { transform: 'translateY(-70px) rotate(-25deg)', opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' });
+  const r = g.el.getBoundingClientRect();
+  sparkles(r.left + r.width / 2, r.top + r.height * 0.3, 16);
+  await wait(700);
+  await animate(g.el, [{ opacity: 1, transform: 'translateX(-50%) scale(1)' }, { opacity: 0, transform: 'translateX(-50%) scale(.6)' }], { duration: 400, fill: 'forwards' });
+  g.el.remove();
+  gift = null;
+  const kind = SURPRISES[S.surprise % SURPRISES.length];
+  S.surprise++; save();
+  setScene('surprise');
+  await SURPRISE[kind]();
+  logDay(kind);
+  await emptyJar();
+  SIDES.forEach(s => { pets[s].lean.style.transform = ''; });
+  await Promise.all([movePet('left', HOME.left.x, HOME.left.y, 900), movePet('right', HOME.right.x, HOME.right.y, 900)]);
+  save();
+  endScene();
+}
+
+/* Surprise scenes. Each one lasts about 8 seconds. */
+function scenery(svg, css) {
+  const e = el('div', 'scenery', svg);
+  Object.assign(e.style, css);
+  world.append(e);
+  return e;
+}
+function fadeAway(elms) {
+  return Promise.all(elms.map(e => animate(e, [{ opacity: 1 }, { opacity: 0 }], { duration: 600, fill: 'forwards' }).then(() => e.remove())));
+}
+const SURPRISE = {
+  async picnic() {
+    const blanket = scenery(ICONS.blanket, { left: '50%', bottom: '4%', width: '62vmin', height: '17vmin', transform: 'translateX(-50%)', zIndex: 8 });
+    const foods = [['basket', 50, 14], ['strawberry', 44, 6.5], ['cupcake', 56, 6.5]].map(([n, x, y]) =>
+      scenery(ICONS[n], { left: x + '%', bottom: y + '%', width: n === 'basket' ? '13vmin' : '8vmin', height: n === 'basket' ? '13vmin' : '8vmin', transform: 'translateX(-50%)', zIndex: 11 }));
+    const flies = [0, 1].map(i => {
+      const b = scenery(ICONS.butterfly, { left: '0', top: '0', width: '7vmin', height: '7vmin', zIndex: 12 });
+      animate(b.firstChild, [{ transform: 'scaleX(1)' }, { transform: 'scaleX(.3)' }], { duration: 180, iterations: 60, direction: 'alternate' });
+      tween(8000, t => {
+        const x = i ? 1 - t : t;
+        b.style.left = (8 + 84 * x) + '%';
+        b.style.top = (22 + i * 10 + 8 * Math.sin(t * Math.PI * 6 + i)) + '%';
+      }, ease.linear);
+      return b;
+    });
+    Sound.play('picnic');
+    await Promise.all([movePet('left', 36, 10, 900), movePet('right', 64, 10, 900)]);
+    for (let i = 0; i < 6; i++) {
+      const p = pets[i % 2 ? 'right' : 'left'];
+      p.root.classList.add('chomp');
+      petAnim(p, [{ transform: 'scale(1,1)' }, { transform: 'scale(1.05,.94)' }, { transform: 'scale(1,1)' }], { duration: 300, iterations: 3 });
+      setTimeout(() => { p.root.classList.remove('chomp'); mood(p, 'happy', 1000); floatHearts(p, 2); }, 900);
+      await wait(1150);
+    }
+    await fadeAway([blanket, ...foods, ...flies]);
+  },
+  async dance() {
+    const party = el('div', '');
+    party.id = 'party';
+    ['#ff7eb6', '#5aa9ff', '#ffd23f', '#6cc551', '#a77bff'].forEach((c, i) => {
+      const l = el('div', 'light');
+      l.style.background = `radial-gradient(circle, ${c} 0%, transparent 65%)`;
+      l.style.left = (10 + i * 18) + '%'; l.style.top = (10 + (i % 2) * 30) + '%';
+      l.style.animationDelay = (-i * 0.9) + 's';
+      party.append(l);
+    });
+    stage.insertBefore(party, $('#night'));
+    requestAnimationFrame(() => party.classList.add('on'));
+    const ball = scenery(ICONS.disco, { left: '50%', top: 'calc(19vmin + var(--safe-top))', width: '13vmin', height: '17vmin', transform: 'translateX(-50%)', zIndex: 12 });
+    animate(ball.firstChild, [{ transform: 'rotate(-6deg)' }, { transform: 'rotate(6deg)' }], { duration: 1000, iterations: 8, direction: 'alternate', easing: 'ease-in-out' });
+    Sound.play('dance');
+    await Promise.all([movePet('left', 38, 12, 700), movePet('right', 62, 12, 700)]);
+    SIDES.forEach(s => mood(pets[s], 'happy', 9000));
+    const groove = [
+      { transform: 'translateY(0) rotate(0) scaleX(1)' }, { transform: 'translateY(-8%) rotate(-8deg) scaleX(1)', offset: 0.125 },
+      { transform: 'translateY(0) rotate(0) scaleX(1)', offset: 0.25 }, { transform: 'translateY(-8%) rotate(8deg) scaleX(1)', offset: 0.375 },
+      { transform: 'translateY(0) rotate(0) scaleX(1)', offset: 0.5 }, { transform: 'translateY(-10%) rotate(0) scaleX(-1)', offset: 0.625 },
+      { transform: 'translateY(0) rotate(0) scaleX(1)', offset: 0.75 }, { transform: 'translateY(-12%) rotate(0) scaleX(1)', offset: 0.875 },
+      { transform: 'translateY(0) rotate(0) scaleX(1)' },
+    ];
+    SIDES.forEach(s => petAnim(pets[s], groove, { duration: 2000, iterations: 3 }));
+    const notes = [];
+    for (let i = 0; i < 10; i++) {
+      const n = scenery(ICONS.note, { left: rand(25, 75) + '%', top: rand(40, 70) + '%', width: '5vmin', height: '5vmin', color: pick(['#ffd23f', '#ff7eb6', '#7fd1ff', '#a6f08a']), zIndex: 12, opacity: 0 });
+      notes.push(n);
+      animate(n, [{ opacity: 0, transform: 'translateY(0)' }, { opacity: 1, offset: 0.2 }, { opacity: 0, transform: 'translateY(-20vmin) rotate(20deg)' }], { duration: 2200, delay: i * 600 });
+    }
+    await wait(6400);
+    party.classList.remove('on');
+    await fadeAway([ball, ...notes]);
+    setTimeout(() => party.remove(), 1000);
+  },
+  async balloons() {
+    Sound.play('balloons');
+    const colors = [cssVar('--L'), cssVar('--R'), '#ffd23f', '#6cc551', '#a77bff', '#ff9a4d', cssVar('--L'), cssVar('--R')];
+    const all = [];
+    for (let i = 0; i < 16; i++) {
+      const c = colors[i % colors.length];
+      const b = scenery(`<svg viewBox="0 0 60 120"><path d="M30 76 q-6 14 4 26 q8 10 -2 18" fill="none" stroke="#9a94a8" stroke-width="2"/><ellipse cx="30" cy="38" rx="24" ry="30" fill="${c}"/><path d="M26 67 L34 67 L30 76Z" fill="${c}"/><ellipse cx="21" cy="26" rx="5" ry="9" fill="#fff" opacity=".45"/></svg>`,
+        { left: rand(18, 82) + '%', top: '100%', width: '9vmin', height: '18vmin', zIndex: i % 2 ? 12 : 8 });
+      all.push(b);
+      animate(b, [{ transform: 'translateY(0) rotate(-6deg)' }, { transform: 'translateY(-70vh) rotate(6deg)', offset: 0.5 }, { transform: 'translateY(-140vh) rotate(-6deg)' }],
+        { duration: rand(4200, 6000), delay: i * 260, easing: 'ease-in', fill: 'both' });
+    }
+    for (let i = 0; i < 6; i++) {
+      SIDES.forEach(s => {
+        mood(pets[s], 'happy', 1500);
+        petAnim(pets[s], [{ transform: 'translateY(0)' }, { transform: 'translateY(-14%)' }, { transform: 'translateY(0)' }], { duration: 600, delay: s === 'left' ? 0 : 300, easing: 'ease-out' });
+      });
+      sparkles(rand(0.3, 0.7) * W(), rand(0.2, 0.5) * H(), 8);
+      await wait(1300);
+    }
+    all.forEach(b => b.remove());
+  },
+};
+const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+/* =====================================================================
+   13. TWO-PLAYER GAMES (they need both girls)
+   ===================================================================== */
+const GAMES = {
+  ball:     { icon: 'catch',  act: 'throw', goal: 6 },   // throw the ball back and forth
+  seesaw:   { icon: 'seesaw', act: 'push',  goal: 8 },   // push off when your side is down
+  highfive: { icon: 'hand',   act: 'five',  goal: 3 },   // both press at the same time
+};
+let game = null;
+function renderGames() {
+  const box = $('#games');
+  box.innerHTML = '';
+  for (const kind of Object.keys(GAMES)) {
+    if (!S.unlocked[kind]) continue;
+    const b = el('div', 'cbtn game-' + kind, ICONS[GAMES[kind].icon]);
+    if ((newUntil[kind] || 0) > Date.now()) b.classList.add('new');
+    onPress(b, e => startGame(kind, e.clientX < W() / 2 ? 'left' : 'right', b));
+    box.append(b);
+  }
+  updateGameButtons();
+}
+function updateGameButtons() {
+  const sleepy = pets.left.asleep || pets.right.asleep;
+  document.querySelectorAll('#games .cbtn').forEach(b => b.classList.toggle('sleepy', sleepy));
+}
+function renderDots() {
+  $('#dots').innerHTML = game ? Array.from({ length: game.goal }, (_, i) => `<i>${i < game.count ? ICONS.twinHeart : ICONS.emptyHeart}</i>`).join('') : '';
+}
+async function startGame(kind, starter, btn) {
+  if (scene !== 'play') return;
+  if (pets.left.asleep || pets.right.asleep) { nudge(btn); return; }   // a pet is sleeping
+  game = { kind, goal: GAMES[kind].goal, count: 0, turn: starter, busy: true, ready: false, lastPress: now(), cleanup: [], raised: { left: -1e9, right: -1e9 } };
+  SIDES.forEach(s => begin(pets[s], 1e9));
+  setScene('game');
+  renderDots();
+  Sound.play('gameStart');
+  await GAME_SETUP[kind](game);
+  game.busy = false; game.ready = true;
+  showTurn();
+}
+/* Glow the button of whoever's turn it is (both glow for high five). */
+function showTurn() {
+  if (!game) return;
+  SIDES.forEach(s => {
+    const b = cols[s].querySelector('.btn');
+    if (b) b.classList.toggle('invite', game.kind === 'highfive' || game.turn === s);
+  });
+}
+function gamePress(side, btn) {
+  if (!game || !game.ready || game.ending) return;
+  game.lastPress = now();
+  if (game.busy) return;
+  GAME_PRESS[game.kind](game, side, btn);
+}
+function hopPet(side) {
+  petAnim(pets[side], [{ transform: 'translateY(0)' }, { transform: 'translateY(-6%)' }, { transform: 'translateY(0)' }], { duration: 350, easing: 'ease-out' });
+}
+async function scorePoint() {
+  game.count++;
+  renderDots();
+  if (game.count >= game.goal) await finishGame(true);
+  else showTurn();
+}
+async function finishGame(completed) {
+  const g = game;
+  if (!g || g.ending) return;
+  g.ending = true;
+  if (completed) {
+    Sound.play('yay');
+    const m = midPets();
+    sparkles(m.x, m.y, 14);
+    SIDES.forEach(s => {
+      mood(pets[s], 'happy', 2000);
+      petAnim(pets[s], [{ transform: 'translateY(0)' }, { transform: 'translateY(-14%)' }, { transform: 'translateY(0)' }], { duration: 600, iterations: 2, easing: 'ease-out' });
+    });
+    await wait(1300);
+  }
+  g.cleanup.forEach(f => f());
+  SIDES.forEach(s => { pets[s].lean.style.transform = ''; });
+  await Promise.all([movePet('left', HOME.left.x, HOME.left.y, 800), movePet('right', HOME.right.x, HOME.right.y, 800)]);
+  SIDES.forEach(s => { pets[s].busyUntil = 0; });
+  game = null;
+  if (completed) togetherMoment(g.kind);
+  endScene();
+}
+/* Throw something in an arc. b may be a function so it can follow a moving target. */
+function arc(elm, a, b, ms, peak, spin = 0) {
+  return tween(ms, t => {
+    const end = typeof b === 'function' ? b() : b;
+    elm.style.left = a.x + (end.x - a.x) * t + 'px';
+    elm.style.top = a.y + (end.y - a.y) * t - peak * 4 * t * (1 - t) + 'px';
+    if (spin) elm.firstChild.style.transform = `rotate(${t * spin}deg)`;
+  }, ease.linear);
+}
+
+const GAME_SETUP = {
+  async ball(g) {
+    await Promise.all([movePet('left', 36, 12, 700), movePet('right', 64, 12, 700)]);
+    const pt = petPoint(pets[g.turn], 0.5, 0.78);
+    g.ball = prop(ICONS.ball, 8, pt.x, pt.y);
+    g.ball.style.zIndex = 12;
+    g.cleanup.push(() => g.ball.remove());
+  },
+  async seesaw(g) {
+    g.base = el('div', 'seesaw-base', ICONS.seesawBase);
+    g.plank = el('div', 'seesaw-plank');
+    world.append(g.base, g.plank);
+    g.cleanup.push(() => { g.base.remove(); g.plank.remove(); });
+    g.tilt = g.turn === 'left' ? 1 : -1;            // whoever started goes first (her side is down)
+    const ends = seesawEnds(g.tilt);
+    await Promise.all(SIDES.map(s => movePet(s, ends[s].x, ends[s].y, 700)));
+    layoutSeesaw(g);
+  },
+  async highfive(g) {
+    await Promise.all([movePet('left', 40, 12, 700), movePet('right', 60, 12, 700)]);
+    g.paws = {};
+    SIDES.forEach(s => {
+      const paw = prop(pawSvg(s), 10, 0, 0);
+      paw.style.zIndex = 12; paw.style.opacity = 0;
+      g.paws[s] = paw;
+      g.cleanup.push(() => paw.remove());
+    });
+  },
+};
+const GAME_PRESS = {
+  async ball(g, side) {
+    if (side !== g.turn) { hopPet(side); return; }
+    g.busy = true;
+    const from = pets[side], to = pets[other(side)];
+    Sound.play('throw');
+    petAnim(from, [{ transform: 'translateY(0)' }, { transform: 'translateY(-6%) rotate(' + (side === 'left' ? 8 : -8) + 'deg)' }, { transform: 'translateY(0)' }], { duration: 400 });
+    await arc(g.ball, petPoint(from, 0.5, 0.78), () => petPoint(to, 0.5, 0.6), 950, H() * 0.32, side === 'left' ? 400 : -400);
+    Sound.play('catch');
+    mood(to, 'happy', 1000);
+    petAnim(to, [{ transform: 'translateY(0)' }, { transform: 'translateY(-9%)' }, { transform: 'translateY(0)' }], { duration: 420, easing: 'ease-out' });
+    const rest = petPoint(to, 0.5, 0.78);
+    await arc(g.ball, petPoint(to, 0.5, 0.6), rest, 200, 0);
+    g.turn = other(side);
+    g.busy = false;
+    await scorePoint();
+  },
+  async seesaw(g, side) {
+    const downSide = g.tilt > 0 ? 'left' : 'right';
+    if (side !== downSide) { hopPet(side); return; }
+    g.busy = true;
+    Sound.play('seesaw');
+    mood(pets[side], 'happy', 1300);
+    const from = g.tilt, to = -g.tilt;
+    await tween(650, t => { g.tilt = from + (to - from) * t; layoutSeesaw(g); }, ease.inOut);
+    hopPet(other(side));
+    g.turn = other(side);
+    g.busy = false;
+    await scorePoint();
+  },
+  async highfive(g, side) {
+    const t = now(), o = other(side);
+    g.raised[side] = t;
+    Sound.play('pawUp');
+    mood(pets[side], 'happy', 1200);
+    const paw = g.paws[side];
+    paw.style.opacity = 1;
+    const down = pawSpot(side, false), up = pawSpot(side, true);
+    if (t - g.raised[o] < 1200) {
+      // both pressed: HIGH FIVE!
+      g.busy = true;
+      g.raised = { left: -1e9, right: -1e9 };
+      const meet = { x: (pawSpot('left', true).x + pawSpot('right', true).x) / 2, y: up.y - H() * 0.03 };
+      await Promise.all(SIDES.map(s => {
+        const p = g.paws[s], st = s === side ? down : { x: parseFloat(p.style.left), y: parseFloat(p.style.top) };
+        p.style.opacity = 1;
+        const end = { x: meet.x + (s === 'left' ? -1 : 1) * petSize() * 0.07, y: meet.y };
+        return arc(p, st, end, 180, 0);
+      }));
+      Sound.play('clap');
+      sparkles(meet.x, meet.y, 12);
+      SIDES.forEach(s => { mood(pets[s], 'happy', 1200); hopPet(s); });
+      await wait(650);
+      SIDES.forEach(s => { g.paws[s].style.opacity = 0; });
+      g.busy = false;
+      await scorePoint();
+      return;
+    }
+    // only one paw up so far: wait for the sister
+    await arc(paw, down, up, 180, 0);
+    setTimeout(() => {
+      if (g.raised[side] === t && game === g) paw.style.opacity = 0;
+    }, 1200);
+  },
+};
+
+/* seesaw math: tilt 1 = left side down, -1 = right side down */
+function seesawGeom() { return { cx: W() / 2, yp: H() * 0.16, hl: Math.min(W() * 0.17, H() * 0.3) }; }
+function seesawEnds(tilt) {
+  const { cx, yp, hl } = seesawGeom(), th = tilt * 12 * Math.PI / 180, lift = H() * 0.012;
+  return {
+    left:  { x: (cx - hl * Math.cos(th)) / W() * 100, y: (yp - hl * Math.sin(th) + lift) / H() * 100 },
+    right: { x: (cx + hl * Math.cos(th)) / W() * 100, y: (yp + hl * Math.sin(th) + lift) / H() * 100 },
+  };
+}
+function layoutSeesaw(g) {
+  const { cx, yp, hl } = seesawGeom(), len = 2 * hl + petSize() * 0.4, thick = Math.min(W(), H()) * 0.028;
+  Object.assign(g.plank.style, { left: cx - len / 2 + 'px', width: len + 'px', bottom: yp - thick / 2 + 'px', transform: `rotate(${-g.tilt * 12}deg)` });
+  const bh = yp - H() * 0.05, bw = bh * 1.2;
+  Object.assign(g.base.style, { left: cx - bw / 2 + 'px', width: bw + 'px', bottom: H() * 0.05 + 'px', height: bh + 'px' });
+  const ends = seesawEnds(g.tilt);
+  SIDES.forEach(s => setPos(pets[s], ends[s].x, ends[s].y));
+}
+
+/* high five paws */
+const PAWS = {
+  left:  { fur: '#eef1f6', line: '#8b94a3', pad: '#ffc6d6' },
+  right: { fur: '#fffaf3', line: '#cbb9a8', pad: '#f3b9a8' },
+};
+function pawSvg(side) {
+  const c = PAWS[side];
+  return `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="56" rx="32" ry="30" fill="${c.fur}" stroke="${c.line}" stroke-width="5"/><ellipse cx="50" cy="66" rx="15" ry="12" fill="${c.pad}"/><circle cx="29" cy="44" r="7" fill="${c.pad}"/><circle cx="43" cy="35" r="7" fill="${c.pad}"/><circle cx="57" cy="35" r="7" fill="${c.pad}"/><circle cx="71" cy="44" r="7" fill="${c.pad}"/></svg>`;
+}
+function pawSpot(side, raised) {
+  const inner = side === 'left' ? 0.84 : 0.16;
+  return petPoint(pets[side], inner, raised ? 0.12 : 0.62);
 }
 
 /* =====================================================================
@@ -1323,10 +1908,16 @@ const BUTTONS = {
   sleep: { icon: 'moon',  label: 'Sleep' },
   wake:  { icon: 'sun',   label: 'Wake' },
   treat: { icon: 'treat', label: 'Treat' },
+  throw: { icon: 'ball',  label: 'Throw' },
+  push:  { icon: 'seesaw', label: 'Push' },
+  five:  { icon: 'hand',  label: 'High five' },
+  gift:  { icon: 'gift',  label: 'Open' },
 };
 const inviteUntil = { left: {}, right: {} };
 function columnPlan(side) {
   if (scene === 'night') return { acts: ['wake'], big: true };
+  if (scene === 'game' && game) return { acts: [GAMES[game.kind].act], big: true };
+  if (scene === 'gift' && gift) return { acts: ['gift'], big: true, cls: gift.pulled[side] ? 'done' : 'invite' };
   const acts = ['eat', 'play', pets[side] && pets[side].asleep ? 'wake' : 'sleep'];
   if (S.unlocked.treat) acts.push('treat');
   return { acts, dim: !['play', 'title'].includes(scene) };
@@ -1342,6 +1933,7 @@ function renderColumn(side) {
     const def = BUTTONS[act];
     const b = el('div', 'btn btn-' + act, `<span class="ico">${ICONS[def.icon]}</span><span class="lbl">${def.label}</span>`);
     b.dataset.act = act;
+    if (plan.cls) b.classList.add(plan.cls);
     if ((newUntil[act] || 0) > Date.now()) b.classList.add('new');
     if ((inviteUntil[side][act] || 0) > Date.now()) b.classList.add('invite');
     onPress(b, () => press(side, act, b));
@@ -1350,6 +1942,8 @@ function renderColumn(side) {
 }
 function press(side, act, btn) {
   if (scene === 'night') { if (act === 'wake') goodMorning(); return; }
+  if (scene === 'game') { gamePress(side, btn); return; }
+  if (scene === 'gift') { pullRibbon(side, btn); return; }
   if (!canAct()) return;
   if (act === 'eat') feed(side);
   else if (act === 'play') playBall(side);
@@ -1377,6 +1971,8 @@ function nudge(elm) {
    13. PETS WAIT HAPPILY (little idle wiggles)
    ===================================================================== */
 function idleTick() {
+  // nobody has tapped the game for a while: go back to normal, gently
+  if (scene === 'game' && game && game.ready && !game.busy && now() - game.lastPress > 25000) finishGame(false);
   if (!['play', 'title'].includes(scene)) return;
   SIDES.forEach(side => {
     const p = pets[side];
@@ -1546,6 +2142,7 @@ function renderParent() {
     <div class="row"><span>Sound</span><div class="pbtn ${S.sound.muted ? '' : 'on'}" data-p="mute">${S.sound.muted ? 'Off (tap to turn on)' : 'On (tap to mute)'}</div></div>
     <div class="row"><span>Volume</span><div class="pbtn round" data-p="vol-">−</div><div class="volbar">${bars}</div><div class="pbtn round" data-p="vol+">+</div></div>
     <div class="row"><div class="pbtn" data-p="colors">Change colors</div>${canFullscreen() ? '<div class="pbtn" data-p="fs">Full screen</div>' : ''}</div>
+    <div class="row"><div class="pbtn" data-p="unlock">Show all new things now (for testing)</div></div>
     <div class="row"><div class="pbtn danger ${resetArmed ? 'confirm' : ''}" data-p="reset">${resetArmed ? 'Tap again to erase everything' : 'Start over'}</div></div>
     <div class="row"><div class="pbtn go" data-p="done">Done</div></div>
     <div class="note">Twin Pets saves on this device only.</div>`;
@@ -1566,6 +2163,11 @@ function parentAction(what) {
     closeParent();
     openPicker();
     return;
+  } else if (what === 'unlock') {
+    S.together = Math.max(S.together, ...Object.values(SETTINGS.unlockAt));
+    Object.keys(SETTINGS.unlockAt).forEach(k => { S.unlocked[k] = true; });
+    queue.length = 0;
+    renderJar(); renderGames(); renderColumns();
   } else if (what === 'fs') {
     tryFullscreen();
   } else if (what === 'reset') {
@@ -1598,6 +2200,10 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) save(
    ===================================================================== */
 buildScene();
 applyColors();
+$('#home-btn').innerHTML = ICONS.home;
+onPress($('#home-btn'), () => finishGame(false));
+renderJar();
+renderGames();
 Speech.init();
 makeHomeScreenIcon();
 onRelease($('#title'), startPlaying);

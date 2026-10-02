@@ -183,9 +183,13 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
 .column.dim .btn { opacity: .4; }
 .btn.nudge { animation: nudge .4s ease; }
 @keyframes nudge { 20% { transform: translateX(-1.2vmin); } 40% { transform: translateX(1.2vmin); } 60% { transform: translateX(-.8vmin); } 80% { transform: translateX(.6vmin); } }
-.btn.invite { animation: invite .7s ease-in-out infinite alternate; }
+.btn::after { content: ''; position: absolute; inset: -1.7vmin; border-radius: 5.8vmin; border: 1.5vmin solid var(--c); opacity: 0; pointer-events: none; }
+.column.big .btn::after { border-radius: 7.3vmin; }
+.btn.invite::after { animation: invitering .7s ease-in-out infinite alternate; }
+@keyframes invitering { from { opacity: 0; transform: scale(.94); } to { opacity: .85; transform: scale(1); } }
 @keyframes invite { from { box-shadow: 0 1.2vmin 0 var(--c-dark), 0 0 0 0 var(--c); } to { box-shadow: 0 1.2vmin 0 var(--c-dark), 0 0 0 1.6vmin var(--c); } }
-.btn.new { animation: newbtn 1s ease-out, invite .7s ease-in-out 1s 8 alternate; }
+.btn.new { animation: newbtn 1s ease-out; }
+.btn.new::after { animation: invitering .7s ease-in-out 1s 8 alternate; }
 @keyframes newbtn { 0% { transform: scale(0) rotate(-20deg); } 60% { transform: scale(1.18) rotate(6deg); } 100% { transform: scale(1); } }
 .pulse { animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
@@ -199,7 +203,10 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
 #jar.wiggle { animation: jarwiggle .5s ease; }
 @keyframes jarwiggle { 25% { transform: translateX(-50%) rotate(-7deg) scale(1.06); } 75% { transform: translateX(-50%) rotate(6deg) scale(1.06); } }
 #jar.full { animation: jarglow .8s ease-in-out infinite alternate; }
-@keyframes jarglow { from { filter: drop-shadow(0 0 0 #ffd23f); transform: translateX(-50%) scale(1); } to { filter: drop-shadow(0 0 2.5vmin #ffd23f); transform: translateX(-50%) scale(1.08); } }
+#jar::before { content: ''; position: absolute; inset: -18%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,63,.75), rgba(255,214,63,0)); opacity: 0; z-index: -1; pointer-events: none; }
+#jar.full::before { animation: glowpulse .8s ease-in-out infinite alternate; }
+@keyframes jarglow { from { transform: translateX(-50%) scale(1); } to { transform: translateX(-50%) scale(1.08); } }
+@keyframes glowpulse { from { opacity: .2; } to { opacity: 1; } }
 #jar.pop { animation: jarpop .9s ease-out; }
 @keyframes jarpop { 0% { transform: translateX(-50%) translateY(-30vmin); } 60% { transform: translateX(-50%) translateY(2vmin); } 100% { transform: translateX(-50%) translateY(0); } }
 .cbtn {
@@ -350,7 +357,7 @@ body[data-scene="goodnight"] .win-night, body[data-scene="night"] .win-night { o
 .bed.side-left { left: 29.5%; } .bed.side-right { left: 70.5%; }
 .cushion { left: 50%; bottom: calc(12% - 5vmin); width: 44vmin; height: 10vmin; transform: translateX(-50%); }
 
-@keyframes hintpulse { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.1); box-shadow: 0 0 0 .9vmin #ffe57f; } }
+@keyframes hintpulse { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.12); } }
 body[data-scene="game"] #gamebar, body[data-scene="climb"] #gamebar { display: flex; }
 body[data-scene="climb"] #dots { display: none; }
 
@@ -582,8 +589,8 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 /* things in a room you can tap (the mirror, the garden...) */
 #world > .thing { pointer-events: auto; position: absolute; z-index: 5; display: none; transform: translateX(-50%); }
 #world > .thing.on { display: block; }
-.thing.new { animation: thingnew 1.3s ease-in-out infinite; }
-@keyframes thingnew { 0%, 100% { filter: drop-shadow(0 0 0 #ffe57f); } 50% { filter: drop-shadow(0 0 2vmin #ffd23f); } }
+.thing::before { content: ''; position: absolute; inset: -12%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255,214,63,.65), rgba(255,214,63,0)); opacity: 0; z-index: -1; pointer-events: none; }
+.thing.new::before { animation: glowpulse 1.3s ease-in-out infinite alternate; }
 
 /* the bathroom */
 .thing-mirror .frame { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -793,11 +800,13 @@ body.on-trip #world > .thing, body.on-trip #world > .visitor { display: none; }
 
 /* ---------- weather ---------- */
 .rainfall, .snowfall, .snowground { position: absolute; inset: 0; display: none; pointer-events: none; }
-body.w-rain .rainfall { display: block; background-image: linear-gradient(170deg, transparent 0 46%, rgba(120,160,220,.55) 47% 49%, transparent 50%); background-size: 3.4vmin 9vmin; animation: rain .5s linear infinite; }
-@keyframes rain { from { background-position: 0 0; } to { background-position: -1.6vmin 9vmin; } }
+body.w-rain .rainfall { display: block; overflow: hidden; }
+.rainfall::before { content: ''; position: absolute; left: -6vmin; right: -6vmin; top: -9vmin; bottom: 0; background-image: linear-gradient(170deg, transparent 0 46%, rgba(120,160,220,.55) 47% 49%, transparent 50%); background-size: 3.4vmin 9vmin; animation: rain .5s linear infinite; }
+@keyframes rain { from { transform: translate(0, 0); } to { transform: translate(-3.4vmin, 9vmin); } }
 body.w-rain .room-backyard .sky, body.w-rain .room-frontyard .sky { filter: saturate(.6) brightness(.92); }
-body.w-snow .snowfall { display: block; background-image: radial-gradient(circle, #fff 22%, transparent 26%), radial-gradient(circle, #fff 16%, transparent 20%); background-size: 8vmin 8vmin, 5vmin 5vmin; background-position: 0 0, 2vmin 3vmin; animation: snow 6s linear infinite; }
-@keyframes snow { from { background-position: 0 0, 2vmin 3vmin; } to { background-position: 4vmin 40vmin, -2vmin 28vmin; } }
+body.w-snow .snowfall { display: block; overflow: hidden; }
+.snowfall::before { content: ''; position: absolute; left: 0; right: 0; top: -40vmin; bottom: 0; background-image: radial-gradient(circle, #fff 22%, transparent 26%), radial-gradient(circle, #fff 16%, transparent 20%); background-size: 8vmin 8vmin, 5vmin 5vmin; background-position: 0 0, 2vmin 3vmin; animation: snow 6s linear infinite; }
+@keyframes snow { from { transform: translateY(0); } to { transform: translateY(40vmin); } }
 body.w-snow .snowground { display: block; top: auto; height: 30%; background: linear-gradient(#fff, #eef6ff); border-radius: 50% 50% 0 0 / 8vmin 8vmin 0 0; }
 .thing.puddle svg { width: 100%; height: 100%; }
 .thing-snowman svg { width: 100%; height: 100%; overflow: visible; }
@@ -832,3 +841,9 @@ body:not([data-scene="play"]) .request { display: none; }   /* waits for the act
 .confetti.round { width: 1.5vmin; height: 1.5vmin; border-radius: 50%; }
 .thing.puddle.new { animation: none; }
 .visitor .vname { border: .5vmin solid #e6dccb; font-size: 3.4vmin; }
+
+/* =====================================================================
+   SPEED: nothing moves where nobody can see it
+   ===================================================================== */
+.room:not(.on), .room:not(.on) *, .room:not(.on) *::before { animation-play-state: paused !important; }
+#night:not(.on) .star, .half-night:not(.on) .star { animation-play-state: paused; }

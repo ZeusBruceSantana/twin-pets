@@ -19,7 +19,8 @@ const $g = sel => W.document.querySelector(sel);
 const $$g = sel => [...W.document.querySelectorAll(sel)];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const clone = o => JSON.parse(JSON.stringify(o));
-const saved = () => JSON.parse(localStorage.getItem(TEST_KEY) || 'null');
+// what's saved on the device right now (the game writes changes a moment later, so write them first)
+const saved = () => { try { if (W && W.location.href.includes('test')) G('flushSave()'); } catch (e) { /* not open */ } return JSON.parse(localStorage.getItem(TEST_KEY) || 'null'); };
 
 async function until(check, ms = 8000, what = 'something to happen') {
   const t0 = Date.now();
@@ -41,7 +42,7 @@ async function openGame(saveData) {
   W = frame.contentWindow;
   await until(() => ['title', 'pick'].includes(G('scene')), 10000, 'the game to open');
 }
-async function reopenGame() { await openGame(localStorage.getItem(TEST_KEY)); }
+async function reopenGame() { saved(); await openGame(localStorage.getItem(TEST_KEY)); }
 async function startPlaying() {
   tap($g('#title'));
   await until(() => G('scene') === 'play', 6000, 'the game to start');

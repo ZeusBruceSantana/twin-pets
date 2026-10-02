@@ -77,7 +77,17 @@ function loadSave() {
 }
 let S = loadSave();
 let erasing = false;   // true while "Start over" is wiping everything
+// Saving a big game (lots of pictures) takes a moment, so a quick burst of changes is
+// written once, a quarter of a second later. Closing or hiding the game saves right away.
+let saveTimer = 0;
 function save() {
+  if (erasing || saveTimer) return;
+  saveTimer = setTimeout(saveNow, 250);
+}
+const flushSave = () => { if (saveTimer) saveNow(); };   // write any change that is waiting
+function saveNow() {
+  clearTimeout(saveTimer);
+  saveTimer = 0;
   if (erasing) return;
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {
     // The tablet's space for the game is full: let go of the oldest camera pictures

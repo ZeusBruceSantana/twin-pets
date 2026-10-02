@@ -13,6 +13,7 @@ let lastBackupText = null;   // (for the tests: what the last backup file said)
 /* ---------- making a backup ---------- */
 async function makeBackup(btn) {
   const when = Date.now();
+  saveNow();
   const text = JSON.stringify({ app: BACKUP_APP, backupVersion: 1, savedAt: new Date(when).toISOString(), save: Object.assign({}, S, { backupAt: when }) });
   const name = `twin-pets-backup-${todayKey()}.json`;
   let done = false;
@@ -62,6 +63,7 @@ function restoreFromFile(file) {
 }
 function applyRestore() {
   if (!pendingRestore || pendingRestore.bad) return;
+  saveNow();
   try {
     const now = localStorage.getItem(SAVE_KEY);
     if (now) localStorage.setItem(BEFORE_RESTORE_KEY, now);     // so a restore can be undone

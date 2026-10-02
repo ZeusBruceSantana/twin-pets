@@ -26,7 +26,7 @@ test('Progress is still there after closing and opening the game', async () => {
   await startPlaying();
   G(`S.jar = 4; S.together = 31; S.pets.left.tricks.wave = 3; S.pets.right.wear.head = 'crown';
      S.letters.push({ text: 'Hi girls', at: 1, read: false }); S.schoolWords = ['dog', 'red'];
-     S.decor.kitchen = { rug: 'rugStar' }; logDay('chase'); save();`);
+     S.decor.kitchen = { rug: 'rugStar' }; logDay('chase'); saveNow();`);
   const before = clone(G('S'));
   await reopenGame();
   const after = G('S');
@@ -421,7 +421,7 @@ test('When the device runs out of room, old camera pictures make room and everyt
   G(`S.photos = [1, 2, 3, 4, 5].map(i => ({ day: todayKey(), at: i, room: 'playroom', left: { html: '${pic}' }, right: { html: '' } }));
      window.__realSet = Storage.prototype.setItem;
      Storage.prototype.setItem = function (k, v) { if (String(v).length > ${limit}) throw new DOMException('full', 'QuotaExceededError'); return window.__realSet.call(this, k, v); };
-     S.jar = 5; save();
+     S.jar = 5; saveNow();
      Storage.prototype.setItem = window.__realSet;`);
   const s = saved();
   expect(s.photos.length > 0 && s.photos.length < 5, 'some of the oldest pictures were let go');

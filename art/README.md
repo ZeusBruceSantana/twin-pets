@@ -55,5 +55,8 @@ If a file name is misspelled, nothing breaks. The game just keeps using the
 built-in drawing, so check the spelling (capital letters matter) if your
 picture doesn't show up.
 
-Note: the pets' happy and sleepy faces and wagging tails only work with the
-built-in drawings. Your pictures still bounce, munch, dance and curl up.
+Note: some things only work with the built-in drawings: the happy and sleepy
+faces, wagging tails, the rounder tummy in the kitchen, and fluffy fur tufts.
+Your pictures still do the rest: they bounce, munch, dance, curl up, get
+muddy, sparkle after brushing, and wear their presents. Presents are placed for
+a pet whose head is at the top middle of the picture.

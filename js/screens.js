@@ -45,11 +45,14 @@ function columnPlan(side) {
   if (scene === 'game' && game) return { acts: [GAMES[game.kind].act], big: true };
   if (scene === 'climb' && climb) return { acts: ['climbup'], big: true, cls: climb.top[side] ? 'done' : 'invite' };
   if (scene === 'presents' && presents) return { acts: ['give'], big: true, cls: presents.given[side] ? 'done' : 'invite' };
+  if (scene === 'act' && act) return actPlan(side);
   if (sideMode[side] === 'tricks') return { acts: [...TRICKS.map(t => 'trick:' + t.key), 'back'], cards: true };
-  const p = pets[side], ps = S.pets[side];
+  if (SIDE_MODES[sideMode[side]]) return SIDE_MODES[sideMode[side]](side);
+  const p = pets[side];
   const acts = ROOMS[S.room].acts
     .filter(a => !LOCKED_BY[a] || S.unlocked[LOCKED_BY[a]])
-    .filter(a => a !== 'dress' || ps.owned.some(i => WEARABLES[i] === 'head'))
+    .filter(a => !FEATURE_OF[a] || has(FEATURE_OF[a]))
+    .filter(a => !SHOW_IF[a] || SHOW_IF[a](side))
     .map(a => (a === 'sleep' && p && p.asleep ? 'wake' : a === 'bath' ? bathAct(side) : a));
   return { acts, dim: !['play', 'title'].includes(scene) };
 }
@@ -61,6 +64,7 @@ function renderColumn(side) {
   col.classList.toggle('big', !!plan.big);
   col.classList.toggle('dim', !!plan.dim);
   col.classList.toggle('cards', !!plan.cards);
+  col.classList.toggle('many', !plan.big && !plan.cards && plan.acts.length > 4);
   for (const act of plan.acts) {
     if (act.startsWith('trick:')) {            // a trick word card: tap to hear it, and the pet tries
       const key = act.slice(6), tr = trickBy(key);
@@ -70,16 +74,18 @@ function renderColumn(side) {
       col.append(b);
       continue;
     }
-    const def = BUTTONS[act];
-    const b = el('div', 'btn btn-' + act, `<span class="ico">${ICONS[def.icon]}</span><span class="lbl">${def.label}</span>`);
+    const def = (plan.defs && plan.defs[act]) || BUTTONS[act];
+    const ico = def.svg || ICONS[def.icon] || '';
+    const b = el('div', 'btn btn-' + act, `<span class="ico">${ico}</span><span class="lbl">${def.label}</span>`);
     b.dataset.act = act;
-    if (plan.cls) b.classList.add(plan.cls);
+    const cls = (plan.clsOf && plan.clsOf[act]) || plan.cls;
+    if (cls) b.classList.add(cls);
     if ((newUntil[act] || 0) > Date.now() && newShown[side][act] !== newUntil[act]) {   // pop in once, not every redraw
       b.classList.add('new');
       newShown[side][act] = newUntil[act];
     }
     if ((inviteUntil[side][act] || 0) > Date.now()) b.classList.add('invite');
-    if (act === 'book') onRelease(b, () => press(side, act, b));
+    if (act === 'book' || def.speak) onRelease(b, () => press(side, act, b));
     else onPress(b, () => press(side, act, b));
     col.append(b);
   }
@@ -89,7 +95,9 @@ function press(side, act, btn) {
   if (scene === 'game') { gamePress(side, btn); return; }
   if (scene === 'climb') { climbPress(side); return; }
   if (scene === 'presents') { givePresent(side, btn); return; }
+  if (scene === 'act') { actPress(side, act, btn); return; }
   if (!canAct()) return;
+  if (ACT_HANDLERS[act]) { ACT_HANDLERS[act](side, btn); return; }
   if (FOOD_ACTS.includes(act)) feed(side, act);
   else if (act === 'treat') giveTreat(side, btn);
   else if (act === 'play') playBall(side);
@@ -108,6 +116,10 @@ function press(side, act, btn) {
   else if (act === 'book') openBook();
 }
 const FOOD_ACTS = ['apple', 'fish', 'bone'];
+const SIDE_MODES = {};   // a girl's edge can switch to its own set of buttons (like Tricks)
+const SHOW_IF = {        // buttons that only show sometimes
+  dress: side => S.pets[side].owned.some(i => WEARABLES[i] === 'head') && !has('closet'),
+};
 /* Gently glow a button on the sister's side ("come join in!"). */
 function invite(side, act, ms) {
   inviteUntil[side][act] = Date.now() + ms;
@@ -131,6 +143,10 @@ function idleTick() {
   // nobody has tapped for a while: go back to normal, gently
   if (scene === 'game' && game && game.ready && !game.busy && now() - game.lastPress > 25000) finishGame(false);
   if (scene === 'climb' && climb && !climb.busy && now() - climb.lastPress > 30000) endClimb();
+  if (scene === 'act' && act && act.ready && !act.busy && now() - act.lastPress > 40000) endActivity(false);
+  if (scene === 'map' && now() - mapTouched > 25000) closeMap();
+  SIDES.forEach(side => { if (panels[side] && now() - panels[side].lastTouch > 40000) closePanel(side); });
+  introTick();
   SIDES.forEach(side => {
     if (sideMode[side] === 'tricks' && now() - trickTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
     if (pets[side].root.classList.contains('fluffy') !== isFluffy(side)) renderFluffy(side);
@@ -247,6 +263,7 @@ function startPlaying() {
     Sound.play('morning');
     SIDES.forEach(s => { mood(pets[s], 'happy', 1600); floatHearts(pets[s], 2); });
   }
+  startSessionIntros();
   setTimeout(() => {
     if (!S.seen.playroom) firstVisitHint('playroom');
     checkUnlocks();
@@ -346,8 +363,9 @@ function parentAction(what) {
   } else if (what === 'unlock') {
     S.together = Math.max(S.together, ...Object.values(SETTINGS.unlockAt));
     Object.keys(SETTINGS.unlockAt).forEach(k => { S.unlocked[k] = true; });
+    NEW_THINGS.forEach(n => { if (!has(n.key)) introduce(n, true); });
     queue.length = 0;
-    renderJar(); renderColumns(); renderDoors();
+    renderJar(); renderColumns(); renderCenter();
   } else if (what === 'fs') {
     tryFullscreen();
   } else if (what === 'reset') {

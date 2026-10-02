@@ -10,9 +10,12 @@ $('#home-btn').innerHTML = ICONS.home;
 onPress($('#home-btn'), () => {
   if (game && game.ready) finishGame(false);
   else if (climb && !climb.busy) endClimb();
+  else if (act && act.ready) endActivity(false);
 });
 renderJar();
 onTap($('#book'), e => { if (e.target.id === 'book') closeBook(); });
+$('#map .map-x').innerHTML = ICONS.close;
+onPress($('#map .map-x'), closeMap);
 Speech.init();
 makeHomeScreenIcon();
 onRelease($('#title'), startPlaying);

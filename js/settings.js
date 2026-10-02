@@ -28,6 +28,8 @@ const SETTINGS = {
   fluffyMinutes: 15,
   // How many tries it takes a pet to learn a trick.
   triesToLearn: 3,
+  // How many new things introduce themselves each time the game is opened.
+  newThingsPerSession: 3,
 };
 
 /* =====================================================================

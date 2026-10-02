@@ -56,11 +56,10 @@ function showRoom(room) {
   document.body.dataset.room = room;
   document.querySelectorAll('.room').forEach(r => r.classList.toggle('on', r.dataset.room === room));
   SIDES.forEach(s => tummyLook(s));
-  renderDoors();
+  renderCenter();
 }
 
-/* ---------- doors ---------- */
-const votes = { left: null, right: null };
+/* ---------- pet faces (for the map) ---------- */
 function faceDrawing(side) {
   const svg = document.getElementById(PET_ART[side].drawing).content.querySelector('svg').cloneNode(true);
   svg.setAttribute('viewBox', PET_ART[side].face);
@@ -77,50 +76,6 @@ function fillFace(box, side) {
   } else {
     box.append(faceDrawing(side));
   }
-}
-function renderDoors() {
-  const box = $('#doors');
-  box.innerHTML = '';
-  const jarFull = S.unlocked.jar && S.jar >= SETTINGS.jarSize;
-  ROOM_ORDER.forEach(room => {
-    const d = el('div', 'door' + (room === S.room ? ' here' : ''),
-      `<div class="door-ico">${ICONS[ROOMS[room].icon]}</div>
-       <div class="door-half l"><div class="door-face"></div></div><div class="door-half r"><div class="door-face"></div></div>`);
-    d.dataset.room = room;
-    d.style.setProperty('--door', ROOMS[room].door);
-    if (room !== S.room) {
-      const badge = room === 'playroom' && jarFull ? ICONS.gift : S.doorNew[room] ? ICONS.star : '';
-      if (badge) d.append(el('div', 'badge', badge));
-    }
-    fillFace(d.querySelector('.l .door-face'), 'left');
-    fillFace(d.querySelector('.r .door-face'), 'right');
-    onPress(d.querySelector('.door-half.l'), () => tapDoor('left', room, d));
-    onPress(d.querySelector('.door-half.r'), () => tapDoor('right', room, d));
-    box.append(d);
-  });
-  showVotes();
-}
-function tapDoor(side, room, door) {
-  if (scene !== 'play') return;
-  if (room === S.room) { nudge(door); return; }
-  const t = now(), o = votes[other(side)];
-  votes[side] = { room, t };
-  if (o && o.room === room && t - o.t < SETTINGS.doorWindowMs) {
-    votes.left = votes.right = null;
-    goToRoom(room);
-    return;
-  }
-  Sound.play('knock');
-  showVotes();
-  setTimeout(showVotes, SETTINGS.doorWindowMs + 60);
-}
-/* The door glows; the sister's pet face blinks to invite her. */
-function showVotes() {
-  const t = now();
-  document.querySelectorAll('#doors .door').forEach(d => SIDES.forEach(s => {
-    const v = votes[s];
-    d.classList.toggle('vote-' + s, !!(v && v.room === d.dataset.room && t - v.t < SETTINGS.doorWindowMs));
-  }));
 }
 async function fadePets(show) {
   await Promise.all(SIDES.map(s => {
@@ -153,27 +108,31 @@ async function goToRoom(room) {
   else if (S.doorNew[room]) {
     delete S.doorNew[room]; save();
     ROOMS[room].acts.forEach(a => { if (LOCKED_BY[a]) newUntil[a] = Date.now() + 6000; });
-    renderColumns(); renderDoors();
+    renderColumns(); renderCenter();
   }
+  glowFreshActs(room);
+}
+/* The little banner in the middle: a picture and a word you can tap to hear. */
+function showHint(icon, word, isNew) {
+  const h = $('#hint');
+  h.innerHTML = (isNew ? `<div class="hint-new">${ICONS.star}</div>` : '') + `<div class="hint-ico">${ICONS[icon] || ''}</div><div class="hint-word"></div>`;
+  sayableInto(h.querySelector('.hint-word'), word);
+  h.classList.add('show');
+  clearTimeout(h.timer);
+  h.timer = setTimeout(() => h.classList.remove('show'), 4500);
+  Sound.play('unlock');
 }
 /* A gentle hint the first time a room is visited: its name and its buttons glow. */
 function firstVisitHint(room) {
   S.seen[room] = true;
   delete S.doorNew[room];
   save();
-  const h = $('#hint');
-  h.innerHTML = `<div class="hint-ico">${ICONS[ROOMS[room].icon]}</div><div class="hint-word"></div>`;
-  sayableInto(h.querySelector('.hint-word'), ROOMS[room].word);
-  h.classList.add('show');
-  clearTimeout(h.timer);
-  h.timer = setTimeout(() => h.classList.remove('show'), 4000);
-  Sound.play('unlock');
+  showHint(ROOMS[room].icon, ROOMS[room].word);
   ROOMS[room].acts.forEach(a => { newUntil[a] = Date.now() + 6000; });
   renderColumns();
-  if (room === 'playroom') {
-    const d = $('#doors');
-    d.classList.add('hint');
-    setTimeout(() => d.classList.remove('hint'), 4600);
+  if (room === 'playroom') {        // the first time: show where the house map is
+    const m = $('#midbtns .mapbtn');
+    if (m) { m.classList.add('hint'); setTimeout(() => m.classList.remove('hint'), 4600); }
   }
 }
 /* Leaving a room (or changing colors) tidies away anything half-done. */
@@ -181,6 +140,7 @@ const sideMode = { left: null, right: null };
 const trickTouched = { left: 0, right: 0 };
 function closeSideModes() {
   SIDES.forEach(s => { sideMode[s] = null; endBath(s); });
+  closeAllPanels();
 }
 
 /* =====================================================================
@@ -716,7 +676,7 @@ async function presentsParty() {
   await Promise.all([movePet('left', HOME.left.x, HOME.left.y, 900), movePet('right', HOME.right.x, HOME.right.y, 900)]);
   presents = null;
   save();
-  renderDoors();
+  renderCenter();
   endScene();
 }
 /* Dress: try on the different hats, bows and crowns the pet was given. */

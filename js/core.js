@@ -31,6 +31,9 @@ function freshSave() {
     room: 'playroom',
     seen: {},               // rooms already visited (for the first-visit hint)
     doorNew: {},            // rooms with something new inside
+    features: {},           // new things that have introduced themselves
+    intro: { session: 0, given: 0 },
+    freshActs: [],          // new buttons waiting in another room
   };
 }
 function merge(base, extra) {
@@ -926,7 +929,7 @@ async function reveal(key) {
   if (UNLOCK_BUTTON[key]) {
     const act = UNLOCK_BUTTON[key], room = roomOfAct(act);
     if (room === S.room) { newUntil[act] = Date.now() + 6000; renderColumns(); }
-    else { S.doorNew[room] = true; save(); renderDoors(); }
+    else { S.doorNew[room] = true; save(); renderCenter(); }
   } else if (key === 'jar') {
     renderJar();
     const jar = $('#jar');
@@ -994,7 +997,7 @@ async function addHeart(from = midPets()) {
   const jar = $('#jar');
   jar.classList.remove('wiggle'); void jar.offsetWidth;
   if (S.jar < SETTINGS.jarSize) jar.classList.add('wiggle');
-  else renderDoors();                     // full: the playroom door shows a present
+  else renderCenter();                     // full: the playroom door shows a present
   Sound.play('heart');
   sparkles(to.x, to.y, 6);
 }

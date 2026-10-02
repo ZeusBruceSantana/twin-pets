@@ -45,12 +45,15 @@ function roomMarkup(room) {
     <div class="deco cushion">${ICONS.cushion}</div>
     ${both(s => `<div class="deco bed side-${s}">${ICONS.bed}</div>`)}`;
 }
+const ROOM_EXTRAS = [];   // other parts of the game add things to each room once it's built: (roomEl, room)
+const ROOM_HOOKS = [];    // called every time the girls arrive in a room: (room)
 function buildRooms() {
   const box = $('#rooms');
   ROOM_ORDER.forEach(r => {
     const d = el('div', 'room room-' + r, roomMarkup(r));
     d.dataset.room = r;
     box.append(d);
+    ROOM_EXTRAS.forEach(f => f(d, r));
   });
 }
 function showRoom(room) {
@@ -60,6 +63,7 @@ function showRoom(room) {
   SIDES.forEach(s => tummyLook(s));
   renderCenter();
   renderThings();
+  ROOM_HOOKS.forEach(f => f(room));
 }
 
 /* ---------- pet faces (for the map) ---------- */
@@ -578,7 +582,7 @@ function itemColor(side, item) { return colorById(S.pets[side].gifted[item]) || 
 function renderWear(side) {
   const box = pets[side].art, wear = S.pets[side].wear;
   box.querySelectorAll('.wear').forEach(w => w.remove());
-  ['neck', 'face', 'head'].forEach(slot => {
+  ['back', 'neck', 'face', 'head'].forEach(slot => {
     const item = wear[slot];
     if (!item || !ITEM_ART[item]) return;
     const [x, y, w, h] = WEAR_SPOT[item];
@@ -592,8 +596,9 @@ function renderToys(side) {
   box.innerHTML = '';
   S.pets[side].owned.filter(i => TOYS.includes(i)).slice(-4).forEach(t => box.append(el('div', '', ITEM_ART[t](itemColor(side, t)))));
 }
+const NOT_PRESENTS = [];   // things to wear that never come as presents (like Halloween costumes)
 function choosePresent(to) {
-  const owned = S.pets[to].owned, all = [...Object.keys(WEARABLES), ...TOYS];
+  const owned = S.pets[to].owned, all = [...Object.keys(WEARABLES).filter(i => !NOT_PRESENTS.includes(i)), ...TOYS];
   let choices = all.filter(i => !owned.includes(i));
   if (!owned.some(i => WEARABLES[i])) choices = choices.filter(i => WEARABLES[i]);   // the first present is something to wear
   return pick(choices.length ? choices : all);
@@ -683,7 +688,9 @@ async function presentsParty() {
   save();
   renderCenter();
   endScene();
+  PARTY_HOOKS.forEach(f => f());
 }
+const PARTY_HOOKS = [];   // after the presents party
 /* Dress: try on the different hats, bows and crowns the pet was given. */
 function cycleDress(side) {
   const ps = S.pets[side], heads = [...new Set(ps.owned.filter(i => WEARABLES[i] === 'head'))];

@@ -10,14 +10,17 @@
 const NEW_THINGS = [];   // { key, room, acts: [buttons it brings], icon, word }
 const has = f => !!(S.features && S.features[f]);
 let introAt = 0;
+const SESSION_HOOKS = [];   // other parts of the game start their own clocks when play begins
 function startSessionIntros() {
   S.intro.session = (S.intro.session || 0) + 1;
   S.intro.given = 0;
   save();
   introAt = now() + 30000;          // let them settle in first
+  SESSION_HOOKS.forEach(f => f());
 }
 function nextNewThing() {
-  return NEW_THINGS.filter(n => !S.features[n.key]).sort((a, b) => a.order - b.order)[0];
+  return NEW_THINGS.filter(n => !S.features[n.key] && (!n.when || n.when()) && (!n.requires || has(n.requires)))
+    .sort((a, b) => a.order - b.order)[0];
 }
 function introTick() {
   if (scene !== 'play' || now() < introAt || $('#hint').classList.contains('show')) return;

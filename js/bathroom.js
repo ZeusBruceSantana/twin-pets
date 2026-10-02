@@ -349,7 +349,6 @@ Object.assign(BOOK_LINES, {
 /* ---------- bathroom sounds ---------- */
 Sound.add('toot', s => { s.tone(s.NOTE(55), 0, 0.3, { type: 'triangle', vol: 0.09 }); s.tone(s.NOTE(55), 0.36, 0.5, { type: 'triangle', vol: 0.09 }); });
 Sound.add('squirt', s => { s.noise(0, 0.35, { filter: 'highpass', freq: 2500, to: 1200, vol: 0.04 }); });
-Sound.add('giggle', s => { const k = s.k3(); [79, 76, 81, 77, 83].forEach((m, i) => s.tone(s.NOTE(m + k), i * 0.08, 0.1, { type: 'triangle', vol: 0.06 })); });
 Sound.add('fizz', s => { s.noise(0, 1.1, { filter: 'highpass', freq: 4000, vol: 0.025, attack: 0.05 }); for (let i = 0; i < 6; i++) s.tone(s.NOTE(84 + i * 2), 0.1 + i * 0.12, 0.08, { vol: 0.03 }); });
 Sound.add('teeth', s => { for (let i = 0; i < 8; i++) s.noise(i * 0.16, 0.12, { freq: 3000, to: 2200, q: 2, vol: 0.03 }); });
 Sound.add('ding', s => { s.tone(s.NOTE(96), 0, 0.8, { vol: 0.07, echo: 1 }); s.tone(s.NOTE(103), 0.08, 0.9, { vol: 0.05, echo: 1 }); });
@@ -361,4 +360,3 @@ Sound.add('spray', s => { s.noise(0, 0.3, { filter: 'highpass', freq: 5000, vol:
 Sound.add('squish', s => { s.tone(s.NOTE(67), 0, 0.4, { to: s.NOTE(55), type: 'triangle', vol: 0.08 }); });
 Sound.add('stretch', s => { s.tone(s.NOTE(60), 0, 0.4, { to: s.NOTE(79), type: 'triangle', vol: 0.08 }); });
 Sound.add('wobble', s => { for (let i = 0; i < 4; i++) s.tone(s.NOTE(i % 2 ? 72 : 67), i * 0.18, 0.16, { type: 'triangle', vol: 0.07 }); });
-Sound.add('boing', s => { s.tone(s.NOTE(55), 0, 0.5, { to: s.NOTE(74), glide: 0.15, vol: 0.09 }); });

@@ -45,6 +45,7 @@ function freshSave() {
     photos: [],             // photo booth pictures for the memory book
     kindPending: 0,         // kindness hearts a grown-up added, waiting to drop in the jar
     paintings: [],          // paintings from the art easel, hanging on the walls: { img, room }
+    decor: {},              // decorations in each room: { playroom: { wp, rug, items: [] } }
   };
 }
 function merge(base, extra) {

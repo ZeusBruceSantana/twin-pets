@@ -333,5 +333,4 @@ async function finishShow(a) {
   await wait(900);
   endActivity(true, 'puppets');
 }
-Sound.add('clap', s => { for (let i = 0; i < 10; i++) s.noise(i * 0.07 + Math.random() * 0.03, 0.05, { filter: 'highpass', freq: 1800, vol: 0.05 }); });
 Sound.add('tada', s => { [[67, 0], [72, 0.12], [76, 0.24], [79, 0.36]].forEach(([m, t]) => s.tone(s.NOTE(m), t, 0.5, { type: 'triangle', vol: 0.08, echo: 1 })); s.tone(s.NOTE(84), 0.5, 0.9, { type: 'triangle', vol: 0.08, echo: 1 }); });

@@ -738,3 +738,100 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .art .pprop { position: absolute; pointer-events: none; }
 .art .pprop.behind { z-index: -1; }
 .art .pprop svg { width: 100%; height: 100%; overflow: visible; }
+
+/* ---------- trips ---------- */
+.thing-car .carbox { width: 100%; height: 100%; }
+.thing-car svg { width: 100%; height: 100%; overflow: visible; }
+.prop.drivecar > div { animation: bob .3s ease-in-out infinite; }
+#trips { z-index: 62; background: rgba(46, 64, 120, .5); align-items: center; justify-content: center; }
+#trips .trip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vmin; width: min(74vw, 110vmin); height: 46vmin; }
+#trips .map-x { position: absolute; right: calc(var(--col) + 1vmin); top: calc(1vmin + var(--safe-top)); width: 10vmin; height: 10vmin; padding: 2.4vmin; border-radius: 50%; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }
+#trips .map-x svg { width: 100%; height: 100%; }
+.trip { pointer-events: none; overflow: hidden; }
+.trip > * { position: absolute; }
+.trip .tsky { inset: 0; }
+.trip .tsky.beach { background: linear-gradient(#9fdcff, #e6f7ff 55%); }
+.trip .tsky.park { background: linear-gradient(#bfe6ff, #f0fbff 60%); }
+.trip .sun { right: 24%; top: calc(14vmin + var(--safe-top)); width: 14vmin; height: 14vmin; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 6vmin #ffe57f; }
+.trip .sea { left: 0; width: 100%; bottom: 26%; height: 22%; }
+.trip .sea .wave { animation: wave 3s ease-in-out infinite alternate; }
+@keyframes wave { from { transform: translateX(-2%); } to { transform: translateX(2%); } }
+.trip .sand { left: 0; right: 0; bottom: 0; height: 30%; background: radial-gradient(circle, rgba(201,154,107,.35) 8%, transparent 10%) 0 0 / 6vmin 6vmin, #ffe2a8; }
+.trip .umbrella { left: 23%; bottom: 24%; width: 18vmin; height: 18vmin; }
+.trip .umbrella svg { width: 100%; height: 100%; }
+.trip .grass { left: 0; right: 0; bottom: 0; height: 32%; background: #a6dd86; border-top: 1.2vmin solid #8fd16a; }
+.trip .ttree { bottom: 30%; width: 22vmin; height: 34vmin; background: radial-gradient(circle at 50% 35%, #6cc551 0 42%, transparent 43%), linear-gradient(#b07f4f, #b07f4f) 50% 100% / 3.6vmin 50% no-repeat; }
+.trip .ttree.l { left: 18%; } .trip .ttree.r { right: 18%; }
+.trip .pond { left: 50%; bottom: 3%; width: 34vmin; height: 10vmin; transform: translateX(-50%); border-radius: 50%; background: #7fc4ff; box-shadow: inset 0 .8vmin 0 rgba(255,255,255,.5); }
+.trip .shopwall { inset: 0; background: repeating-linear-gradient(90deg, #fff4f8 0 6vmin, #ffe3ee 6vmin 12vmin); }
+.trip .awning { left: 0; right: 0; top: 0; height: 9vmin; background: repeating-linear-gradient(90deg, #ff8fb8 0 8vmin, #fff 8vmin 16vmin); border-radius: 0 0 3vmin 3vmin; }
+.trip .counter { left: 22%; right: 22%; bottom: 28%; height: 13vmin; background: #fff; border-radius: 2vmin 2vmin 0 0; border: .8vmin solid #f08bb0; }
+.trip .tubs { position: absolute; left: 4%; right: 4%; top: -4vmin; display: flex; justify-content: space-around; }
+.trip .tubs i { width: 9vmin; height: 7vmin; border-radius: 4vmin 4vmin 1vmin 1vmin; border: .5vmin solid #fff; box-shadow: 0 .4vmin 0 rgba(0,0,0,.1); }
+.trip .shopfloor { left: 0; right: 0; bottom: 0; height: 28%; background: repeating-conic-gradient(#fff 0 25%, #ffd9e8 0 50%) 0 0 / 9vmin 9vmin; }
+.sandcastle svg { width: 100%; height: 100%; overflow: visible; fill: #f4c77e; stroke: #c99a5a; stroke-width: 2.5; }
+.sandcastle .pc { transform-box: fill-box; }
+.cone svg { width: 100%; height: 100%; overflow: visible; }
+.scoopball { position: absolute; left: 50%; width: 100%; aspect-ratio: 1; border-radius: 50%; transform: translateX(-50%); border: .4vmin solid rgba(255,255,255,.9); box-shadow: inset -.6vmin -.6vmin 0 rgba(0,0,0,.08); }
+.scoopball.sprinkled { background-image: radial-gradient(circle, #ff7a7a 12%, transparent 14%), radial-gradient(circle, #5aa9ff 12%, transparent 14%), radial-gradient(circle, #ffd23f 12%, transparent 14%) !important; background-size: 2vmin 2vmin, 2.6vmin 2.6vmin, 2.2vmin 2.2vmin !important; background-position: 0 0, .8vmin 1vmin, 1.4vmin .3vmin !important; }
+
+/* ---------- visitors, real stuffies, peekaboo ---------- */
+#world > .visitor { pointer-events: none; position: absolute; z-index: 9; transform: translateX(-50%); }
+.visitor .vbody { width: 100%; height: 100%; pointer-events: auto; transform-origin: 50% 100%; }
+.visitor .vbody svg { width: 100%; height: 100%; overflow: visible; }
+.visitor .vname { position: absolute; left: 50%; bottom: -4.4vmin; transform: translateX(-50%); padding: .3vmin 1.6vmin; border-radius: 3vmin; background: #fff; font: 900 3vmin/1.2 var(--font); white-space: nowrap; pointer-events: auto; }
+.request { position: absolute; top: calc(19vmin + var(--safe-top)); z-index: 46; width: 40vmin; padding: 1.6vmin 2vmin; border-radius: 4vmin; background: #fff; border: .9vmin solid var(--c); box-shadow: 0 1.4vmin 3vmin rgba(0,0,0,.15); display: flex; align-items: center; gap: 1.4vmin; transform: translateX(-50%); }
+.request.side-left { left: 30%; --c: var(--L); } .request.side-right { left: 70%; --c: var(--R); }
+.request .rpic { flex: none; width: 8vmin; height: 8vmin; color: #ff6f91; } .request .rpic svg { width: 100%; height: 100%; }
+.request .rtext { flex: 1; font: 900 3.4vmin/1.2 var(--font); text-align: center; color: var(--ink); }
+.request .rtext .word { margin: 0 .2vmin; }
+.request .rdone { flex: none; width: 11vmin; height: 11vmin; padding: 2.2vmin; border-radius: 50%; background: #ffe3ec; color: #ff6f91; box-shadow: 0 .9vmin 0 #f7b8cb; animation: pulse 1.2s ease-in-out infinite; }
+.request .rdone svg { width: 100%; height: 100%; }
+.request .rdone.down { transform: translateY(.6vmin); box-shadow: 0 .3vmin 0 #f7b8cb; }
+.peeker { position: absolute; z-index: 64; width: 26vmin; height: 26vmin; pointer-events: none; }
+.peeker svg { width: 100%; height: 100%; overflow: visible; }
+.peeker.from-bottom { left: 50%; bottom: 0; }
+.peeker.from-left { left: 0; bottom: 30%; }
+.peeker.from-right { right: 0; bottom: 30%; }
+.cbtn.small.peekaboo { padding: 1.4vmin; }
+
+/* ---------- decorating ---------- */
+.room .decor.drug { left: 50%; bottom: 1.5%; width: 66vmin; height: 16vmin; transform: translateX(-50%); }
+.room.has-rug .rug { display: none; }
+.room .decor.ditem { bottom: 25%; width: 12vmin; height: 14.4vmin; transform: translateX(-50%); }
+.room.wp-wpStars .wall { background: radial-gradient(circle, #ffe57f 9%, transparent 11%) 0 0 / 9vmin 9vmin, radial-gradient(circle, #fff 6%, transparent 8%) 4.5vmin 4.5vmin / 9vmin 9vmin, #dfe9ff; }
+.room.wp-wpHearts .wall { background: radial-gradient(circle at 40% 40%, #ffb3c8 10%, transparent 12%) 0 0 / 8vmin 8vmin, radial-gradient(circle at 60% 40%, #ffb3c8 10%, transparent 12%) 0 0 / 8vmin 8vmin, #ffeef4; }
+.room.wp-wpStripes .wall { background: repeating-linear-gradient(90deg, #fff 0 4vmin, #d9f3e2 4vmin 8vmin); }
+
+/* ---------- the sleepover ---------- */
+.fort svg { width: 100%; height: 100%; overflow: visible; }
+.fort .fairy { animation: twinkle 1.2s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+.spotlight .beam { position: absolute; inset: -12%; border-radius: 50%; background: radial-gradient(circle, rgba(255,246,200,.95) 45%, rgba(255,246,200,.4) 62%, transparent 72%); }
+.spotlight .shadowpic { position: absolute; inset: 18%; filter: brightness(0) opacity(.6); }
+.spotlight .shadowpic svg { width: 100%; height: 100%; }
+.spotlight .shadowword { position: absolute; left: 50%; bottom: -8vmin; transform: translateX(-50%); font: 900 4.6vmin/1 var(--font); color: #fff6c8; white-space: nowrap; }
+
+/* ---------- weather ---------- */
+.rainfall, .snowfall, .snowground { position: absolute; inset: 0; display: none; pointer-events: none; }
+body.w-rain .rainfall { display: block; background-image: linear-gradient(170deg, transparent 0 46%, rgba(120,160,220,.55) 47% 49%, transparent 50%); background-size: 3.4vmin 9vmin; animation: rain .5s linear infinite; }
+@keyframes rain { from { background-position: 0 0; } to { background-position: -1.6vmin 9vmin; } }
+body.w-rain .room-backyard .sky, body.w-rain .room-frontyard .sky { filter: saturate(.6) brightness(.92); }
+body.w-snow .snowfall { display: block; background-image: radial-gradient(circle, #fff 22%, transparent 26%), radial-gradient(circle, #fff 16%, transparent 20%); background-size: 8vmin 8vmin, 5vmin 5vmin; background-position: 0 0, 2vmin 3vmin; animation: snow 6s linear infinite; }
+@keyframes snow { from { background-position: 0 0, 2vmin 3vmin; } to { background-position: 4vmin 40vmin, -2vmin 28vmin; } }
+body.w-snow .snowground { display: block; top: auto; height: 30%; background: linear-gradient(#fff, #eef6ff); border-radius: 50% 50% 0 0 / 8vmin 8vmin 0 0; }
+.thing.puddle svg { width: 100%; height: 100%; }
+.thing-snowman svg { width: 100%; height: 100%; overflow: visible; }
+.thing-snowman .sp { transition: opacity .3s ease; }
+
+/* ---------- Halloween and birthdays ---------- */
+.room .jack { display: none; bottom: 24%; width: 9vmin; height: 7.2vmin; transform: translateX(-50%); }
+body.october .room .jack { display: block; }
+.art .wear.back { z-index: -1; }
+.art .partyhat { position: absolute; left: 60%; top: -14%; width: 20%; height: 24%; transform: rotate(14deg); pointer-events: none; }
+.art .partyhat svg { width: 100%; height: 100%; }
+.bbanner { padding: 1.4vmin 4vmin; border-radius: 5vmin; background: #fff; font: 900 7vmin/1.1 var(--font); color: #ff6f91; box-shadow: 0 1vmin 0 rgba(0,0,0,.1), 0 0 0 1vmin #ffe57f; white-space: nowrap; }
+.bbanner .word { margin: 0 .4vmin; }
+.bcake svg { width: 100%; height: 100%; overflow: visible; }
+.bcake .flame { animation: flicker .3s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+@keyframes flicker { from { transform: scale(1, 1); } to { transform: scale(.85, 1.12); } }
+body:not([data-scene="play"]) .request { display: none; }   /* waits for the activity to finish */

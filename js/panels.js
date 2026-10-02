@@ -136,7 +136,8 @@ function roomThing(key, room, feature, html, css) {
 }
 function renderThings() {
   THINGS.forEach(t => {
-    const on = t.room === S.room && (!t.feature || has(t.feature));
+    const ok = typeof t.feature === 'function' ? t.feature() : (!t.feature || has(t.feature));   // a name, or a test
+    const on = t.room === S.room && ok;
     t.el.classList.toggle('on', on);
     t.el.classList.toggle('new', on && !S.seen['thing-' + t.key]);
   });

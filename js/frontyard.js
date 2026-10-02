@@ -43,7 +43,7 @@ const mailbox = roomThing('mailbox', 'frontyard', 'frontyard',
     <path d="M44 12 C 60 12, 66 24, 66 36 V58" fill="none" stroke="#3a7fd0" stroke-width="4"/>
     <g class="peek"><rect x="22" y="40" width="34" height="22" rx="3" fill="#fffdf6" stroke="#e0c08a" stroke-width="3" transform="rotate(-12 39 51)"/></g>
     <g class="flag"><path d="M78 50 V18 H96 V30 H82" fill="#ff5d5d" stroke="#d94f5c" stroke-width="3" stroke-linejoin="round"/></g></svg>`,
-  { left: '50%', bottom: '9%', width: '13vmin', height: '17vmin' });
+  { left: '50%', bottom: '23%', width: '10vmin', height: '13vmin' });
 const unread = () => S.letters.filter(l => !l.read).length;
 function renderMailbox() { mailbox.classList.toggle('has-mail', unread() > 0 || !S.letters.length); }
 renderMailbox();

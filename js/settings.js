@@ -33,6 +33,8 @@ const SETTINGS = {
 
   // each pet's favorite food (a happy dance when she gets it)
   favorites: { left: 'fish', right: 'peach' },
+  // How many minutes a watered garden plant takes to be ready to pick.
+  gardenMinutes: 20,
 };
 
 /* =====================================================================

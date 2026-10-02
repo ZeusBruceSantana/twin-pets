@@ -41,7 +41,7 @@ const inviteUntil = { left: {}, right: {} };
 const newShown = { left: {}, right: {} };
 /* Which buttons show on a girl's edge right now. Each room shows only its own. */
 function columnPlan(side) {
-  if (scene === 'night') return { acts: ['wake'], big: true };
+  if (scene === 'night') return { acts: S.bedtime ? [] : ['wake'], big: true };
   if (scene === 'game' && game) return { acts: [GAMES[game.kind].act], big: true };
   if (scene === 'climb' && climb) return { acts: ['climbup'], big: true, cls: climb.top[side] ? 'done' : 'invite' };
   if (scene === 'presents' && presents) return { acts: ['give'], big: true, cls: presents.given[side] ? 'done' : 'invite' };
@@ -147,8 +147,9 @@ function idleTick() {
   if (scene === 'map' && now() - mapTouched > 25000) closeMap();
   SIDES.forEach(side => { if (panels[side] && now() - panels[side].lastTouch > 40000) closePanel(side); });
   introTick();
+  timerTick();
   SIDES.forEach(side => {
-    if (sideMode[side] === 'tricks' && now() - trickTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
+    if (sideMode[side] && sideMode[side] !== 'bath' && now() - trickTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
     if (pets[side].root.classList.contains('fluffy') !== isFluffy(side)) renderFluffy(side);
     tummyLook(side);
   });
@@ -255,6 +256,8 @@ function startPlaying() {
   Sound.unlock();
   tryFullscreen();
   restorePets();
+  if (S.bedtime) { sleepingScene(); return; }      // the play timer ran out: still asleep
+  startTimer();
   const wasAsleep = S.pets.left.asleep || S.pets.right.asleep;
   SIDES.forEach(s => { S.pets[s].asleep = false; });
   save();
@@ -325,25 +328,48 @@ function makeHomeScreenIcon() {
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => corner.addEventListener(ev, stop));
 })();
 let resetArmed = 0;
+let parentPage = null;
+// Other parts of the game add pages here: key -> { icon, label(), show?(), render(panel) }
+const PARENT_PAGES = {};
 function openParent() {
   resetArmed = 0;
+  parentPage = null;
   $('#parent').classList.add('show');
   renderParent();
 }
 function renderParent() {
+  const panel = $('#parent .panel');
+  panel.classList.toggle('sub', !!parentPage);
+  if (parentPage && PARENT_PAGES[parentPage]) {
+    panel.innerHTML = '';
+    PARENT_PAGES[parentPage].render(panel);
+    return;
+  }
+  renderParentMain(panel);
+}
+function renderParentMain(panel) {
+  const tiles = Object.entries(PARENT_PAGES).filter(([, pg]) => !pg.show || pg.show())
+    .map(([k, pg]) => `<div class="ptile${pg.hot && pg.hot() ? ' hot' : ''}" data-page="${k}"><div class="pico">${ICONS[pg.icon] || ''}</div><div class="plbl">${pg.label()}</div></div>`).join('');
   const v = Math.round(S.sound.volume * 10);
   let bars = '';
   for (let i = 1; i <= 10; i++) bars += `<i class="${i <= v ? 'on' : ''}"></i>`;
-  $('#parent .panel').innerHTML = `
+  panel.innerHTML = `
     <h2>Grown-ups</h2>
+    <div class="ptiles">${tiles}</div>
     <div class="row"><span>Sound</span><div class="pbtn ${S.sound.muted ? '' : 'on'}" data-p="mute">${S.sound.muted ? 'Off (tap to turn on)' : 'On (tap to mute)'}</div></div>
     <div class="row"><span>Volume</span><div class="pbtn round" data-p="vol-">−</div><div class="volbar">${bars}</div><div class="pbtn round" data-p="vol+">+</div></div>
     <div class="row"><div class="pbtn" data-p="colors">Change colors</div>${canFullscreen() ? '<div class="pbtn" data-p="fs">Full screen</div>' : ''}</div>
-    <div class="row"><div class="pbtn" data-p="unlock">Show all new things now (for testing)</div></div>
-    <div class="row"><div class="pbtn danger ${resetArmed ? 'confirm' : ''}" data-p="reset">${resetArmed ? 'Tap again to erase everything' : 'Start over'}</div></div>
+    <div class="row"><div class="pbtn" data-p="unlock">Show all new things now</div><div class="pbtn danger ${resetArmed ? 'confirm' : ''}" data-p="reset">${resetArmed ? 'Tap again to erase everything' : 'Start over'}</div></div>
     <div class="row"><div class="pbtn go" data-p="done">Done</div></div>
     <div class="note">Twin Pets saves on this device only.</div>`;
-  $('#parent .panel').querySelectorAll('[data-p]').forEach(b => onRelease(b, () => parentAction(b.dataset.p)));
+  panel.querySelectorAll('[data-p]').forEach(b => onRelease(b, () => parentAction(b.dataset.p)));
+  panel.querySelectorAll('[data-page]').forEach(b => onRelease(b, () => { resetArmed = 0; parentPage = b.dataset.page; renderParent(); }));
+}
+/* A grown-up page: a title, its insides, and a Back button. */
+function parentShell(panel, title, inner) {
+  panel.innerHTML = `<h2>${title}</h2>${inner}<div class="row"><div class="pbtn" data-back>Back</div></div>`;
+  onRelease(panel.querySelector('[data-back]'), () => { parentPage = null; renderParent(); });
+  return panel;
 }
 function parentAction(what) {
   if (what !== 'reset') resetArmed = 0;
@@ -383,13 +409,20 @@ function parentAction(what) {
   save();
   renderParent();
 }
-function closeParent() { $('#parent').classList.remove('show'); }
+function closeParent() {
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  $('#parent').classList.remove('show');
+  PARENT_CLOSE_HOOKS.forEach(f => f());
+}
+const PARENT_CLOSE_HOOKS = [];
 
 /* =====================================================================
    27. NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
    ===================================================================== */
+// (typing boxes in the grown-up corner still work normally)
+const isTyping = e => e.target && e.target.closest && e.target.closest('input, textarea');
 ['contextmenu', 'selectstart', 'dragstart', 'gesturestart', 'gesturechange', 'dblclick'].forEach(ev =>
-  document.addEventListener(ev, e => e.preventDefault()));
-document.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+  document.addEventListener(ev, e => { if (!isTyping(e)) e.preventDefault(); }));
+document.addEventListener('touchmove', e => { if (!isTyping(e)) e.preventDefault(); }, { passive: false });
 ['touchend', 'pointerup', 'click'].forEach(ev => document.addEventListener(ev, () => Sound.unlock(), { passive: true }));
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });

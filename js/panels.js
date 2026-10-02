@@ -16,6 +16,7 @@ function openPanel(side, { items, onPick, keepOpen, say = true, cols = 2, head }
   const grid = p.querySelector('.spanel-grid');
   items.forEach(it => {
     const c = el('div', 'scard' + (it.cls ? ' ' + it.cls : ''), `<div class="pic">${it.icon}</div><div class="lbl">${it.word}</div>`);
+    c.dataset.key = it.key;
     if (it.badge != null) c.append(el('div', 'cnt', String(it.badge)));
     onRelease(c, () => {
       if (say) Speech.say(it.say || it.word);

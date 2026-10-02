@@ -18,7 +18,9 @@ const ROOM_ORDER = Object.keys(ROOMS);
 const LOCKED_BY = { treat: 'treat', ballgame: 'ball', seesawgame: 'seesaw', fivegame: 'highfive', book: 'book' };
 const roomOfAct = act => ROOM_ORDER.find(r => ROOMS[r].acts.includes(act));
 
+const ROOM_MARKUP = {};   // rooms added by other parts of the game draw themselves here
 function roomMarkup(room) {
+  if (ROOM_MARKUP[room]) return ROOM_MARKUP[room]();
   const tints = '<div class="tint l"></div><div class="tint r"></div>';
   const both = fn => SIDES.map(fn).join('');
   if (room === 'playroom') return `<div class="wall"></div><div class="floor"></div>${tints}
@@ -572,11 +574,11 @@ async function doTrick(side, key, full) {
    A full friendship jar brings two wrapped presents. Each girl gives
    hers to her sister's pet. Then there's a party and the jar starts over.
    ===================================================================== */
-function itemColor(side, item) { return colorById(S.pets[side].gifted[item]) || COLORS[0]; }
+function itemColor(side, item) { return colorById(S.pets[side].gifted[item]) || colorById(S.colors[side]) || COLORS[0]; }
 function renderWear(side) {
   const box = pets[side].art, wear = S.pets[side].wear;
   box.querySelectorAll('.wear').forEach(w => w.remove());
-  ['neck', 'head'].forEach(slot => {
+  ['neck', 'face', 'head'].forEach(slot => {
     const item = wear[slot];
     if (!item || !ITEM_ART[item]) return;
     const [x, y, w, h] = WEAR_SPOT[item];

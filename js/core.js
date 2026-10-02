@@ -14,7 +14,7 @@ function freshPet() {
     tricks: {},                         // tries for each trick: { spin: 2 }
     owned: [],                          // presents this pet has been given
     gifted: {},                         // who gave each present (her color)
-    wear: { head: null, neck: null },   // what the pet is wearing
+    wear: { head: null, neck: null, face: null },   // what the pet is wearing
     spa: {},                            // spa day looks (just for today)
   };
 }
@@ -36,6 +36,14 @@ function freshSave() {
     intro: { session: 0, given: 0 },
     freshActs: [],          // new buttons waiting in another room
     fridge: {},             // food from the garden: { tomato: 2 }
+    garden: [null, null, null, null],   // what grows in each garden spot
+    letters: [],            // letters from the grown-up corner: { text, at, read }
+    schoolWords: [],        // this week's school words (typed in the grown-up corner)
+    timer: { minutes: 0, endsAt: 0 },   // the play timer (0 = off)
+    bedtime: false,         // the play timer ran out: asleep until a grown-up wakes them
+    birthday: null,         // the pets' birthday: { month: 1-12, day: 1-31 }
+    photos: [],             // photo booth pictures for the memory book
+    kindPending: 0,         // kindness hearts a grown-up added, waiting to drop in the jar
   };
 }
 function merge(base, extra) {
@@ -881,7 +889,7 @@ function restorePets() {
   showRoom('playroom');
 }
 async function goodMorning() {
-  if (scene !== 'night') return;
+  if (scene !== 'night' || S.bedtime) return;     // play timer: asleep until a grown-up wakes them
   setScene('morning');
   Sound.stopMusic();
   Sound.play('morning');
@@ -1458,4 +1466,6 @@ function renderBook() {
   onPress(box.querySelector('.book-close'), closeBook);
   onPress(box.querySelector('.book-prev'), () => turnPage(-1));
   onPress(box.querySelector('.book-next'), () => turnPage(1));
+  BOOK_PAGE_HOOKS.forEach(f => f(box, key));
 }
+const BOOK_PAGE_HOOKS = [];   // other parts of the game add to a book page: (box, day)

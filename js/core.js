@@ -44,6 +44,7 @@ function freshSave() {
     birthday: null,         // the pets' birthday: { month: 1-12, day: 1-31 }
     photos: [],             // photo booth pictures for the memory book
     kindPending: 0,         // kindness hearts a grown-up added, waiting to drop in the jar
+    paintings: [],          // paintings from the art easel, hanging on the walls: { img, room }
   };
 }
 function merge(base, extra) {

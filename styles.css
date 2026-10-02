@@ -514,7 +514,8 @@ body[data-room="playroom"] .tricklist { display: flex; }
 /* =====================================================================
    THE HOUSE MAP, MIDDLE BUTTONS, CHOICE PANELS
    ===================================================================== */
-#midbtns { position: absolute; left: 50%; top: calc(22vmin + var(--safe-top)); transform: translateX(-50%); display: flex; flex-direction: column; gap: 2.4vmin; align-items: center; transition: opacity .4s ease; }
+#midbtns { position: absolute; left: 50%; top: calc(22vmin + var(--safe-top)); width: 30vmin; transform: translateX(-50%); display: flex; flex-wrap: wrap; justify-content: center; gap: 2vmin 2.4vmin; align-items: center; transition: opacity .4s ease; }
+#midbtns .mapbtn { margin: 0 7.5vmin; }
 body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .cbtn.mapbtn { position: relative; width: 15vmin; height: 15vmin; padding: 1.6vmin; }
 .cbtn.small { position: relative; width: 11vmin; height: 11vmin; padding: 1.8vmin; }
@@ -697,3 +698,43 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .bday { min-width: 10vmin; text-align: center; font: 900 5vmin/1 var(--font); }
 
 .ptile .pico, .book-pics > div { color: #ff6f91; }
+#map .map-what { position: absolute; left: calc(3vmin + env(safe-area-inset-left, 0px)); top: calc(3vmin + var(--safe-top)); width: 22vmin; height: 16vmin; padding: 1.2vmin; background: #fff; border-radius: 2vmin; box-shadow: 0 1vmin 3vmin rgba(0,0,0,.2); transform: rotate(-4deg); animation: pulse 1.4s ease-in-out infinite; }
+#map .map-what > * { width: 100%; height: 100%; object-fit: cover; border-radius: 1vmin; display: block; }
+
+/* pet school */
+.room-school .wall { background: radial-gradient(circle, rgba(255,255,255,.6) 10%, transparent 12%) 0 0 / 9vmin 9vmin, #e9f6dc; }
+.room-school .floor { background: repeating-linear-gradient(90deg, #e3c79c 0 11vmin, #d6b88a 11vmin 11.4vmin); }
+.room-school .shelfbooks { bottom: 28%; width: 16vmin; height: 12vmin; background:
+  linear-gradient(90deg, #ff8fb8 0 18%, transparent 18% 22%, #7fc4ff 22% 40%, transparent 40% 44%, #ffd23f 44% 62%, transparent 62% 66%, #a6e08a 66% 84%, transparent 84%) 0 0 / 100% 82% no-repeat,
+  linear-gradient(#b07f4f, #b07f4f) 0 100% / 100% 18% no-repeat; }
+.room-school .shelfbooks.l { left: 21vmin; } .room-school .shelfbooks.r { right: 21vmin; }
+.thing-board .board-in { position: absolute; inset: 0; border-radius: 2vmin; background: #3f7a5a; border: 1.6vmin solid #b07f4f; box-shadow: 0 1vmin 0 rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; }
+.thing-board .chalk { font: 900 8vmin/1 var(--font); color: #fff; text-shadow: 0 0 .6vmin rgba(255,255,255,.5); }
+.thing-board .chalk .word { pointer-events: auto; }
+.thing-board .stars { position: absolute; left: 0; right: 0; bottom: .6vmin; display: flex; gap: .6vmin; justify-content: center; }
+.thing-board .stars i { width: 4.4vmin; height: 4.4vmin; color: #ffd23f; animation: newbtn .5s ease-out; }
+.thing-board .stars svg { width: 100%; height: 100%; }
+.btn.chosen { box-shadow: 0 1vmin 0 var(--c-dark), 0 0 0 1.1vmin #ffe57f; transform: scale(1.04); }
+.easel canvas { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 1.4vmin; border: 1.2vmin solid #e6c79a; background: #fffdf8; box-shadow: 0 1.2vmin 0 rgba(0,0,0,.1); touch-action: none; }
+.easel .legs { position: absolute; left: 0; right: 0; top: 96%; height: 34%; }
+.easel.framed canvas { border-color: #e8b84a; box-shadow: 0 0 0 1vmin #ffe7a8, 0 1.2vmin 0 rgba(0,0,0,.1); }
+.room .painting { width: 17vmin; height: 12vmin; transform: translate(-50%, -50%); padding: 1vmin; background: #fff; border: 1vmin solid #e8b84a; border-radius: 1vmin; box-shadow: 0 .8vmin 1.6vmin rgba(0,0,0,.15); }
+.room .painting img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.build svg { width: 100%; height: 100%; overflow: visible; }
+.build .pc { transform-box: fill-box; }
+
+/* playroom pretend play */
+.art .vetsticker { position: absolute; left: 56%; top: 62%; width: 14%; height: 14%; pointer-events: none; transform: rotate(-12deg); }
+.art .vetsticker svg { width: 100%; height: 100%; }
+.tea-in { position: absolute; left: 30%; top: 44%; width: 40%; height: 10%; border-radius: 50%; background: #e8c39e; opacity: 0; transition: opacity .4s ease; }
+.full .tea-in { opacity: 1; }
+.friend svg { width: 100%; height: 100%; }
+.pstage .pstage-top { position: absolute; left: -2%; right: -2%; top: 0; height: 12%; border-radius: 2vmin 2vmin 0 0; background: repeating-linear-gradient(90deg, #ff6b7a 0 6vmin, #ff8a96 6vmin 12vmin); box-shadow: 0 .8vmin 0 #d94f5c; }
+.pstage .pstage-floor { position: absolute; left: -2%; right: -2%; bottom: 0; height: 7%; border-radius: 1vmin; background: #c99a6b; box-shadow: 0 .8vmin 0 #a87a4b; }
+.pstage .curtain { position: absolute; top: 10%; bottom: 7%; width: 51%; background: repeating-linear-gradient(90deg, #ff6b7a 0 3vmin, #e85566 3vmin 6vmin); transition: transform .8s cubic-bezier(.5,0,.3,1); }
+.pstage .curtain.l { left: 0; border-radius: 0 0 40% 0; transform-origin: 0 0; }
+.pstage .curtain.r { right: 0; border-radius: 0 0 0 40%; transform-origin: 100% 0; }
+.pstage.open .curtain.l { transform: scaleX(.16); } .pstage.open .curtain.r { transform: scaleX(.16); }
+.art .pprop { position: absolute; pointer-events: none; }
+.art .pprop.behind { z-index: -1; }
+.art .pprop svg { width: 100%; height: 100%; overflow: visible; }

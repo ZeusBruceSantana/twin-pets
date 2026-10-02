@@ -59,8 +59,12 @@ function voteTile(key, icon, word, color, onTap) {
 
 /* ---------- the map ---------- */
 let mapTouched = 0;
-function openMap() {
+// The map can also be used to choose a room for something (like where to hang a painting):
+// mode = { what: picture html, allow(room), pick(room), cancel() }
+let mapMode = null;
+function openMap(mode = null) {
   if (scene !== 'play') return;
+  mapMode = mode && mode.pick ? mode : null;
   closeAllPanels();
   votes.left = votes.right = null;
   setScene('map');
@@ -73,21 +77,32 @@ function closeMap() {
   $('#map').classList.remove('show');
   votes.left = votes.right = null;
   if (scene === 'map') setScene('play');
+  const m = mapMode;
+  mapMode = null;
+  if (m && m.cancel) m.cancel();
 }
 function renderMap() {
   const grid = $('#map .map-grid');
   grid.innerHTML = '<div class="map-roof"></div><div class="map-walls"></div><div class="map-lawn l"></div><div class="map-lawn r"></div>';
+  $('#map').classList.toggle('choosing', !!mapMode);
+  $('#map .map-what') && $('#map .map-what').remove();
+  if (mapMode) $('#map').append(el('div', 'map-what', mapMode.what));
   const jarFull = S.unlocked.jar && S.jar >= SETTINGS.jarSize;
   Object.entries(MAP_SPOTS).forEach(([room, [c, r, cw = 1, rh = 1]]) => {
     let tile;
-    if (roomOpen(room)) {
+    if (roomOpen(room) && (!mapMode || mapMode.allow(room))) {
       const R = ROOMS[room];
       tile = voteTile(room, ICONS[R.icon], R.word, R.door, (side, d) => {
         mapTouched = now();
+        if (mapMode) {
+          castVote(side, room, grid, () => { const m = mapMode; mapMode = null; closeMap(); m.pick(room); });
+          return;
+        }
         if (room === S.room) { nudge(d); return; }
         castVote(side, room, grid, () => { closeMap(); goToRoom(room); });
       });
-      if (room === S.room) tile.classList.add('here');
+      if (mapMode) { /* any room can be chosen */ }
+      else if (room === S.room) tile.classList.add('here');
       else {
         const badge = room === 'playroom' && jarFull ? ICONS.gift : S.doorNew[room] ? ICONS.star : '';
         if (badge) tile.append(el('div', 'badge', badge));

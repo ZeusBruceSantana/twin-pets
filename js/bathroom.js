@@ -303,7 +303,7 @@ const mirror = roomThing('mirror', 'bathroom', 'mirror',
     <ellipse cx="50" cy="60" rx="38" ry="48" fill="#dff4fb" stroke="#fff" stroke-width="2"/>
     <path d="M24 38 L40 24 M26 54 L54 28" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/></svg>
    <div class="mhalf l"><div class="mface"></div></div><div class="mhalf r"><div class="mface"></div></div>`,
-  { left: '50%', top: '38%', width: '21vmin', height: '25vmin' });
+  { left: '50%', top: 'calc(52vmin + var(--safe-top))', width: '19vmin', height: '23vmin' });
 const FUNNY_FACES = [
   { cls: 'happy', sound: 'squish',  frames: [{ transform: 'scale(1,1)' }, { transform: 'scale(1.3,.7)', offset: 0.25 }, { transform: 'scale(1.3,.7)', offset: 0.75 }, { transform: 'scale(1,1)' }] },
   { cls: 'chomp', sound: 'stretch', frames: [{ transform: 'scale(1,1)' }, { transform: 'scale(.78,1.28)', offset: 0.25 }, { transform: 'scale(.78,1.28)', offset: 0.75 }, { transform: 'scale(1,1)' }] },

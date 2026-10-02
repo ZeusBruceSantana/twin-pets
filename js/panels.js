@@ -55,6 +55,7 @@ async function startActivity(kind, starter, opts = {}) {
   if (scene !== 'play') return;
   closeAllPanels();
   closeSideModes();
+  $('#hint').classList.remove('show');
   const a = act = { kind, starter, opts, step: 0, lastPress: now(), busy: true, ready: false, cleanup: [], data: {} };
   SIDES.forEach(s => begin(pets[s], 1e9));
   setScene('act');

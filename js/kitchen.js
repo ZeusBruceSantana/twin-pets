@@ -63,6 +63,7 @@ ACT_HANDLERS.fridge = side => {
   Sound.play('fridge');
   openPanel(side, {
     cols: 3,
+    head: side,
     items: fridgeItems(),
     onPick: key => {
       if (FOODS[key].garden) { S.fridge[key] = Math.max(0, (S.fridge[key] || 0) - 1); save(); }
@@ -80,6 +81,8 @@ EAT_HOOKS.push((side, food) => {
   Sound.play('favorite');
   sayBubble(p, 'My favorite!', 2200);
   floatHearts(p, 5);
+  const m = petPoint(p, 0.5, 0.3);
+  celebrate(m.x, m.y, 8);
   petAnim(p, DANCE_GROOVE, { duration: 2000 });
 });
 

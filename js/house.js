@@ -2,9 +2,9 @@
 /* Twin Pets: The pets' house: rooms, kitchen, bathroom, backyard and playroom. */
 
 /* =====================================================================
-   16. THE HOUSE: rooms and doors
+   THE HOUSE: rooms
    Both pets are always in the same room. To move, both girls tap the
-   same door (each taps her own half, with her pet's face on it).
+   same room on the house map (see map.js).
    ===================================================================== */
 const ROOMS = {
   playroom: { word: 'playroom', icon: 'roomPlay',    door: '#ffd98a', acts: ['play', 'tricks', 'fivegame', 'dress'] },
@@ -144,14 +144,14 @@ function firstVisitHint(room) {
 }
 /* Leaving a room (or changing colors) tidies away anything half-done. */
 const sideMode = { left: null, right: null };
-const trickTouched = { left: 0, right: 0 };
+const modeTouched = { left: 0, right: 0 };
 function closeSideModes() {
   SIDES.forEach(s => { sideMode[s] = null; endBath(s); });
   closeAllPanels();
 }
 
 /* =====================================================================
-   17. THE KITCHEN: tummies
+   THE KITCHEN: tummies
    A tummy fills as the pet eats and empties slowly over real time.
    It's drawn as a rounder tummy (only in the kitchen), never a number.
    ===================================================================== */
@@ -183,7 +183,7 @@ function sayFull(p) {
 }
 
 /* =====================================================================
-   18. THE BATHROOM: bath (fill, bubbles, duck, scrub, dry) and brushing
+   THE BATHROOM: bath (fill, bubbles, duck, scrub, dry) and brushing
    ===================================================================== */
 const bath = { left: null, right: null };
 const bathAct = side => (!bath[side] ? 'bath' : bath[side].step === 'dry' ? 'dry' : 'scrub');
@@ -339,7 +339,7 @@ async function brushPet(side) {
 }
 
 /* =====================================================================
-   19. THE BACKYARD: trampolines, rainbow climb, mud
+   THE BACKYARD: trampolines, rainbow climb, mud
    ===================================================================== */
 const MUD_SPOTS = [[37, 74, 17], [64, 62, 15], [62, 22, 10]];   // [left %, top %, size %]
 function renderMud(side, pop) {
@@ -482,7 +482,7 @@ async function endClimb() {
 }
 
 /* =====================================================================
-   20. THE PLAYROOM: trick cards
+   THE PLAYROOM: trick cards
    Tap a card to hear the word. The pet tries the trick and learns it
    after a few tries. Then it does the trick whenever the card is tapped.
    ===================================================================== */
@@ -506,7 +506,7 @@ async function trickCard(side, key) {
   if (!canAct()) return;
   const tr = trickBy(key), p = pets[side];
   Speech.say(tr.word);
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   if (knows(side, key)) {
     grantWish(p, 'trick:' + key);
     await doTrick(side, key, true);
@@ -524,6 +524,7 @@ async function trickCard(side, key) {
   Sound.play('unlock');
   const m = petPoint(p, 0.5, 0.35);
   sparkles(m.x, m.y, 16);
+  celebrate(m.x, m.y, 12);
   floatHearts(p, 3);
   sayBubble(p, 'I can ' + tr.word + '!');
   renderTrickList(side);
@@ -574,7 +575,7 @@ async function doTrick(side, key, full) {
 }
 
 /* =====================================================================
-   21. THE PLAYROOM: presents
+   THE PLAYROOM: presents
    A full friendship jar brings two wrapped presents. Each girl gives
    hers to her sister's pet. Then there's a party and the jar starts over.
    ===================================================================== */

@@ -66,3 +66,13 @@ picture and whose paws are at the bottom.
 
 When your pictures are in use, the little pet faces on the house map, in the
 closet and in the mirror show your whole picture.
+
+## 5. A new home-screen icon (optional)
+
+The home-screen icon shows both pets together. To make it from your new
+pictures, open the game's address with `icons/make-icons.html` at the end
+(for example `https://zeusbrucesantana.github.io/twin-pets/icons/make-icons.html`).
+Tap **Save** under each of the four pictures, then upload them into the
+`icons` folder on GitHub, replacing the old ones (keep the same names). On the
+iPad, you may need to remove the game from the home screen and add it again to
+see the new icon.

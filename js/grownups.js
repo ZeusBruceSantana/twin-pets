@@ -13,7 +13,7 @@ const bindP = (panel, sel, fn) => panel.querySelectorAll(sel).forEach(b => onRel
 
 /* ---------- pages ---------- */
 PARENT_PAGES.wake = {
-  icon: 'sun', label: () => 'Wake the pets', show: () => S.bedtime, hot: () => true,
+  order: 0, icon: 'sun', label: () => 'Wake the pets', show: () => S.bedtime, hot: () => true,
   render(panel) {
     parentShell(panel, 'Wake the pets', `<div class="note big">The play timer ran out, so the pets went to bed. They stay asleep until a grown-up wakes them.</div>
       <div class="row"><div class="pbtn go" data-wake>Wake them up</div></div>`);

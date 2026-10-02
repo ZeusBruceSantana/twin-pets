@@ -95,9 +95,36 @@
 - [x] About once a play session, a pet asks for something from its real stuffed animal ("Give Livvie a real hug!")
 - [x] Peekaboo button for a little brother: an animal peeks out with a sound, no reading
 
+### Protect and polish
+**Stage 1: cleanup and tests**
+- [x] Tidied the code (old door leftovers, unused bits, clearer comments) with no change in how the game plays
+- [x] Automatic tests: saving and loading (including saves from every earlier version), moving between rooms, the friendship jar, the grown-up corner. They run on every pull request, or anytime at `tests/`
+
+**Stage 2: protect their progress**
+- [x] Backup and restore in the grown-up corner (everything: colors, jar, memory book, paintings, letters, tricks, decorations, school words...), with the date of the last backup, a check before replacing, and undo
+- [x] A damaged save is set aside instead of lost; a full device lets go of old camera pictures first
+- [x] Works offline once opened, and installs to the home screen as an app
+- [x] README: how to undo a merge on GitHub
+
+**Stage 3: polish**
+- [x] Springy buttons, confetti on happy moments, consistent button layout in every room and place
+- [x] Livvie's new colors: very light honey fur, black and brown rosettes, pink in her eyes
+
+**Stage 4: music and sound**
+- [x] An original background tune for each room, the start screen and each trip, made in code
+- [x] Warmer, gentler sound effects; separate Sounds and Music switches
+
+**Stage 5: speed**
+- [x] Measured on a tablet-size touch screen with a slowed processor; trimmed the costly glows, weather and saving
+
+**Stage 6: finishing touches**
+- [x] Start screen with the name, Twin Pets
+- [x] Home-screen icon with both pets together (remake it from new art with `icons/make-icons.html`)
+- [x] Dedication page from the ♥ on the start screen: "Made by Dad for Leah and Avery, 2026."
+
 ## Later ideas
 
-- [ ] **Real pet art from photos or drawings**: swap in the girls' own drawings or photos of their real toys (the `art` folder is ready; see `art/README.md`)
+- [ ] **Real pet art from photos or drawings**: swap in the real pictures from Dad's photos or drawings (the `art` folder is ready; see `art/README.md`, and remake the icon with `icons/make-icons.html`)
 - [ ] **Recorded voices**: record Mom, Dad or the girls reading the words, instead of the browser voice
 - [ ] **Swap day**: each girl looks after her sister's pet for a day
 - [ ] **Real bedtime dimming**: the game gets darker and calmer near real bedtime, and gently suggests going to the bedroom
@@ -111,3 +138,5 @@
 - [ ] Use the school words in thought bubbles and the memory book too, not just at pet school
 - [ ] More places to drive to (a farm, a library, the snow) and more visitors
 - [ ] A way to look at the memory book's pictures bigger, or delete one
+- [ ] Let grown-ups choose how often backups are suggested, or remind them on the start screen
+- [ ] A volume slider just for the music

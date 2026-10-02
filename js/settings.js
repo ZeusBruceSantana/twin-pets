@@ -20,7 +20,7 @@ const SETTINGS = {
   // apple, fish, bone -> kitchen.  ball -> Play or Ball.  nap -> Sleep.  hug -> tap the pet.
   // bath, brush, teeth -> bathroom.  bounce -> backyard.  tricks -> any trick the pet has learned.
   wishes: ['apple', 'fish', 'bone', 'ball', 'nap', 'hug', 'bath', 'brush', 'teeth', 'bounce', 'tricks'],
-  // Both girls tap the same door within this many milliseconds to change rooms.
+  // Both girls tap the same room on the house map (or the same trip) within this many milliseconds.
   doorWindowMs: 5000,
   // How many hours a full tummy takes to get empty again.
   tummyHours: 1,

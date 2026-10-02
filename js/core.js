@@ -2,9 +2,17 @@
 /* Twin Pets: The heart of the game: saving, sounds, the pets, together moments, the jar, games, wishes and the memory book. */
 
 /* =====================================================================
-   4. SAVING (local storage on this device)
+   SAVING (local storage on this device)
    ===================================================================== */
-const SAVE_KEY = 'twin-pets-save-v1';
+// The test page (tests/index.html) runs the game with "?test" and its own save,
+// so running the tests never touches the girls' real progress.
+const TEST_MODE = /[?&]test\b/.test(location.search);
+const SAVE_KEY = TEST_MODE ? 'twin-pets-test-save' : 'twin-pets-save-v1';
+const TEST_ERRORS = [];   // in test mode, anything that goes wrong is noted for the test page
+if (TEST_MODE) {
+  addEventListener('error', e => TEST_ERRORS.push(String(e.message)));
+  addEventListener('unhandledrejection', e => TEST_ERRORS.push(String(e.reason && e.reason.message || e.reason)));
+}
 function freshPet() {
   return {
     asleep: false,
@@ -28,7 +36,7 @@ function freshSave() {
     surprise: 0,            // which surprise comes next
     unlocked: {},           // which new things have appeared
     book: {},               // memory book: { '2026-10-01': ['chase', 'treat'] }
-    sound: { muted: false, volume: 0.7 },
+    sound: { muted: false, volume: 0.7, music: true },   // muted = the Sounds switch; music = the Music switch
     room: 'playroom',
     seen: {},               // rooms already visited (for the first-visit hint)
     doorNew: {},            // rooms with something new inside
@@ -58,21 +66,41 @@ function merge(base, extra) {
   return base;
 }
 function loadSave() {
-  try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (raw) return merge(freshSave(), JSON.parse(raw));
-  } catch (e) { /* no saving available: play anyway */ }
-  return freshSave();
+  let raw = null;
+  try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { /* no saving available: play anyway */ }
+  if (!raw) return freshSave();
+  try { return merge(freshSave(), JSON.parse(raw)); } catch (e) {
+    // a damaged save is set aside (never thrown away), and the game starts fresh
+    try { localStorage.setItem(SAVE_KEY + '-damaged', raw); } catch (e2) { /* ignore */ }
+    return freshSave();
+  }
 }
 let S = loadSave();
 let erasing = false;   // true while "Start over" is wiping everything
+// Saving a big game (lots of pictures) takes a moment, so a quick burst of changes is
+// written once, a quarter of a second later. Closing or hiding the game saves right away.
+let saveTimer = 0;
 function save() {
+  if (erasing || saveTimer) return;
+  saveTimer = setTimeout(saveNow, 250);
+}
+const flushSave = () => { if (saveTimer) saveNow(); };   // write any change that is waiting
+function saveNow() {
+  clearTimeout(saveTimer);
+  saveTimer = 0;
   if (erasing) return;
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ }
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {
+    // The tablet's space for the game is full: let go of the oldest camera pictures
+    // (everything else is kept) until it fits.
+    while (S.photos && S.photos.length) {
+      S.photos.shift();
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return; } catch (e2) { /* still too big */ }
+    }
+  }
 }
 
 /* =====================================================================
-   5. LITTLE HELPERS
+   LITTLE HELPERS
    ===================================================================== */
 const $ = (sel, root = document) => root.querySelector(sel);
 const SIDES = ['left', 'right'];
@@ -157,10 +185,12 @@ function onPress(elm, fn) {
 }
 
 /* =====================================================================
-   6. SOUNDS — all made in code, kept soft and gentle
+   SOUNDS — all made in code, kept soft and gentle
    ===================================================================== */
 const Sound = (() => {
-  let ctx = null, master = null, echo = null, music = null, noiseBuf = null, primed = false;
+  // master (volume) <- sounds (the Sounds switch) <- tunes for special moments
+  //                 <- background music (the Music switch)
+  let ctx = null, master = null, sfx = null, bgm = null, echo = null, room = null, music = null, noiseBuf = null, primed = false;
   const NOTE = m => 440 * Math.pow(2, (m - 69) / 12);
 
   function init() {
@@ -169,15 +199,22 @@ const Sound = (() => {
     if (!AC) return null;
     try { ctx = new AC(); } catch (e) { return null; }
     master = ctx.createGain();
-    const soft = ctx.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 5000;
+    const soft = ctx.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 4200;   // no sharp edges
     const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -20; comp.ratio.value = 4;
     master.connect(soft); soft.connect(comp); comp.connect(ctx.destination);
     // a soft echo makes chimes sparkle
     echo = ctx.createGain();
     const d = ctx.createDelay(1); d.delayTime.value = 0.22;
     const fb = ctx.createGain(); fb.gain.value = 0.28;
-    const wet = ctx.createGain(); wet.gain.value = 0.22;
+    const wet = ctx.createGain(); wet.gain.value = 0.2;
     echo.connect(d); d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(master);
+    // a cozy little room around every sound
+    room = ctx.createGain(); room.gain.value = 0.22;
+    const verb = ctx.createConvolver();
+    verb.buffer = roomEcho(1.6);
+    room.connect(verb); verb.connect(master);
+    sfx = ctx.createGain(); sfx.connect(master); sfx.connect(room);
+    bgm = ctx.createGain(); bgm.connect(master); bgm.connect(room);
     newMusicBus();
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const ch = noiseBuf.getChannelData(0);
@@ -185,11 +222,21 @@ const Sound = (() => {
     applyVolume();
     return ctx;
   }
-  function newMusicBus() { music = ctx.createGain(); music.connect(master); }
+  function roomEcho(seconds) {
+    const len = Math.floor(ctx.sampleRate * seconds), b = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const data = b.getChannelData(c);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3) * 0.6;
+    }
+    return b;
+  }
+  function newMusicBus() { music = ctx.createGain(); music.connect(sfx); }
   function applyVolume() {
     if (!master) return;
-    const v = S.sound.muted ? 0 : S.sound.volume * S.sound.volume;
-    master.gain.setTargetAtTime(v, ctx.currentTime, 0.02);
+    const t = ctx.currentTime;
+    master.gain.setTargetAtTime(S.sound.volume * S.sound.volume, t, 0.02);
+    sfx.gain.setTargetAtTime(S.sound.muted ? 0 : 1, t, 0.02);
+    bgm.gain.setTargetAtTime(S.sound.music === false ? 0 : 1, t, 0.3);
   }
   function unlock() {
     const c = init();
@@ -200,21 +247,35 @@ const Sound = (() => {
       s.buffer = b; s.connect(c.destination); s.start(0); primed = true;
     }
   }
+  // One note. Warm by default: a soft start, a second voice a hair out of tune (like a
+  // music box or a choir), and buzzy shapes (square, sawtooth) are softened.
   function tone(f, at, dur, o = {}) {
     const t = ctx.currentTime + at;
-    const osc = ctx.createOscillator();
-    osc.type = o.type || 'sine';
-    osc.frequency.setValueAtTime(f, t);
-    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + (o.glide || dur));
+    const type = o.type || 'sine';
     const g = ctx.createGain();
     const v = o.vol == null ? 0.15 : o.vol;
-    const a = o.attack == null ? 0.012 : o.attack;
+    const a = o.attack == null ? 0.018 : o.attack;
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(v, t + a);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    osc.connect(g); g.connect(o.music ? music : master);
-    if (o.echo) g.connect(echo);
-    osc.start(t); osc.stop(t + dur + 0.05);
+    let out = g;
+    if (type === 'square' || type === 'sawtooth') {
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = o.cut || 1400;
+      g.connect(lp); out = lp;
+    }
+    const voices = o.pure || type === 'square' || type === 'sawtooth' ? [[0, 1]] : [[0, 1], [7, 0.3]];
+    voices.forEach(([cents, level]) => {
+      const osc = ctx.createOscillator();
+      osc.type = type;
+      osc.detune.value = cents;
+      osc.frequency.setValueAtTime(f, t);
+      if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + (o.glide || dur));
+      if (level === 1) osc.connect(g);
+      else { const lv = ctx.createGain(); lv.gain.value = level; osc.connect(lv); lv.connect(g); }
+      osc.start(t); osc.stop(t + dur + 0.05);
+    });
+    out.connect(o.dest || (o.music ? music : sfx));
+    if (o.echo) out.connect(echo);
   }
   function noise(at, dur, o = {}) {
     const t = ctx.currentTime + at;
@@ -227,7 +288,7 @@ const Sound = (() => {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.01));
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    s.connect(f); f.connect(g); g.connect(o.music ? music : master);
+    s.connect(f); f.connect(g); g.connect(o.dest || (o.music ? music : sfx));
     s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
   }
   // notes: [[midiNote or null for a rest, beats], ...]
@@ -292,7 +353,7 @@ const Sound = (() => {
     },
     pawUp() { tone(NOTE(76), 0, 0.16, { to: NOTE(81), vol: 0.06 }); },
     clap() {
-      noise(0, 0.12, { filter: 'highpass', freq: 1500, vol: 0.12 });
+      noise(0, 0.12, { freq: 1800, q: 0.7, vol: 0.1 });
       noise(0.025, 0.1, { filter: 'bandpass', freq: 2500, vol: 0.08 });
       [84, 88, 91].forEach((m, i) => tone(NOTE(m), 0.05 + i * 0.06, 0.4, { vol: 0.06, echo: 1 }));
     },
@@ -317,7 +378,7 @@ const Sound = (() => {
       const bass = [36, 48, 36, 48, 33, 45, 33, 45, 29, 41, 29, 41, 31, 43, 31, 43];
       for (let i = 0; i < 16; i++) {
         tone(150, i * beat, 0.2, { to: 45, vol: 0.18, music: 1 });                       // soft kick
-        noise(i * beat + beat / 2, 0.05, { filter: 'highpass', freq: 7000, vol: 0.025, music: 1 }); // tick
+        noise(i * beat + beat / 2, 0.05, { freq: 3500, q: 1.2, vol: 0.03, music: 1 });              // tick
         tone(NOTE(bass[i]), i * beat, 0.25, { type: 'triangle', vol: 0.08, music: 1 });
       }
       const riff = [[79, .5], [76, .5], [79, .5], [81, 1], [79, .5], [76, 1], [72, .5], [74, .5], [76, 1], [null, 2],
@@ -358,10 +419,12 @@ const Sound = (() => {
   return {
     unlock,
     applyVolume,
+    /* For the background music (music.js): the sound engine, once a tap has started it. */
+    engine() { return ctx && ctx.state === 'running' ? { ctx, tone, noise, NOTE, bgm } : null; },
     /* Other parts of the game add their own sounds: Sound.add('name', (s, ...args) => s.tone(...)) */
     add(name, maker) { lib[name] = (...args) => maker({ tone, noise, melody, NOTE, k3 }, ...args); },
     play(name, ...args) {
-      if (S.sound.muted) return;
+      if (S.sound.muted || TEST_MODE) return;
       const c = init();
       if (!c || !lib[name]) return;
       if (c.state !== 'running') { try { c.resume(); } catch (e) { /* ignore */ } }
@@ -378,7 +441,7 @@ const Sound = (() => {
 })();
 
 /* =====================================================================
-   7. TAP-TO-HEAR (the browser's built-in voice)
+   TAP-TO-HEAR (the browser's built-in voice)
    ===================================================================== */
 const Speech = {
   voice: null,
@@ -398,7 +461,7 @@ const Speech = {
     else speechSynthesis.onvoiceschanged = choose;
   },
   say(text) {
-    if (!text || S.sound.muted || !('speechSynthesis' in window)) return;
+    if (!text || S.sound.muted || TEST_MODE || !('speechSynthesis' in window)) return;
     try {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.1;
@@ -446,7 +509,7 @@ document.addEventListener('pointerup', e => {
 });
 
 /* =====================================================================
-   8. THE SCREEN
+   THE SCREEN
    ===================================================================== */
 const stage = $('#stage');
 const world = $('#world');
@@ -599,6 +662,23 @@ function sparkles(x, y, n = 8, colors = ['#ffd23f', '#ff7eb6', '#5aa9ff', '#6cc5
     ], { duration: 900, easing: 'ease-out', fill: 'both' }).then(() => s.remove());
   }
 }
+/* A little celebration: confetti in both girls' colors, popping up and floating down. */
+function celebrate(x, y, n = 12) {
+  const cs = getComputedStyle(document.documentElement);
+  const colors = [cs.getPropertyValue('--L').trim(), cs.getPropertyValue('--R').trim(), '#ffd23f', '#ff8fb8'];
+  for (let i = 0; i < n; i++) {
+    const c = el('div', 'confetti' + (i % 3 === 0 ? ' round' : ''));
+    c.style.left = x + 'px'; c.style.top = y + 'px';
+    c.style.background = colors[i % colors.length];
+    world.append(c);
+    const dx = rand(-16, 16), up = rand(10, 22), spin = rand(-540, 540);
+    animate(c, [
+      { transform: 'translate(-50%,-50%) translate(0,0) rotate(0)', opacity: 1 },
+      { transform: `translate(-50%,-50%) translate(${dx * 0.6}vmin, ${-up}vmin) rotate(${spin * 0.5}deg)`, opacity: 1, offset: 0.35 },
+      { transform: `translate(-50%,-50%) translate(${dx}vmin, ${-up + 14}vmin) rotate(${spin}deg)`, opacity: 0 },
+    ], { duration: rand(1300, 1900), delay: i * 18, easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'both' }).then(() => c.remove());
+  }
+}
 /* A speech bubble above a pet: "Thank you, Leah!" (each word can be tapped). */
 function sayBubble(p, text, ms = 2800) {
   p.root.querySelectorAll('.say').forEach(b => b.remove());
@@ -615,7 +695,7 @@ function sayBubble(p, text, ms = 2800) {
 }
 
 /* =====================================================================
-   9. THE PETS: eat, play, sleep, and being tapped
+   THE PETS: eat, play, sleep, and being tapped
    ===================================================================== */
 /* Start a new action on a pet. Cancels whatever it was doing.
    Returns a function that says whether this action is still the current one. */
@@ -752,7 +832,7 @@ function petTapped(side) {
 }
 
 /* =====================================================================
-   10. TOGETHER MOMENTS (in the shared middle)
+   TOGETHER MOMENTS (in the shared middle)
    ===================================================================== */
 // Some together moments can happen very quickly over and over; count those only now and then.
 const COOLDOWN = { treat: 15000, trampoline: 20000 };
@@ -765,6 +845,8 @@ function togetherMoment(type) {
   S.together++;
   logDay(type);
   addHeart();
+  const m = midPets();
+  celebrate(m.x, m.y, 10);
   checkUnlocks();
   save();
   setTimeout(runQueue, 1600);
@@ -917,7 +999,7 @@ function endScene() {
 }
 
 /* =====================================================================
-   11. NEW THINGS APPEAR, ONE AT A TIME
+   NEW THINGS APPEAR, ONE AT A TIME
    ===================================================================== */
 const queue = [];
 function checkUnlocks() {
@@ -937,7 +1019,7 @@ async function runQueue() {
   setTimeout(runQueue, 1500);
 }
 const newUntil = {};
-// Where each new button lives, so its door can sparkle if the girls are in another room.
+// Where each new button lives, so its room can get a star on the map if the girls are somewhere else.
 const UNLOCK_BUTTON = { treat: 'treat', ball: 'ballgame', seesaw: 'seesawgame', highfive: 'fivegame', book: 'book' };
 async function reveal(key) {
   S.unlocked[key] = true; save();
@@ -960,7 +1042,7 @@ async function reveal(key) {
 }
 
 /* =====================================================================
-   12. THE FRIENDSHIP JAR (one jar, shared by both girls)
+   THE FRIENDSHIP JAR (one jar, shared by both girls)
    ===================================================================== */
 function jarSlots() {
   const n = SETTINGS.jarSize, xs = [30, 50, 70], out = [];
@@ -1013,7 +1095,7 @@ async function addHeart(from = midPets()) {
   const jar = $('#jar');
   jar.classList.remove('wiggle'); void jar.offsetWidth;
   if (S.jar < SETTINGS.jarSize) jar.classList.add('wiggle');
-  else renderCenter();                     // full: the playroom door shows a present
+  else renderCenter();                     // full: the house map button shows a present
   Sound.play('heart');
   sparkles(to.x, to.y, 6);
 }
@@ -1122,7 +1204,7 @@ const SURPRISE = {
 const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 /* =====================================================================
-   13. TWO-PLAYER GAMES (they need both girls)
+   TWO-PLAYER GAMES (they need both girls)
    ===================================================================== */
 const GAMES = {
   ball:     { icon: 'catch',  act: 'throw', goal: 6 },   // throw the ball back and forth
@@ -1318,7 +1400,7 @@ function layoutSeesaw(g) {
 
 /* high five paws */
 const PAWS = {
-  left:  { fur: '#eef1f6', line: '#8b94a3', pad: '#ffc6d6' },
+  left:  { fur: '#f6e3bd', line: '#b38f63', pad: '#ffc6d6' },
   right: { fur: '#fffaf3', line: '#cbb9a8', pad: '#f3b9a8' },
 };
 function pawSvg(side) {
@@ -1331,7 +1413,7 @@ function pawSpot(side, raised) {
 }
 
 /* =====================================================================
-   14. THOUGHT BUBBLES: a pet asks for something (picture + one word)
+   THOUGHT BUBBLES: a pet asks for something (picture + one word)
    ===================================================================== */
 const WISHES = {
   apple:  { icon: 'apple',      act: 'food:apple' },
@@ -1390,6 +1472,7 @@ function grantWish(p, act) {
   if (b) {
     const r = b.getBoundingClientRect();
     sparkles(r.left + r.width / 2, r.top + r.height / 2, 12);
+    celebrate(r.left + r.width / 2, r.top + r.height / 2, 6);
   }
   clearWish(p, true);
   floatHearts(p, 4);
@@ -1398,7 +1481,7 @@ function grantWish(p, act) {
 }
 
 /* =====================================================================
-   15. THE MEMORY BOOK: one short sentence a day, shared by both girls
+   THE MEMORY BOOK: one short sentence a day, shared by both girls
    ===================================================================== */
 // Most special first: the book uses the first one that happened that day.
 const BOOK_LINES = {

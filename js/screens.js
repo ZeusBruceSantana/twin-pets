@@ -2,7 +2,7 @@
 /* Twin Pets: Buttons, picking colors, the start screen and the grown-up corner. */
 
 /* =====================================================================
-   22. THE BUTTON STRIPS
+   THE BUTTON STRIPS
    ===================================================================== */
 const BUTTONS = {
   // playroom
@@ -11,10 +11,7 @@ const BUTTONS = {
   fivegame:   { icon: 'hand',       label: 'High five' },
   dress:      { icon: 'dress',      label: 'Dress' },
   back:       { icon: 'back',       label: 'Back' },
-  // kitchen
-  apple:      { icon: 'apple',      label: 'apple' },
-  fish:       { icon: 'fish',       label: 'fish' },
-  bone:       { icon: 'bone',       label: 'bone' },
+  // kitchen (the fridge, cooking and the picnic are in kitchen.js)
   treat:      { icon: 'treat',      label: 'Treat' },
   // bathroom
   bath:       { icon: 'roomBath',   label: 'Bath' },
@@ -98,10 +95,9 @@ function press(side, act, btn) {
   if (scene === 'act') { actPress(side, act, btn); return; }
   if (!canAct()) return;
   if (ACT_HANDLERS[act]) { ACT_HANDLERS[act](side, btn); return; }
-  if (FOOD_ACTS.includes(act)) feed(side, act);
-  else if (act === 'treat') giveTreat(side, btn);
+  if (act === 'treat') giveTreat(side, btn);
   else if (act === 'play') playBall(side);
-  else if (act === 'tricks') { sideMode[side] = 'tricks'; trickTouched[side] = now(); Sound.play('pick'); renderColumn(side); }
+  else if (act === 'tricks') { sideMode[side] = 'tricks'; modeTouched[side] = now(); Sound.play('pick'); renderColumn(side); }
   else if (act === 'back') { sideMode[side] = null; renderColumn(side); }
   else if (act === 'fivegame') startGame('highfive', side);
   else if (act === 'ballgame') startGame('ball', side);
@@ -115,7 +111,6 @@ function press(side, act, btn) {
   else if (act === 'wake') wakePet(side);
   else if (act === 'book') openBook();
 }
-const FOOD_ACTS = ['apple', 'fish', 'bone'];
 const SIDE_MODES = {};   // a girl's edge can switch to its own set of buttons (like Tricks)
 const SHOW_IF = {        // buttons that only show sometimes
   dress: side => S.pets[side].owned.some(i => WEARABLES[i] === 'head') && !has('closet'),
@@ -137,7 +132,7 @@ function nudge(elm) {
 }
 
 /* =====================================================================
-   23. PETS WAIT HAPPILY (little idle wiggles)
+   PETS WAIT HAPPILY (little idle wiggles)
    ===================================================================== */
 function idleTick() {
   // nobody has tapped for a while: go back to normal, gently
@@ -149,7 +144,7 @@ function idleTick() {
   introTick();
   timerTick();
   SIDES.forEach(side => {
-    if (sideMode[side] && sideMode[side] !== 'bath' && now() - trickTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
+    if (sideMode[side] && sideMode[side] !== 'bath' && now() - modeTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
     if (pets[side].root.classList.contains('fluffy') !== isFluffy(side)) renderFluffy(side);
     tummyLook(side);
   });
@@ -169,7 +164,7 @@ function idleTick() {
 }
 
 /* =====================================================================
-   24. FIRST LAUNCH: PICK A COLOR
+   FIRST LAUNCH: PICK A COLOR
    ===================================================================== */
 const picking = { left: null, right: null };
 function openPicker() {
@@ -225,13 +220,12 @@ function finishPicking() {
   if (!(picking.left && picking.right)) return;
   S.colors.left = picking.left; S.colors.right = picking.right; save();
   applyColors();
-  makeHomeScreenIcon();
   $('#picker').classList.remove('show');
   startPlaying();
 }
 
 /* =====================================================================
-   25. START SCREEN, FULL SCREEN, HOME SCREEN ICON
+   START SCREEN AND FULL SCREEN
    ===================================================================== */
 const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isStandalone = () => navigator.standalone === true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches;
@@ -274,46 +268,8 @@ function startPlaying() {
   }, 800);
 }
 
-/* The picture used when the game is saved to the home screen. */
-function makeHomeScreenIcon() {
-  const L = colorById(S.colors.left) || COLORS[0], R = colorById(S.colors.right) || COLORS[2];
-  const draw = size => {
-    const c = document.createElement('canvas');
-    c.width = c.height = size;
-    const g = c.getContext('2d');
-    g.fillStyle = L.light; g.fillRect(0, 0, size / 2, size);
-    g.fillStyle = R.light; g.fillRect(size / 2, 0, size / 2, size);
-    g.save();
-    g.translate(size * 0.12, size * 0.14); g.scale(size * 0.0076, size * 0.0076);
-    const heart = new Path2D('M50 88 C 18 66, 6 46, 12 30 C 18 14, 42 12, 50 30 C 58 12, 82 14, 88 30 C 94 46, 82 66, 50 88Z');
-    g.save(); g.beginPath(); g.rect(0, 0, 50, 100); g.clip(); g.fillStyle = L.main; g.fill(heart); g.restore();
-    g.save(); g.beginPath(); g.rect(50, 0, 50, 100); g.clip(); g.fillStyle = R.main; g.fill(heart); g.restore();
-    g.restore();
-    return c.toDataURL('image/png');
-  };
-  try {
-    const i180 = draw(180), i192 = draw(192), i512 = draw(512);
-    const link = (rel, href, extra) => {
-      let l = document.querySelector(`link[rel="${rel}"]`);
-      if (!l) { l = document.createElement('link'); l.rel = rel; document.head.append(l); }
-      l.href = href;
-      if (extra) Object.assign(l, extra);
-    };
-    link('apple-touch-icon', i180);
-    link('icon', i192);
-    const here = location.href.split('#')[0];
-    const manifest = {
-      name: 'Twin Pets', short_name: 'Twin Pets', start_url: here, scope: here.replace(/[^/]*$/, ''),
-      display: 'standalone', display_override: ['fullscreen', 'standalone'], orientation: 'landscape',
-      background_color: '#fff8ef', theme_color: '#fff8ef',
-      icons: [{ src: i192, sizes: '192x192', type: 'image/png' }, { src: i512, sizes: '512x512', type: 'image/png' }],
-    };
-    link('manifest', 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest)));
-  } catch (e) { /* not important */ }
-}
-
 /* =====================================================================
-   26. GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
+   GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
    ===================================================================== */
 (function setupCorner() {
   const corner = $('#corner');
@@ -349,6 +305,7 @@ function renderParent() {
 }
 function renderParentMain(panel) {
   const tiles = Object.entries(PARENT_PAGES).filter(([, pg]) => !pg.show || pg.show())
+    .sort(([, a], [, b]) => (a.order == null ? 50 : a.order) - (b.order == null ? 50 : b.order))
     .map(([k, pg]) => `<div class="ptile${pg.hot && pg.hot() ? ' hot' : ''}" data-page="${k}"><div class="pico">${ICONS[pg.icon] || ''}</div><div class="plbl">${pg.label()}</div></div>`).join('');
   const v = Math.round(S.sound.volume * 10);
   let bars = '';
@@ -356,7 +313,7 @@ function renderParentMain(panel) {
   panel.innerHTML = `
     <h2>Grown-ups</h2>
     <div class="ptiles">${tiles}</div>
-    <div class="row"><span>Sound</span><div class="pbtn ${S.sound.muted ? '' : 'on'}" data-p="mute">${S.sound.muted ? 'Off (tap to turn on)' : 'On (tap to mute)'}</div></div>
+    <div class="row"><div class="pbtn ${S.sound.muted ? '' : 'on'}" data-p="mute">Sounds: ${S.sound.muted ? 'off' : 'on'}</div><div class="pbtn ${S.sound.music === false ? '' : 'on'}" data-p="music">Music: ${S.sound.music === false ? 'off' : 'on'}</div></div>
     <div class="row"><span>Volume</span><div class="pbtn round" data-p="vol-">−</div><div class="volbar">${bars}</div><div class="pbtn round" data-p="vol+">+</div></div>
     <div class="row"><div class="pbtn" data-p="colors">Change colors</div>${canFullscreen() ? '<div class="pbtn" data-p="fs">Full screen</div>' : ''}</div>
     <div class="row"><div class="pbtn" data-p="unlock">Show all new things now</div><div class="pbtn danger ${resetArmed ? 'confirm' : ''}" data-p="reset">${resetArmed ? 'Tap again to erase everything' : 'Start over'}</div></div>
@@ -366,9 +323,9 @@ function renderParentMain(panel) {
   panel.querySelectorAll('[data-page]').forEach(b => onRelease(b, () => { resetArmed = 0; parentPage = b.dataset.page; renderParent(); }));
 }
 /* A grown-up page: a title, its insides, and a Back button. */
-function parentShell(panel, title, inner) {
+function parentShell(panel, title, inner, onBack) {
   panel.innerHTML = `<h2>${title}</h2>${inner}<div class="row"><div class="pbtn" data-back>Back</div></div>`;
-  onRelease(panel.querySelector('[data-back]'), () => { parentPage = null; renderParent(); });
+  onRelease(panel.querySelector('[data-back]'), () => { if (onBack) onBack(); parentPage = null; renderParent(); });
   return panel;
 }
 function parentAction(what) {
@@ -378,6 +335,10 @@ function parentAction(what) {
     if (S.sound.muted && 'speechSynthesis' in window) speechSynthesis.cancel();
     Sound.applyVolume();
     Sound.play('pick');
+  } else if (what === 'music') {
+    S.sound.music = S.sound.music === false;
+    Sound.applyVolume();
+    Music.tick();
   } else if (what === 'vol-' || what === 'vol+') {
     S.sound.volume = Math.min(1, Math.max(0.1, Math.round((S.sound.volume + (what === 'vol+' ? 0.1 : -0.1)) * 10) / 10));
     Sound.applyVolume();
@@ -417,7 +378,7 @@ function closeParent() {
 const PARENT_CLOSE_HOOKS = [];
 
 /* =====================================================================
-   27. NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
+   NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
    ===================================================================== */
 // (typing boxes in the grown-up corner still work normally)
 const isTyping = e => e.target && e.target.closest && e.target.closest('input, textarea');
@@ -425,4 +386,27 @@ const isTyping = e => e.target && e.target.closest && e.target.closest('input, t
   document.addEventListener(ev, e => { if (!isTyping(e)) e.preventDefault(); }));
 document.addEventListener('touchmove', e => { if (!isTyping(e)) e.preventDefault(); }, { passive: false });
 ['touchend', 'pointerup', 'click'].forEach(ev => document.addEventListener(ev, () => Sound.unlock(), { passive: true }));
-document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
+addEventListener('pagehide', () => saveNow());
+
+/* =====================================================================
+   THE DEDICATION (the little heart on the start screen)
+   ===================================================================== */
+function setupDedication() {
+  const btn = $('#dedication-btn'), page = $('#dedication'), card = page.querySelector('.card');
+  btn.innerHTML = ICONS.heart;
+  const pet = side => { const d = el('div', 'art happy'); fillArt(d, side); return d; };
+  card.innerHTML = `<div class="ded-pets"></div><div class="ded-line big"></div><div class="ded-line"></div><div class="book-btn book-close">${ICONS.close}</div>`;
+  card.querySelector('.ded-pets').append(pet('left'), el('div', 'ded-heart', ICONS.twinHeart), pet('right'));
+  wordsInto(card.querySelectorAll('.ded-line')[0], 'Made by Dad for Leah and Avery.');
+  wordsInto(card.querySelectorAll('.ded-line')[1], '2026');
+  const close = () => page.classList.remove('show');
+  onPress(card.querySelector('.book-close'), close);
+  onTap(page, e => { if (e.target === page) close(); });
+  onRelease(btn, () => {
+    page.classList.add('show');
+    Sound.play('wish');
+    const r = card.getBoundingClientRect();
+    setTimeout(() => celebrate(r.left + r.width / 2, r.top + r.height * 0.3, 16), 200);
+  });
+}

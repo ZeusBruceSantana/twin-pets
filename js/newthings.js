@@ -45,6 +45,7 @@ function introduce(n, quiet) {
   renderFeatureClasses();
   if (!quiet) {
     showHint(n.icon, n.word, true);
+    setTimeout(() => celebrate(W() / 2, H() * 0.46, 10), 250);
     renderColumns();
     renderCenter();
     if (n.onIntro) n.onIntro();

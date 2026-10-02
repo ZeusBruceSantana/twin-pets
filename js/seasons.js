@@ -32,7 +32,6 @@ DRESS_HOOKS.push(side => { if (side === 'left') renderWeather(); });
 Object.assign(ICONS, {
   puddle: '<svg viewBox="0 0 100 40"><path d="M8 22 C 6 10, 30 6, 44 10 C 58 4, 90 6, 92 20 C 96 34, 64 38, 48 34 C 30 40, 10 34, 8 22Z" fill="#8fb8e0" stroke="#6a96c8" stroke-width="3"/><ellipse cx="34" cy="16" rx="10" ry="3" fill="#fff" opacity=".6"/></svg>',
   snowman: '<svg viewBox="0 0 100 100"><circle cx="50" cy="74" r="22" fill="#fff" stroke="#c9d8ea" stroke-width="3"/><circle cx="50" cy="40" r="16" fill="#fff" stroke="#c9d8ea" stroke-width="3"/><circle cx="44" cy="36" r="2.5" fill="#3e3a4f"/><circle cx="56" cy="36" r="2.5" fill="#3e3a4f"/><path d="M50 42 L64 46 L50 46Z" fill="#ffa24d"/><rect x="36" y="10" width="28" height="16" rx="3" fill="#ff6b7a"/><rect x="30" y="24" width="40" height="5" rx="2" fill="#ff6b7a"/></svg>',
-  rainy: '<svg viewBox="0 0 100 100"><path d="M24 54 C 10 54, 10 34, 24 34 C 26 20, 46 16, 54 28 C 64 20, 82 26, 80 40 C 92 42, 92 56, 78 56Z" fill="#c9d8ea" stroke="#9fb8cc" stroke-width="3"/><path d="M30 66 l-4 10 M50 66 l-4 10 M70 66 l-4 10" stroke="#5aa9ff" stroke-width="5" stroke-linecap="round"/></svg>',
 });
 ['backyard', 'frontyard'].forEach(room => SIDES.forEach(side => {
   const t = roomThing('puddle-' + room + '-' + side, room, () => weather === 'rain', ICONS.puddle,
@@ -173,5 +172,9 @@ ACTIVITIES.birthday = {
   },
 };
 BOOK_LINES.birthday = { line: 'had a birthday party!', icon: 'cake', rank: 101 };
-Sound.add('birthday', s => s.melody([[67, 0.75], [67, 0.25], [69, 1], [67, 1], [72, 1], [71, 2]], 150, { vol: 0.08, echo: 1 }));
+// an original little party tune (not the birthday song)
+Sound.add('birthday', s => {
+  s.melody([[72, .5], [76, .5], [79, 1], [77, .5], [74, .5], [76, 1], [79, .5], [84, .5], [83, .5], [81, .5], [79, 2]], 132, { vol: 0.08, echo: 1, music: 1 });
+  s.melody([[48, 2], [53, 2], [55, 2], [48, 2]], 132, { vol: 0.05, type: 'sine', music: 1 });
+});
 Sound.add('blow', s => { s.noise(0, 0.5, { filter: 'lowpass', freq: 1200, to: 300, vol: 0.08, attack: 0.05 }); });

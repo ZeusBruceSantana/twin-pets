@@ -106,4 +106,3 @@ function sendLetter(text) {
   renderMailbox();
   renderCenter();
 }
-const lettersWaiting = () => S.letters.some(l => !l.read);

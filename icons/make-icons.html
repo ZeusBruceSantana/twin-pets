@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twin Pets icon maker</title>
+<style>
+  body { margin: 0; padding: 24px; font: 18px/1.4 ui-rounded, "Segoe UI", system-ui, sans-serif; color: #3e3a4f; background: #fff8ef; }
+  h1 { margin: 0 0 6px; font-size: 28px; }
+  p { max-width: 760px; }
+  .icons { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-end; margin-top: 18px; }
+  figure { margin: 0; text-align: center; }
+  figure img { display: block; border-radius: 22%; box-shadow: 0 6px 18px rgba(0,0,0,.15); background: #fff; }
+  figure a { display: inline-block; margin-top: 8px; padding: 6px 14px; border-radius: 10px; background: #5cc77a; color: #fff; font-weight: 800; text-decoration: none; }
+</style>
+</head>
+<body>
+<h1>Twin Pets icon maker</h1>
+<p>This page draws the home-screen icon from the pets' pictures (the built-in drawings, or your own
+  pictures if you set them in <code>js/settings.js</code>). To change the icon: tap <b>Save</b> under each
+  picture, then upload the files into the <code>icons</code> folder on GitHub, replacing the old ones
+  (keep the same names). You can also use any square picture of your own with the same names and sizes.</p>
+<div class="icons" id="icons"></div>
+<script src="../js/settings.js"></script>
+<script>
+'use strict';
+const SIZES = [
+  { name: 'icon-512.png', size: 512, pad: 0.06 },
+  { name: 'icon-192.png', size: 192, pad: 0.06 },
+  { name: 'apple-touch-icon.png', size: 180, pad: 0.06 },
+  { name: 'icon-maskable-512.png', size: 512, pad: 0.16 },     // some tablets cut the corners off: keep the pets in the middle
+];
+const loadImage = src => new Promise((resolve, reject) => { const i = new Image(); i.onload = () => resolve(i); i.onerror = reject; i.src = src; });
+
+// The built-in drawing, smiling (happy eyes, open mouth).
+function drawingSvg(doc, id) {
+  const svg = doc.getElementById(id).content.querySelector('svg').cloneNode(true);
+  svg.querySelectorAll('.eyes-open, .eyes-closed, .mouth-closed, .fluff, .tail-front').forEach(e => e.remove());
+  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  svg.setAttribute('width', '400'); svg.setAttribute('height', '400');
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(svg));
+}
+async function petPicture(doc, side) {
+  const cfg = PET_ART[side];
+  if (cfg.awake) { try { return await loadImage('../' + cfg.awake); } catch (e) { /* use the drawing */ } }
+  return loadImage(drawingSvg(doc, cfg.drawing));
+}
+function heart(g, x, y, s) {
+  g.beginPath();
+  g.moveTo(x, y + s * 0.3);
+  g.bezierCurveTo(x - s * 0.55, y - s * 0.25, x - s * 0.95, y + s * 0.45, x, y + s);
+  g.bezierCurveTo(x + s * 0.95, y + s * 0.45, x + s * 0.55, y - s * 0.25, x, y + s * 0.3);
+  g.fill();
+}
+function draw(size, pad, left, right) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const g = c.getContext('2d');
+  const bg = g.createLinearGradient(0, 0, size, size);
+  bg.addColorStop(0, '#ffe3ef'); bg.addColorStop(1, '#d6f5f2');
+  g.fillStyle = bg; g.fillRect(0, 0, size, size);
+  g.fillStyle = 'rgba(255,255,255,.75)';
+  heart(g, size / 2, size * (0.08 + pad), size * (0.62 - pad));
+  const inner = size * (1 - pad * 2), petSize = inner * 0.6, base = size * (1 - pad) - inner * 0.04;
+  g.drawImage(left, size * pad + inner * 0.02, base - petSize, petSize, petSize);
+  g.drawImage(right, size * pad + inner * 0.98 - petSize, base - petSize, petSize, petSize);
+  return c.toDataURL('image/png');
+}
+(async () => {
+  const html = await (await fetch('../index.html')).text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const [left, right] = await Promise.all([petPicture(doc, 'left'), petPicture(doc, 'right')]);
+  const box = document.getElementById('icons');
+  window.ICONS_READY = {};
+  for (const s of SIZES) {
+    const url = draw(s.size, s.pad, left, right);
+    window.ICONS_READY[s.name] = url;
+    const f = document.createElement('figure');
+    f.innerHTML = `<img src="${url}" width="${Math.min(s.size, 192)}" height="${Math.min(s.size, 192)}" alt=""><figcaption>${s.name}</figcaption><a download="${s.name}" href="${url}">Save</a>`;
+    box.append(f);
+  }
+})();
+</script>
+</body>
+</html>

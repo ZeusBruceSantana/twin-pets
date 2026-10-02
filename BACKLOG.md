@@ -37,17 +37,33 @@
 - [x] One self-contained `index.html`, no build step, works on GitHub Pages
 - [x] Pet art organized so drawings or photos can be swapped in (`art/README.md`)
 
+### The pets' house
+- [x] A house with five rooms: playroom, kitchen, bathroom, backyard, bedroom. The game opens in the playroom
+- [x] Doors in the shared middle; both pets always stay in the same room
+- [x] Moving takes both girls tapping the same door within a few seconds. The door glows and the sister's pet face blinks to invite her
+- [x] Each room shows only its own buttons; a gentle hint (room name + glowing buttons) the first time each room is visited
+- [x] Kitchen: apple, fish, bone and Treat. A tummy that rounds out as the pet eats (a picture, shown only in the kitchen, never a number). "No thanks, I'm full!" The tummy empties over about an hour of real time; a hungry pet asks for food. Never sick or sad
+- [x] Bathroom: bath (fill the tub, bubbles, rubber duck, scrub, towel dry) and brushing, which makes the fur fluffy and sparkly for 15 minutes
+- [x] Backyard: trampolines (tap to bounce, both at once to bounce higher), rainbow climb (each girl climbs her own side, they meet at the top and slide down together, never a race), ball toss and seesaw. Playing outside gets the pets muddy; a bath cleans them
+- [x] Playroom: Play and chase, high five, trick word cards (sit, spin, roll over, wave, dance) that read aloud, learned after 3 tries, with a picture list of each pet's tricks
+- [x] Presents: a full jar brings two wrapped presents and each girl gives one to her sister's pet. Things to wear (bow, hat, crown, flower, scarf) stay on; toys go on the pet's shelf. **Dress** tries on different hats. Then a party
+- [x] Bedroom: bedtime, the shared goodnight ending, and the memory book
+- [x] Thought bubbles and tap-to-hear words work in every room, with new wishes (bath, brush, bounce, learned tricks)
+- [x] Memory book sentences mention the rooms ("Livvie and Avery Peach bounced on the trampoline.")
+- [x] Saved progress from before the house (colors, jar, memory book, unlocks, sound) loads unchanged
+
 ## Later ideas
 
-- [ ] **Real pet art**: swap in the girls' own drawings or photos of their real toys (the `art` folder is ready for it)
-- [ ] **School word lists**: load the words the girls are learning at school into the thought bubbles and memory book
+- [ ] **Real pet art from photos or drawings**: swap in the girls' own drawings or photos of their real toys (the `art` folder is ready; see `art/README.md`)
+- [ ] **School word lists**: load the words the girls are learning at school into the thought bubbles, trick cards and memory book
 - [ ] **Recorded voices**: record Mom, Dad or the girls reading the words, instead of the browser voice
-- [ ] **Decorating the pets' house**: a shared house the girls decorate together
+- [ ] **Decorating the house**: the girls decorate the rooms together (wallpaper, rugs, where the toys go)
 - [ ] **Swap day**: each girl looks after her sister's pet for a day
-- [ ] **Real bedtime dimming**: the game gets darker and calmer near real bedtime, and gently suggests goodnight
+- [ ] **Real bedtime dimming**: the game gets darker and calmer near real bedtime, and gently suggests going to the bedroom
 
 ## Ideas noticed while building
 
-- [ ] Let grown-ups choose the unlock speed from the grown-up corner, without editing the file
-- [ ] More surprises for the full jar (bubbles, a rainbow, a snowman)
+- [ ] Let grown-ups choose the unlock speed and tummy speed from the grown-up corner, without editing the file
+- [ ] More surprises and presents (bubbles party, a rainbow party, a kite, a cape)
 - [ ] An optional "both tap to start" step for the two-player games, if one girl starting a game while her sister is busy causes squabbles
+- [ ] A closet in the playroom to take off a scarf or choose between all the clothes

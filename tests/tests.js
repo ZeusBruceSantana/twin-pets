@@ -298,15 +298,40 @@ test("The pets' birthday can be set and cleared", async () => {
   expectEqual(G('S.birthday'), null, 'cleared');
 });
 
-test('Sound can be turned off and on', async () => {
+test('Sounds and music have their own switches', async () => {
   await openGame(played());
   await startPlaying();
+  expectEqual(G('S.sound.music'), true, 'music starts on (also for older saves)');
   G('openParent()');
-  const was = G('S.sound.muted');
   tap($g('[data-p="mute"]'));
-  expectEqual(G('S.sound.muted'), !was, 'switched');
+  expectEqual([G('S.sound.muted'), G('S.sound.music')], [true, true], 'sounds off, music still on');
+  tap($g('[data-p="music"]'));
+  expectEqual([G('S.sound.muted'), G('S.sound.music')], [true, false], 'both off');
   tap($g('[data-p="mute"]'));
-  expectEqual(G('S.sound.muted'), was, 'switched back');
+  expectEqual([G('S.sound.muted'), G('S.sound.music')], [false, false], 'sounds on, music still off');
+  tap($g('[data-p="music"]'));
+  expectEqual(G('S.sound.music'), true, 'music back on');
+  await reopenGame();
+  expectEqual([G('S.sound.muted'), G('S.sound.music')], [false, true], 'the switches are remembered');
+});
+
+test('Each room and place has its own tune, and none at bedtime', async () => {
+  await openGame(played());
+  await startPlaying();
+  // (the tests stay silent, so this asks which tune the game would choose)
+  expectEqual(G('Music.wanted(true)'), 'playroom', 'the playroom tune');
+  G(`showRoom('kitchen')`);
+  expectEqual(G('Music.wanted(true)'), 'kitchen', 'the kitchen tune');
+  G('S.sound.music = false');
+  expectEqual(G('Music.wanted(true)'), null, 'no tune with music off');
+  G('S.sound.music = true; S.bedtime = true');
+  expectEqual(G('Music.wanted(true)'), null, 'no tune at bedtime (the lullaby plays)');
+  G('S.bedtime = false');
+  ['playroom', 'kitchen', 'bathroom', 'backyard', 'bedroom', 'frontyard', 'school', 'beach', 'park', 'icecream', 'title']
+    .forEach(name => expect(G(`!!PIECES['${name}']`), `there is a tune for the ${name}`));
+  const names = G(`Object.values(PIECES).map(p => p.seed)`);
+  expectEqual(new Set(names).size, names.length, 'every tune is different');
+  expectEqual(G(`JSON.stringify(compose(PIECES.kitchen)) === JSON.stringify(compose(PIECES.kitchen))`), true, 'a room always has the same tune');
 });
 
 /* =====================================================================

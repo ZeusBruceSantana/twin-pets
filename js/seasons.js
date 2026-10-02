@@ -172,5 +172,9 @@ ACTIVITIES.birthday = {
   },
 };
 BOOK_LINES.birthday = { line: 'had a birthday party!', icon: 'cake', rank: 101 };
-Sound.add('birthday', s => s.melody([[67, 0.75], [67, 0.25], [69, 1], [67, 1], [72, 1], [71, 2]], 150, { vol: 0.08, echo: 1 }));
+// an original little party tune (not the birthday song)
+Sound.add('birthday', s => {
+  s.melody([[72, .5], [76, .5], [79, 1], [77, .5], [74, .5], [76, 1], [79, .5], [84, .5], [83, .5], [81, .5], [79, 2]], 132, { vol: 0.08, echo: 1, music: 1 });
+  s.melody([[48, 2], [53, 2], [55, 2], [48, 2]], 132, { vol: 0.05, type: 'sine', music: 1 });
+});
 Sound.add('blow', s => { s.noise(0, 0.5, { filter: 'lowpass', freq: 1200, to: 300, vol: 0.08, attack: 0.05 }); });

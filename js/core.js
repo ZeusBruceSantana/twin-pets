@@ -36,7 +36,7 @@ function freshSave() {
     surprise: 0,            // which surprise comes next
     unlocked: {},           // which new things have appeared
     book: {},               // memory book: { '2026-10-01': ['chase', 'treat'] }
-    sound: { muted: false, volume: 0.7 },
+    sound: { muted: false, volume: 0.7, music: true },   // muted = the Sounds switch; music = the Music switch
     room: 'playroom',
     seen: {},               // rooms already visited (for the first-visit hint)
     doorNew: {},            // rooms with something new inside
@@ -178,7 +178,9 @@ function onPress(elm, fn) {
    SOUNDS — all made in code, kept soft and gentle
    ===================================================================== */
 const Sound = (() => {
-  let ctx = null, master = null, echo = null, music = null, noiseBuf = null, primed = false;
+  // master (volume) <- sounds (the Sounds switch) <- tunes for special moments
+  //                 <- background music (the Music switch)
+  let ctx = null, master = null, sfx = null, bgm = null, echo = null, room = null, music = null, noiseBuf = null, primed = false;
   const NOTE = m => 440 * Math.pow(2, (m - 69) / 12);
 
   function init() {
@@ -187,15 +189,22 @@ const Sound = (() => {
     if (!AC) return null;
     try { ctx = new AC(); } catch (e) { return null; }
     master = ctx.createGain();
-    const soft = ctx.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 5000;
+    const soft = ctx.createBiquadFilter(); soft.type = 'lowpass'; soft.frequency.value = 4200;   // no sharp edges
     const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -20; comp.ratio.value = 4;
     master.connect(soft); soft.connect(comp); comp.connect(ctx.destination);
     // a soft echo makes chimes sparkle
     echo = ctx.createGain();
     const d = ctx.createDelay(1); d.delayTime.value = 0.22;
     const fb = ctx.createGain(); fb.gain.value = 0.28;
-    const wet = ctx.createGain(); wet.gain.value = 0.22;
+    const wet = ctx.createGain(); wet.gain.value = 0.2;
     echo.connect(d); d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(master);
+    // a cozy little room around every sound
+    room = ctx.createGain(); room.gain.value = 0.22;
+    const verb = ctx.createConvolver();
+    verb.buffer = roomEcho(1.6);
+    room.connect(verb); verb.connect(master);
+    sfx = ctx.createGain(); sfx.connect(master); sfx.connect(room);
+    bgm = ctx.createGain(); bgm.connect(master); bgm.connect(room);
     newMusicBus();
     noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
     const ch = noiseBuf.getChannelData(0);
@@ -203,11 +212,21 @@ const Sound = (() => {
     applyVolume();
     return ctx;
   }
-  function newMusicBus() { music = ctx.createGain(); music.connect(master); }
+  function roomEcho(seconds) {
+    const len = Math.floor(ctx.sampleRate * seconds), b = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const data = b.getChannelData(c);
+      for (let i = 0; i < len; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3) * 0.6;
+    }
+    return b;
+  }
+  function newMusicBus() { music = ctx.createGain(); music.connect(sfx); }
   function applyVolume() {
     if (!master) return;
-    const v = S.sound.muted ? 0 : S.sound.volume * S.sound.volume;
-    master.gain.setTargetAtTime(v, ctx.currentTime, 0.02);
+    const t = ctx.currentTime;
+    master.gain.setTargetAtTime(S.sound.volume * S.sound.volume, t, 0.02);
+    sfx.gain.setTargetAtTime(S.sound.muted ? 0 : 1, t, 0.02);
+    bgm.gain.setTargetAtTime(S.sound.music === false ? 0 : 1, t, 0.3);
   }
   function unlock() {
     const c = init();
@@ -218,21 +237,35 @@ const Sound = (() => {
       s.buffer = b; s.connect(c.destination); s.start(0); primed = true;
     }
   }
+  // One note. Warm by default: a soft start, a second voice a hair out of tune (like a
+  // music box or a choir), and buzzy shapes (square, sawtooth) are softened.
   function tone(f, at, dur, o = {}) {
     const t = ctx.currentTime + at;
-    const osc = ctx.createOscillator();
-    osc.type = o.type || 'sine';
-    osc.frequency.setValueAtTime(f, t);
-    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + (o.glide || dur));
+    const type = o.type || 'sine';
     const g = ctx.createGain();
     const v = o.vol == null ? 0.15 : o.vol;
-    const a = o.attack == null ? 0.012 : o.attack;
+    const a = o.attack == null ? 0.018 : o.attack;
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(v, t + a);
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    osc.connect(g); g.connect(o.music ? music : master);
-    if (o.echo) g.connect(echo);
-    osc.start(t); osc.stop(t + dur + 0.05);
+    let out = g;
+    if (type === 'square' || type === 'sawtooth') {
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = o.cut || 1400;
+      g.connect(lp); out = lp;
+    }
+    const voices = o.pure || type === 'square' || type === 'sawtooth' ? [[0, 1]] : [[0, 1], [7, 0.3]];
+    voices.forEach(([cents, level]) => {
+      const osc = ctx.createOscillator();
+      osc.type = type;
+      osc.detune.value = cents;
+      osc.frequency.setValueAtTime(f, t);
+      if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + (o.glide || dur));
+      if (level === 1) osc.connect(g);
+      else { const lv = ctx.createGain(); lv.gain.value = level; osc.connect(lv); lv.connect(g); }
+      osc.start(t); osc.stop(t + dur + 0.05);
+    });
+    out.connect(o.dest || (o.music ? music : sfx));
+    if (o.echo) out.connect(echo);
   }
   function noise(at, dur, o = {}) {
     const t = ctx.currentTime + at;
@@ -245,7 +278,7 @@ const Sound = (() => {
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(v, t + (o.attack || 0.01));
     g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-    s.connect(f); f.connect(g); g.connect(o.music ? music : master);
+    s.connect(f); f.connect(g); g.connect(o.dest || (o.music ? music : sfx));
     s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.05);
   }
   // notes: [[midiNote or null for a rest, beats], ...]
@@ -310,7 +343,7 @@ const Sound = (() => {
     },
     pawUp() { tone(NOTE(76), 0, 0.16, { to: NOTE(81), vol: 0.06 }); },
     clap() {
-      noise(0, 0.12, { filter: 'highpass', freq: 1500, vol: 0.12 });
+      noise(0, 0.12, { freq: 1800, q: 0.7, vol: 0.1 });
       noise(0.025, 0.1, { filter: 'bandpass', freq: 2500, vol: 0.08 });
       [84, 88, 91].forEach((m, i) => tone(NOTE(m), 0.05 + i * 0.06, 0.4, { vol: 0.06, echo: 1 }));
     },
@@ -335,7 +368,7 @@ const Sound = (() => {
       const bass = [36, 48, 36, 48, 33, 45, 33, 45, 29, 41, 29, 41, 31, 43, 31, 43];
       for (let i = 0; i < 16; i++) {
         tone(150, i * beat, 0.2, { to: 45, vol: 0.18, music: 1 });                       // soft kick
-        noise(i * beat + beat / 2, 0.05, { filter: 'highpass', freq: 7000, vol: 0.025, music: 1 }); // tick
+        noise(i * beat + beat / 2, 0.05, { freq: 3500, q: 1.2, vol: 0.03, music: 1 });              // tick
         tone(NOTE(bass[i]), i * beat, 0.25, { type: 'triangle', vol: 0.08, music: 1 });
       }
       const riff = [[79, .5], [76, .5], [79, .5], [81, 1], [79, .5], [76, 1], [72, .5], [74, .5], [76, 1], [null, 2],
@@ -376,6 +409,8 @@ const Sound = (() => {
   return {
     unlock,
     applyVolume,
+    /* For the background music (music.js): the sound engine, once a tap has started it. */
+    engine() { return ctx && ctx.state === 'running' ? { ctx, tone, noise, NOTE, bgm } : null; },
     /* Other parts of the game add their own sounds: Sound.add('name', (s, ...args) => s.tone(...)) */
     add(name, maker) { lib[name] = (...args) => maker({ tone, noise, melody, NOTE, k3 }, ...args); },
     play(name, ...args) {

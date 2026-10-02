@@ -313,7 +313,7 @@ function renderParentMain(panel) {
   panel.innerHTML = `
     <h2>Grown-ups</h2>
     <div class="ptiles">${tiles}</div>
-    <div class="row"><span>Sound</span><div class="pbtn ${S.sound.muted ? '' : 'on'}" data-p="mute">${S.sound.muted ? 'Off (tap to turn on)' : 'On (tap to mute)'}</div></div>
+    <div class="row"><div class="pbtn ${S.sound.muted ? '' : 'on'}" data-p="mute">Sounds: ${S.sound.muted ? 'off' : 'on'}</div><div class="pbtn ${S.sound.music === false ? '' : 'on'}" data-p="music">Music: ${S.sound.music === false ? 'off' : 'on'}</div></div>
     <div class="row"><span>Volume</span><div class="pbtn round" data-p="vol-">−</div><div class="volbar">${bars}</div><div class="pbtn round" data-p="vol+">+</div></div>
     <div class="row"><div class="pbtn" data-p="colors">Change colors</div>${canFullscreen() ? '<div class="pbtn" data-p="fs">Full screen</div>' : ''}</div>
     <div class="row"><div class="pbtn" data-p="unlock">Show all new things now</div><div class="pbtn danger ${resetArmed ? 'confirm' : ''}" data-p="reset">${resetArmed ? 'Tap again to erase everything' : 'Start over'}</div></div>
@@ -335,6 +335,10 @@ function parentAction(what) {
     if (S.sound.muted && 'speechSynthesis' in window) speechSynthesis.cancel();
     Sound.applyVolume();
     Sound.play('pick');
+  } else if (what === 'music') {
+    S.sound.music = S.sound.music === false;
+    Sound.applyVolume();
+    Music.tick();
   } else if (what === 'vol-' || what === 'vol+') {
     S.sound.volume = Math.min(1, Math.max(0.1, Math.round((S.sound.volume + (what === 'vol+' ? 0.1 : -0.1)) * 10) / 10));
     Sound.applyVolume();

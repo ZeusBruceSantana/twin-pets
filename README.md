@@ -3,7 +3,7 @@
 A two-player virtual pet game for two sisters, played side by side at the
 same time on one touch screen held sideways (an iPad or a Microsoft Surface).
 
-- **Left side:** Leah and her snow leopard, **Livvie**
+- **Left side:** Leah and her snow leopard, **Livvie** (honey fur with black-and-brown spots)
 - **Right side:** Avery and her puppy, **Avery Peach**
 
 Each girl has her own big buttons along her edge of the screen. The pets
@@ -11,15 +11,19 @@ play together in the shared middle. There are no scores, no winners, and the
 pets never get sick or sad. If nobody plays, they just wait happily.
 
 The game is a few plain files (`index.html`, `styles.css` and the `js`
-folder). It needs no internet once it has loaded, no accounts and no outside
-servers.
+folder). It works without internet once it has been opened once, installs on
+the home screen like an app, and needs no accounts and no outside servers.
+
+Each room has its own soft background tune, written by the game itself. The
+little ♥ at the bottom of the start screen opens a page that says who made it.
 
 ---
 
 ## How to play (for grown-ups)
 
 **First time:** each girl taps a color on her half. They can't both pick the
-same one. Then tap the big green ▶ in the middle.
+same one. Then tap the big green ▶ in the middle. After that, the game opens
+on the start screen: tap anywhere to play.
 
 ### The shared middle
 
@@ -128,7 +132,8 @@ tablet.
   grown-up wakes them here** (a **Wake the pets** button appears), even if the
   game is closed and opened again.
 - **Pets' birthday**: tap a month and set the day.
-- turn the sound **on or off**, and change the **volume**
+- **Sounds** and **Music**: two separate switches (music is on, quietly, to
+  start), and the **volume**
 - **change colors** (each girl picks again)
 - **show all new things now**, which is handy for trying everything at once
 - go **full screen** (on the Surface, when not already full screen)
@@ -291,8 +296,9 @@ lets you change:
 ## Tests
 
 The game has automatic tests for the important things: saving and loading
-(including saves from every earlier version), moving between rooms, the
-friendship jar, and the grown-up corner.
+(including saves from every earlier version), backups and restoring, moving
+between rooms, the friendship jar, the grown-up corner, music and sound
+switches, and the start screen.
 
 - **On GitHub:** they run by themselves on every pull request. A green ✓ next
   to the pull request means they all passed; a red ✗ means something needs a
@@ -314,6 +320,6 @@ friendship jar, and the grown-up corner.
 | `js/` (the other files) | The game itself, one file for each part (kitchen, bathroom, garden, school, trips...) |
 | `art/` | Optional: put your own pet drawings or photos here |
 | `tests/` | The automatic tests (open `tests/index.html` to run them) |
-| `icons/` | The home-screen icon pictures, and `make-icons.html` to remake them |
+| `icons/` | The home-screen icon (both pets together), and `make-icons.html` to remake it from new pet pictures |
 | `sw.js`, `manifest.webmanifest` | Let the game work without internet and install like an app |
 | `BACKLOG.md` | What's done and ideas for later |

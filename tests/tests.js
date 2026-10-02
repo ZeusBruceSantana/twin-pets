@@ -72,6 +72,20 @@ test('"Start over" (tapped twice) erases the save', async () => {
   expectEqual(saved(), null, 'the save is gone');
 });
 
+test('The start screen shows the name, and the heart opens the dedication', async () => {
+  await openGame(played());
+  expect($g('#title .logo').textContent.includes('Twin') && $g('#title .logo').textContent.includes('Pets'), 'the name is on the start screen');
+  tap($g('#dedication-btn'));
+  await sleep(200);
+  expect($g('#dedication').classList.contains('show'), 'the dedication opens');
+  expectEqual(G('scene'), 'title', 'it does not start the game');
+  expect($g('#dedication').textContent.includes('Made by Dad for Leah and Avery'), 'it says who it is from');
+  expect($g('#dedication').textContent.includes('2026'), 'and the year');
+  tap($g('#dedication .book-close'));
+  expect(!$g('#dedication').classList.contains('show'), 'it closes');
+  await startPlaying();
+});
+
 /* =====================================================================
    MOVING BETWEEN ROOMS
    ===================================================================== */

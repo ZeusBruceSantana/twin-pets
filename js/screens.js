@@ -388,3 +388,25 @@ document.addEventListener('touchmove', e => { if (!isTyping(e)) e.preventDefault
 ['touchend', 'pointerup', 'click'].forEach(ev => document.addEventListener(ev, () => Sound.unlock(), { passive: true }));
 document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
 addEventListener('pagehide', () => saveNow());
+
+/* =====================================================================
+   THE DEDICATION (the little heart on the start screen)
+   ===================================================================== */
+function setupDedication() {
+  const btn = $('#dedication-btn'), page = $('#dedication'), card = page.querySelector('.card');
+  btn.innerHTML = ICONS.heart;
+  const pet = side => { const d = el('div', 'art happy'); fillArt(d, side); return d; };
+  card.innerHTML = `<div class="ded-pets"></div><div class="ded-line big"></div><div class="ded-line"></div><div class="book-btn book-close">${ICONS.close}</div>`;
+  card.querySelector('.ded-pets').append(pet('left'), el('div', 'ded-heart', ICONS.twinHeart), pet('right'));
+  wordsInto(card.querySelectorAll('.ded-line')[0], 'Made by Dad for Leah and Avery.');
+  wordsInto(card.querySelectorAll('.ded-line')[1], '2026');
+  const close = () => page.classList.remove('show');
+  onPress(card.querySelector('.book-close'), close);
+  onTap(page, e => { if (e.target === page) close(); });
+  onRelease(btn, () => {
+    page.classList.add('show');
+    Sound.play('wish');
+    const r = card.getBoundingClientRect();
+    setTimeout(() => celebrate(r.left + r.width / 2, r.top + r.height * 0.3, 16), 200);
+  });
+}

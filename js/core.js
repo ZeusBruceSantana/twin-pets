@@ -66,17 +66,27 @@ function merge(base, extra) {
   return base;
 }
 function loadSave() {
-  try {
-    const raw = localStorage.getItem(SAVE_KEY);
-    if (raw) return merge(freshSave(), JSON.parse(raw));
-  } catch (e) { /* no saving available: play anyway */ }
-  return freshSave();
+  let raw = null;
+  try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { /* no saving available: play anyway */ }
+  if (!raw) return freshSave();
+  try { return merge(freshSave(), JSON.parse(raw)); } catch (e) {
+    // a damaged save is set aside (never thrown away), and the game starts fresh
+    try { localStorage.setItem(SAVE_KEY + '-damaged', raw); } catch (e2) { /* ignore */ }
+    return freshSave();
+  }
 }
 let S = loadSave();
 let erasing = false;   // true while "Start over" is wiping everything
 function save() {
   if (erasing) return;
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* ignore */ }
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {
+    // The tablet's space for the game is full: let go of the oldest camera pictures
+    // (everything else is kept) until it fits.
+    while (S.photos && S.photos.length) {
+      S.photos.shift();
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return; } catch (e2) { /* still too big */ }
+    }
+  }
 }
 
 /* =====================================================================

@@ -113,6 +113,9 @@ see the next one).
 fills up, then the grown-up panel opens. Everything typed here stays on this
 tablet.
 
+- **Backup**: save everything to a backup file, or restore from one. See
+  [Backups](#backups-keep-their-progress-safe) below. The tile shows the date
+  of the last backup, and glows gently if it's been more than a month.
 - **Write a letter**: type a short letter. It goes in the mailbox in the front
   yard, and the front yard gets a star on the map.
 - **School words**: type this week's words with commas between them
@@ -178,14 +181,19 @@ Tips:
 - **No sound?** Check that the iPad isn't on silent (in Control Center, the
   bell should not be crossed out) and that the volume is up.
 - The home-screen app keeps **its own save**, separate from Safari. Always
-  open it the same way, from the home-screen icon.
+  open it the same way, from the home-screen icon. If the girls have been
+  playing in Safari, make a **backup** there first, then **restore** it in
+  the home-screen app (see [Backups](#backups-keep-their-progress-safe)).
+- After it has been opened once with internet, the game **works without
+  internet** too.
 
 ### Microsoft Surface
 
 1. Open the game's address in **Microsoft Edge**.
 2. Click the **…** menu (top right) → **Apps** → **Install this site as an app**
    (it may say **Install Twin Pets**), then **Install**.
-3. Open Twin Pets from the Start menu or taskbar.
+3. Open Twin Pets from the Start menu or taskbar. It works without internet
+   after the first time.
 4. Tapping the big ▶ to start makes it go full screen. You can also press
    **F11**, or use **Full screen** in the grown-up corner.
 
@@ -207,7 +215,56 @@ The game saves by itself on the device it is played on. It saves:
 - letters, school words, the play timer and the pets' birthday
 
 Updates to the game keep the save. If you clear the browser's website data,
-the save is erased too. The game never sends anything anywhere.
+the save is erased too, so make a backup now and then. The game never sends
+anything anywhere.
+
+If the tablet ever runs out of room for the game, the oldest camera pictures
+are let go first, so everything else keeps saving.
+
+---
+
+## Backups: keep their progress safe
+
+A backup is one small file with **everything**: colors, the jar, the memory
+book and its pictures, paintings, letters, tricks, decorations, school words,
+clothes, the garden and more. Make one every few weeks, and before moving to
+a new tablet.
+
+**To make a backup:** open the grown-up corner (hold the top-left corner for
+3 seconds), tap **Backup**, then **Save a backup**.
+- **iPad:** a share menu opens. Tap **Save to Files**, choose a folder (for
+  example *On My iPad* or *iCloud Drive*), and tap **Save**.
+- **Surface:** the file goes to the **Downloads** folder. You may want to copy
+  it somewhere safe, like OneDrive.
+
+The file is called something like `twin-pets-backup-2026-10-02.json`.
+
+**To restore from a backup:** grown-up corner → **Backup** → **Restore from a
+backup**, then pick the file. The game shows what's in it (how many hearts
+and memory book days) and asks before replacing anything. If you change your
+mind afterwards, the same page has **Undo the last restore**.
+
+---
+
+## If a new version breaks something: undo it on GitHub
+
+Every change to the game arrives as a pull request that you merge. If a new
+version has a problem, you can undo it in a few taps, and the website goes
+back to the version before:
+
+1. On GitHub, open the repository and click **Pull requests**.
+2. Click **Closed** and open the pull request you merged most recently.
+3. Near the bottom of the page, click **Revert**. GitHub makes a new pull
+   request that undoes it.
+4. On that new pull request, click **Merge pull request**, then
+   **Confirm merge**.
+5. Wait a few minutes, then close the game on the tablet completely and open
+   it again.
+
+The girls' progress is saved on the tablet, not on GitHub, so undoing a
+version doesn't erase anything they did. To be extra safe, make a backup
+before trying a new version. Later, when the problem is fixed, the change can
+be merged again.
 
 ---
 
@@ -257,4 +314,6 @@ friendship jar, and the grown-up corner.
 | `js/` (the other files) | The game itself, one file for each part (kitchen, bathroom, garden, school, trips...) |
 | `art/` | Optional: put your own pet drawings or photos here |
 | `tests/` | The automatic tests (open `tests/index.html` to run them) |
+| `icons/` | The home-screen icon pictures, and `make-icons.html` to remake them |
+| `sw.js`, `manifest.webmanifest` | Let the game work without internet and install like an app |
 | `BACKLOG.md` | What's done and ideas for later |

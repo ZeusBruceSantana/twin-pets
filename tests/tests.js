@@ -308,3 +308,98 @@ test('Sound can be turned off and on', async () => {
   tap($g('[data-p="mute"]'));
   expectEqual(G('S.sound.muted'), was, 'switched back');
 });
+
+/* =====================================================================
+   PROTECTING PROGRESS: backups, restore, damaged saves, full storage
+   ===================================================================== */
+async function openBackupPage() {
+  G('openParent()');
+  tap($g('.ptile[data-page="backup"]'));
+  await sleep(100);
+}
+test('A backup file has everything, and the corner shows the backup date', async () => {
+  await openGame(played());
+  await startPlaying();
+  G(`S.letters.push({ text: 'Hi!', at: 1, read: false }); S.schoolWords = ['dog']; S.pets.left.tricks.dance = 3; save();`);
+  G('openParent()');
+  expect($g('.ptile[data-page="backup"] small').textContent.includes('never'), 'before: no backup yet');
+  tap($g('.ptile[data-page="backup"]'));
+  await sleep(100);
+  tap($g('[data-save]'));
+  await sleep(200);
+  const file = JSON.parse(G('lastBackupText'));
+  expectEqual(file.app, 'twin-pets', 'it is a Twin Pets backup');
+  const now = G('S');
+  ['colors', 'jar', 'together', 'book', 'paintings', 'letters', 'decor', 'schoolWords', 'garden', 'unlocked', 'features', 'birthday']
+    .forEach(k => expectEqual(file.save[k], now[k], `the backup has "${k}"`));
+  expectEqual(file.save.pets.left.tricks, now.pets.left.tricks, 'the backup has the tricks');
+  expect(G('S.backupAt') > Date.now() - 10000, 'the backup date is remembered');
+  expect($g('#parent').textContent.includes('Last backup'), 'the page shows the last backup date');
+  tap($g('[data-back]'));
+  expect(!$g('.ptile[data-page="backup"] small').textContent.includes('never'), 'the corner shows the date');
+});
+
+test('Restoring a backup brings everything back, and it can be undone', async () => {
+  // make a backup of a game the girls have played
+  const a = played(); a.jar = 6; a.letters = [{ text: 'From the backup', at: 1, read: true }];
+  await openGame(a);
+  await openBackupPage();
+  tap($g('[data-save]'));
+  await sleep(200);
+  const backupText = G('lastBackupText');
+  // a different game on a "new tablet"
+  const b = played(); b.jar = 1; b.colors = { left: 'pink', right: 'blue' }; b.letters = [];
+  await openGame(b);
+  await openBackupPage();
+  G(`restoreFromFile(new File([${JSON.stringify(backupText)}], 'twin-pets-backup.json'))`);
+  await until(() => $g('[data-restore]'), 3000, 'the "replace" question');
+  expect($g('#parent').textContent.includes('6 hearts'), 'it says what is in the backup');
+  let reloaded = new Promise(r => { frame.onload = r; });
+  tap($g('[data-restore]'));
+  await reloaded;
+  W = frame.contentWindow;
+  await until(() => G('scene') === 'title', 8000, 'the game to open again');
+  expectEqual(G('S.jar'), 6, 'the jar came back');
+  expectEqual(G('S.colors'), a.colors, 'the colors came back');
+  expectEqual(G('S.letters[0].text'), 'From the backup', 'the letters came back');
+  // undo it
+  await openBackupPage();
+  reloaded = new Promise(r => { frame.onload = r; });
+  tap($g('[data-undo]'));
+  await reloaded;
+  W = frame.contentWindow;
+  await until(() => G('scene') === 'title', 8000, 'the game to open again');
+  expectEqual(G('S.jar'), 1, 'back to how it was before the restore');
+  expectEqual(G('S.colors'), b.colors, 'colors back to before');
+});
+
+test('A file that is not a backup is refused, and nothing changes', async () => {
+  await openGame(played());
+  await openBackupPage();
+  G(`restoreFromFile(new File(['hello there'], 'note.txt'))`);
+  await until(() => $g('#parent').textContent.includes("isn't a Twin Pets backup"), 3000, 'the message');
+  expectEqual(saved().jar, FIXTURES.v4.jar, 'the game is unchanged');
+});
+
+test('A damaged save is set aside, not thrown away', async () => {
+  localStorage.removeItem(TEST_KEY + '-damaged');
+  await openGame('{ oops');
+  expectEqual(localStorage.getItem(TEST_KEY + '-damaged'), '{ oops', 'the damaged save is kept to the side');
+  localStorage.removeItem(TEST_KEY + '-damaged');
+});
+
+test('When the device runs out of room, old camera pictures make room and everything else is kept', async () => {
+  await openGame(played());
+  await startPlaying();
+  const pic = 'x'.repeat(4000);
+  const limit = G(`JSON.stringify(Object.assign({}, S, { photos: [] })).length`) + 9000;
+  G(`S.photos = [1, 2, 3, 4, 5].map(i => ({ day: todayKey(), at: i, room: 'playroom', left: { html: '${pic}' }, right: { html: '' } }));
+     window.__realSet = Storage.prototype.setItem;
+     Storage.prototype.setItem = function (k, v) { if (String(v).length > ${limit}) throw new DOMException('full', 'QuotaExceededError'); return window.__realSet.call(this, k, v); };
+     S.jar = 5; save();
+     Storage.prototype.setItem = window.__realSet;`);
+  const s = saved();
+  expect(s.photos.length > 0 && s.photos.length < 5, 'some of the oldest pictures were let go');
+  expectEqual(s.photos[s.photos.length - 1].at, 5, 'the newest picture is kept');
+  expectEqual(s.jar, 5, 'the jar was saved');
+});

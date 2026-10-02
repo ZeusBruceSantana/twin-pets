@@ -220,13 +220,12 @@ function finishPicking() {
   if (!(picking.left && picking.right)) return;
   S.colors.left = picking.left; S.colors.right = picking.right; save();
   applyColors();
-  makeHomeScreenIcon();
   $('#picker').classList.remove('show');
   startPlaying();
 }
 
 /* =====================================================================
-   START SCREEN, FULL SCREEN, HOME SCREEN ICON
+   START SCREEN AND FULL SCREEN
    ===================================================================== */
 const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isStandalone = () => navigator.standalone === true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches;
@@ -269,44 +268,6 @@ function startPlaying() {
   }, 800);
 }
 
-/* The picture used when the game is saved to the home screen. */
-function makeHomeScreenIcon() {
-  const L = colorById(S.colors.left) || COLORS[0], R = colorById(S.colors.right) || COLORS[2];
-  const draw = size => {
-    const c = document.createElement('canvas');
-    c.width = c.height = size;
-    const g = c.getContext('2d');
-    g.fillStyle = L.light; g.fillRect(0, 0, size / 2, size);
-    g.fillStyle = R.light; g.fillRect(size / 2, 0, size / 2, size);
-    g.save();
-    g.translate(size * 0.12, size * 0.14); g.scale(size * 0.0076, size * 0.0076);
-    const heart = new Path2D('M50 88 C 18 66, 6 46, 12 30 C 18 14, 42 12, 50 30 C 58 12, 82 14, 88 30 C 94 46, 82 66, 50 88Z');
-    g.save(); g.beginPath(); g.rect(0, 0, 50, 100); g.clip(); g.fillStyle = L.main; g.fill(heart); g.restore();
-    g.save(); g.beginPath(); g.rect(50, 0, 50, 100); g.clip(); g.fillStyle = R.main; g.fill(heart); g.restore();
-    g.restore();
-    return c.toDataURL('image/png');
-  };
-  try {
-    const i180 = draw(180), i192 = draw(192), i512 = draw(512);
-    const link = (rel, href, extra) => {
-      let l = document.querySelector(`link[rel="${rel}"]`);
-      if (!l) { l = document.createElement('link'); l.rel = rel; document.head.append(l); }
-      l.href = href;
-      if (extra) Object.assign(l, extra);
-    };
-    link('apple-touch-icon', i180);
-    link('icon', i192);
-    const here = location.href.split('#')[0];
-    const manifest = {
-      name: 'Twin Pets', short_name: 'Twin Pets', start_url: here, scope: here.replace(/[^/]*$/, ''),
-      display: 'standalone', display_override: ['fullscreen', 'standalone'], orientation: 'landscape',
-      background_color: '#fff8ef', theme_color: '#fff8ef',
-      icons: [{ src: i192, sizes: '192x192', type: 'image/png' }, { src: i512, sizes: '512x512', type: 'image/png' }],
-    };
-    link('manifest', 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest)));
-  } catch (e) { /* not important */ }
-}
-
 /* =====================================================================
    GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
    ===================================================================== */
@@ -344,6 +305,7 @@ function renderParent() {
 }
 function renderParentMain(panel) {
   const tiles = Object.entries(PARENT_PAGES).filter(([, pg]) => !pg.show || pg.show())
+    .sort(([, a], [, b]) => (a.order == null ? 50 : a.order) - (b.order == null ? 50 : b.order))
     .map(([k, pg]) => `<div class="ptile${pg.hot && pg.hot() ? ' hot' : ''}" data-page="${k}"><div class="pico">${ICONS[pg.icon] || ''}</div><div class="plbl">${pg.label()}</div></div>`).join('');
   const v = Math.round(S.sound.volume * 10);
   let bars = '';
@@ -361,9 +323,9 @@ function renderParentMain(panel) {
   panel.querySelectorAll('[data-page]').forEach(b => onRelease(b, () => { resetArmed = 0; parentPage = b.dataset.page; renderParent(); }));
 }
 /* A grown-up page: a title, its insides, and a Back button. */
-function parentShell(panel, title, inner) {
+function parentShell(panel, title, inner, onBack) {
   panel.innerHTML = `<h2>${title}</h2>${inner}<div class="row"><div class="pbtn" data-back>Back</div></div>`;
-  onRelease(panel.querySelector('[data-back]'), () => { parentPage = null; renderParent(); });
+  onRelease(panel.querySelector('[data-back]'), () => { if (onBack) onBack(); parentPage = null; renderParent(); });
   return panel;
 }
 function parentAction(what) {

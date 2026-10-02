@@ -155,9 +155,10 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
 /* ---------- each girl's button strip ---------- */
 .column {
   position: absolute; top: 0; bottom: 0; width: var(--col); z-index: 20;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.2vmin;
-  padding: calc(11vmin + var(--safe-top)) 0 3vmin;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 2.2vmin;
+  padding: calc(12vmin + var(--safe-top)) 0 3vmin;     /* the first button is always in the same place */
 }
+.column.big { justify-content: center; padding-top: calc(11vmin + var(--safe-top)); }
 .column::before { content: ''; position: absolute; inset: 0; background: var(--c); opacity: .2; z-index: -1; }
 .column.left  { left: 0;  --c: var(--L); --c-dark: var(--L-dark); --c-light: var(--L-light); }
 .column.right { right: 0; --c: var(--R); --c-dark: var(--R-dark); --c-light: var(--R-light); }
@@ -169,12 +170,13 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
   box-shadow: 0 1.2vmin 0 var(--c-dark);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   color: var(--c-dark); font: 900 3.4vmin/1 var(--font);
-  transition: transform .08s ease, box-shadow .08s ease, opacity .4s ease;
+  transition: transform .4s cubic-bezier(.3,1.9,.5,1), box-shadow .2s ease, opacity .4s ease;
 }
-.btn .ico { width: 9.5vmin; height: 9.5vmin; pointer-events: none; }
+.btn .ico { width: 9.5vmin; height: 9.5vmin; pointer-events: none; transition: transform .5s cubic-bezier(.3,2.2,.5,1); }
+.btn.down .ico { transform: scale(.86) rotate(-6deg); transition-duration: .07s; }
 .btn .ico > svg { width: 100%; height: 100%; overflow: visible; }
 .btn .lbl { margin-top: .5vmin; pointer-events: none; text-align: center; line-height: 1.05; }
-.btn.down { transform: translateY(.9vmin) scale(.96); box-shadow: 0 .3vmin 0 var(--c-dark); }
+.btn.down { transform: translateY(.9vmin) scale(.93); box-shadow: 0 .3vmin 0 var(--c-dark); transition-duration: .07s; }
 .column.big .btn { width: 17vmin; height: 46vmin; border-radius: 6vmin; }
 .column.big .btn .ico { width: 13vmin; height: 13vmin; }
 .column.big .btn .lbl { font-size: 4vmin; margin-top: 1.5vmin; }
@@ -391,7 +393,7 @@ body[data-scene="climb"] #dots { display: none; }
 .rainbow svg { width: 100%; height: 100%; overflow: visible; }
 
 /* ---------- playroom: trick cards and presents ---------- */
-.column.cards { gap: 1.2vmin; padding-top: calc(9.5vmin + var(--safe-top)); }
+.column.cards { gap: 1.2vmin; padding-top: calc(12vmin + var(--safe-top)); }
 .column.cards .btn { height: 11vmin; border-radius: 3vmin; flex-direction: row; justify-content: flex-start; gap: .8vmin; padding: 0 1vmin; box-shadow: 0 .9vmin 0 var(--c-dark); }
 .column.cards .btn .ico { width: 6.4vmin; height: 6.4vmin; flex: none; }
 .column.cards .btn .lbl { margin: 0; font-size: 3.1vmin; text-align: left; }
@@ -561,7 +563,7 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .scard.down { transform: scale(.95); }
 
 /* up to 6 buttons on a girl's edge */
-.column.many { gap: 1.3vmin; padding-top: calc(10vmin + var(--safe-top)); }
+.column.many { gap: 1.3vmin; padding-top: calc(12vmin + var(--safe-top)); }
 .column.many .btn { width: 15.5vmin; height: 12.4vmin; border-radius: 3.6vmin; box-shadow: 0 .9vmin 0 var(--c-dark); }
 .column.many .btn .ico { width: 7.2vmin; height: 7.2vmin; }
 .column.many .btn .lbl { font-size: 2.9vmin; }
@@ -724,7 +726,8 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 #trips .trip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vmin; width: min(74vw, 110vmin); height: 46vmin; }
 #trips .map-x { position: absolute; right: calc(var(--col) + 1vmin); top: calc(1vmin + var(--safe-top)); width: 10vmin; height: 10vmin; padding: 2.4vmin; border-radius: 50%; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }
 #trips .map-x svg { width: 100%; height: 100%; }
-.trip { pointer-events: none; overflow: hidden; }
+.trip { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+body.on-trip #world > .thing, body.on-trip #world > .visitor { display: none; }
 .trip > * { position: absolute; }
 .trip .tsky { inset: 0; }
 .trip .tsky.beach { background: linear-gradient(#9fdcff, #e6f7ff 55%); }
@@ -812,3 +815,20 @@ body.october .room .jack { display: block; }
 .bcake .flame { animation: flicker .3s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
 @keyframes flicker { from { transform: scale(1, 1); } to { transform: scale(.85, 1.12); } }
 body:not([data-scene="play"]) .request { display: none; }   /* waits for the activity to finish */
+
+/* =====================================================================
+   POLISH: springy buttons everywhere, and little celebrations
+   ===================================================================== */
+.cbtn, .scard, .pbtn, .ptile, .book-btn, .round-btn, .request .rdone, .spanel-x, .map-x {
+  transition: transform .4s cubic-bezier(.3,1.9,.5,1), box-shadow .2s ease;
+}
+.cbtn.down, .scard.down, .pbtn.down, .ptile.down, .book-btn.down, .round-btn.down, .request .rdone.down, .spanel-x.down, .map-x.down { transition-duration: .07s; }
+.scard.down { transform: scale(.9); }
+.cbtn.down { transform: translateY(.8vmin) scale(.92); }
+.spanel-x.down, .map-x.down { transform: scale(.85); }
+.scard.on { animation: cardon .45s cubic-bezier(.3,1.9,.5,1); }
+@keyframes cardon { 0% { transform: scale(.9); } 100% { transform: scale(1); } }
+.confetti { position: absolute; z-index: 36; width: 1.8vmin; height: 1.1vmin; border-radius: .4vmin; pointer-events: none; }
+.confetti.round { width: 1.5vmin; height: 1.5vmin; border-radius: 50%; }
+.thing.puddle.new { animation: none; }
+.visitor .vname { border: .5vmin solid #e6dccb; font-size: 3.4vmin; }

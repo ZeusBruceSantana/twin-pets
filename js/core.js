@@ -617,6 +617,23 @@ function sparkles(x, y, n = 8, colors = ['#ffd23f', '#ff7eb6', '#5aa9ff', '#6cc5
     ], { duration: 900, easing: 'ease-out', fill: 'both' }).then(() => s.remove());
   }
 }
+/* A little celebration: confetti in both girls' colors, popping up and floating down. */
+function celebrate(x, y, n = 12) {
+  const cs = getComputedStyle(document.documentElement);
+  const colors = [cs.getPropertyValue('--L').trim(), cs.getPropertyValue('--R').trim(), '#ffd23f', '#ff8fb8'];
+  for (let i = 0; i < n; i++) {
+    const c = el('div', 'confetti' + (i % 3 === 0 ? ' round' : ''));
+    c.style.left = x + 'px'; c.style.top = y + 'px';
+    c.style.background = colors[i % colors.length];
+    world.append(c);
+    const dx = rand(-16, 16), up = rand(10, 22), spin = rand(-540, 540);
+    animate(c, [
+      { transform: 'translate(-50%,-50%) translate(0,0) rotate(0)', opacity: 1 },
+      { transform: `translate(-50%,-50%) translate(${dx * 0.6}vmin, ${-up}vmin) rotate(${spin * 0.5}deg)`, opacity: 1, offset: 0.35 },
+      { transform: `translate(-50%,-50%) translate(${dx}vmin, ${-up + 14}vmin) rotate(${spin}deg)`, opacity: 0 },
+    ], { duration: rand(1300, 1900), delay: i * 18, easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'both' }).then(() => c.remove());
+  }
+}
 /* A speech bubble above a pet: "Thank you, Leah!" (each word can be tapped). */
 function sayBubble(p, text, ms = 2800) {
   p.root.querySelectorAll('.say').forEach(b => b.remove());
@@ -783,6 +800,8 @@ function togetherMoment(type) {
   S.together++;
   logDay(type);
   addHeart();
+  const m = midPets();
+  celebrate(m.x, m.y, 10);
   checkUnlocks();
   save();
   setTimeout(runQueue, 1600);
@@ -1336,7 +1355,7 @@ function layoutSeesaw(g) {
 
 /* high five paws */
 const PAWS = {
-  left:  { fur: '#eef1f6', line: '#8b94a3', pad: '#ffc6d6' },
+  left:  { fur: '#f6e3bd', line: '#b38f63', pad: '#ffc6d6' },
   right: { fur: '#fffaf3', line: '#cbb9a8', pad: '#f3b9a8' },
 };
 function pawSvg(side) {
@@ -1408,6 +1427,7 @@ function grantWish(p, act) {
   if (b) {
     const r = b.getBoundingClientRect();
     sparkles(r.left + r.width / 2, r.top + r.height / 2, 12);
+    celebrate(r.left + r.width / 2, r.top + r.height / 2, 6);
   }
   clearWish(p, true);
   floatHearts(p, 4);

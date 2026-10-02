@@ -109,8 +109,11 @@ ACTIVITIES.trip = {
     await fadePets(false);
     Sound.play('vroom');
     await tween(1100, t => { car.style.left = W() / 2 + t * t * W() * 0.8 + 'px'; });
-    const bg = actProp(a, placeMarkup(place), { left: '0', top: '0', right: '0', bottom: '0' }, 6);
-    bg.classList.add('trip', 'trip-' + place);
+    // the place's scenery goes behind everything (like a room), so names and the jar still show
+    const bg = el('div', 'trip trip-' + place, placeMarkup(place));
+    $('#rooms').append(bg);
+    document.body.classList.add('on-trip');
+    a.cleanup.push(() => { bg.remove(); document.body.classList.remove('on-trip'); });
     a.data.bg = bg;
     await animate(bg, [{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: 'forwards' });
     await tween(1100, t => { car.style.left = -W() * 0.3 + (1 - (1 - t) * (1 - t)) * W() * 0.8 + 'px'; });

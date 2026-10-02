@@ -82,6 +82,7 @@ async function endActivity(done, bookType) {
     Sound.play('yay');
     const m = midPets();
     sparkles(m.x, m.y, 14);
+    celebrate(m.x, m.y, 18);
     SIDES.forEach(s => {
       mood(pets[s], 'happy', 2000);
       petAnim(pets[s], [{ transform: 'translateY(0)' }, { transform: 'translateY(-12%)' }, { transform: 'translateY(0)' }], { duration: 600, iterations: 2, easing: 'ease-out' });

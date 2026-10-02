@@ -524,6 +524,7 @@ async function trickCard(side, key) {
   Sound.play('unlock');
   const m = petPoint(p, 0.5, 0.35);
   sparkles(m.x, m.y, 16);
+  celebrate(m.x, m.y, 12);
   floatHearts(p, 3);
   sayBubble(p, 'I can ' + tr.word + '!');
   renderTrickList(side);

@@ -147,7 +147,7 @@ ACT_HANDLERS.teeth = async side => {
    THE BLOW DRYER: the fur poofs up big and funny, then settles
    ===================================================================== */
 function poofSvg(side) {
-  const [fill, stroke] = PET_ART[side].awake ? ['#ffffff', '#d9d3e6'] : side === 'left' ? ['#eef1f6', '#8b94a3'] : ['#fffaf3', '#cbb9a8'];
+  const [fill, stroke] = PET_ART[side].awake ? ['#ffffff', '#d9d3e6'] : side === 'left' ? ['#f6e3bd', '#b38f63'] : ['#fffaf3', '#cbb9a8'];
   let puffs = '';
   for (let i = 0; i < 18; i++) {
     const a = (i / 18) * Math.PI * 2;

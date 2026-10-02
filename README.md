@@ -231,6 +231,22 @@ lets you change:
 
 ---
 
+## Tests
+
+The game has automatic tests for the important things: saving and loading
+(including saves from every earlier version), moving between rooms, the
+friendship jar, and the grown-up corner.
+
+- **On GitHub:** they run by themselves on every pull request. A green ✓ next
+  to the pull request means they all passed; a red ✗ means something needs a
+  look before merging.
+- **On any browser:** open the game's address with `tests/` at the end (for
+  example `https://zeusbrucesantana.github.io/twin-pets/tests/`) and tap
+  **Run the tests**. They take about a minute. They use their own pretend save,
+  so the girls' real progress is never touched.
+
+---
+
 ## Files
 
 | File | What it is |
@@ -240,4 +256,5 @@ lets you change:
 | `js/settings.js` | **Safe to change**: names, settings and pet pictures |
 | `js/` (the other files) | The game itself, one file for each part (kitchen, bathroom, garden, school, trips...) |
 | `art/` | Optional: put your own pet drawings or photos here |
+| `tests/` | The automatic tests (open `tests/index.html` to run them) |
 | `BACKLOG.md` | What's done and ideas for later |

@@ -50,9 +50,9 @@ Object.assign(BOOK_LINES, {
    THE VET: a check-up (the pets are never sick, just checked)
    ===================================================================== */
 SIDE_MODES.vet = () => ({ acts: ['listen', 'knee', 'sticker', 'back'] });
-ACT_HANDLERS.vet = side => { sideMode[side] = 'vet'; trickTouched[side] = now(); Sound.play('pick'); renderColumn(side); };
+ACT_HANDLERS.vet = side => { sideMode[side] = 'vet'; modeTouched[side] = now(); Sound.play('pick'); renderColumn(side); };
 ACT_HANDLERS.listen = async side => {
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   const p = pets[side];
   if (p.asleep) wakePet(side, true);
   const alive = begin(p, 2600);
@@ -76,7 +76,7 @@ ACT_HANDLERS.listen = async side => {
   logDay('vet');
 };
 ACT_HANDLERS.knee = async side => {
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   const p = pets[side];
   if (p.asleep) wakePet(side, true);
   const alive = begin(p, 1800);
@@ -96,7 +96,7 @@ ACT_HANDLERS.knee = async side => {
   Sound.play('giggle');
 };
 ACT_HANDLERS.sticker = async side => {
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   const p = pets[side];
   if (p.asleep) wakePet(side, true);
   begin(p, 2400);

@@ -81,9 +81,9 @@ Object.assign(BUTTONS, {
   harvest: { icon: 'basket',      label: 'Pick' },
 });
 SIDE_MODES.garden = () => ({ acts: ['plant', 'water', 'harvest', 'back'], clsOf: { water: anyStage(0) ? 'invite' : '', harvest: anyStage(4) ? 'invite' : '' } });
-ACT_HANDLERS.garden = side => { sideMode[side] = 'garden'; trickTouched[side] = now(); thingTapped('garden'); Sound.play('pick'); renderColumn(side); };
+ACT_HANDLERS.garden = side => { sideMode[side] = 'garden'; modeTouched[side] = now(); thingTapped('garden'); Sound.play('pick'); renderColumn(side); };
 ACT_HANDLERS.plant = (side, btn) => {
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   if (!S.garden.includes(null)) { nudge(btn); wiggleGarden(); return; }
   openPanel(side, {
     items: SEEDS.map(k => ({ key: k, icon: ICONS[k], word: FOODS[k].word })),
@@ -110,7 +110,7 @@ async function plantSeed(side, kind) {
   renderColumns();
 }
 ACT_HANDLERS.water = async (side, btn) => {
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   const planted = S.garden.map((sp, i) => (sp ? i : -1)).filter(i => i >= 0);
   if (!planted.length || garden.watering) { nudge(btn); return; }
   garden.watering = true;
@@ -149,7 +149,7 @@ ACT_HANDLERS.water = async (side, btn) => {
   renderColumns();
 };
 ACT_HANDLERS.harvest = (side, btn) => {
-  trickTouched[side] = now();
+  modeTouched[side] = now();
   const ripe = S.garden.map((sp, i) => (plantStage(sp) === 4 ? i : -1)).filter(i => i >= 0);
   if (!ripe.length) { nudge(btn); wiggleGarden(); return; }
   mood(pets[side], 'happy', 1600);

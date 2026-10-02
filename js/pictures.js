@@ -2,7 +2,7 @@
 /* Twin Pets: Pictures for buttons, presents and the house (simple drawings, no outside files). */
 
 /* =====================================================================
-   3. PICTURES FOR BUTTONS (simple drawings, no outside files)
+   PICTURES FOR BUTTONS (simple drawings, no outside files)
    ===================================================================== */
 const ICONS = {
   apple: '<svg viewBox="0 0 100 100"><path d="M50 32c-9-9-33-8-36 15-3 21 11 43 25 43 5 0 8-3 11-3s6 3 11 3c14 0 28-22 25-43-3-23-27-24-36-15z" fill="#ff5d5d" stroke="#d93f4a" stroke-width="3"/><path d="M50 33c0-9 3-16 9-22" stroke="#7a4a2a" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M56 24c5-11 18-14 25-9-4 11-17 14-25 9z" fill="#5cc45c"/><ellipse cx="33" cy="50" rx="6" ry="11" fill="#fff" opacity=".45"/></svg>',

@@ -1,5 +1,13 @@
 /* =====================================================================
-   LOOK AND FEEL
+   TWIN PETS: how everything looks
+   ---------------------------------------------------------------------
+   In this file, top to bottom:
+     look and feel (colors, fonts), the pets, each girl's button strip,
+     the shared middle, the memory book, the rooms, the start screen and
+     overlays, the grown-up corner, the house map and choice panels,
+     then one section for each part of the house (kitchen, bathroom,
+     front yard, garden, photos, school, playroom, trips, visitors,
+     decorating, sleepover, weather, holidays).
    Colors for each girl's side are filled in by the game after she picks.
    ===================================================================== */
 :root {
@@ -203,7 +211,6 @@ body:not([data-scene="play"]):not([data-scene="title"]) .tag, .pet.asleep .tag {
 .cbtn.down { transform: translateY(.8vmin); box-shadow: 0 .2vmin 0 rgba(0,0,0,.15); }
 .cbtn.nudge { animation: nudge .4s ease; }
 #gamebar { position: absolute; left: 50%; top: calc(22vmin + var(--safe-top)); transform: translateX(-50%); display: none; flex-direction: column; align-items: center; gap: 2.4vmin; }
-body[data-scene="game"] #gamebar { display: flex; }
 #dots { display: grid; grid-template-columns: repeat(4, 3.4vmin); gap: .8vmin; }
 #dots i { width: 3.4vmin; height: 3.4vmin; display: block; }
 #dots i svg { width: 100%; height: 100%; }
@@ -341,38 +348,7 @@ body[data-scene="goodnight"] .win-night, body[data-scene="night"] .win-night { o
 .bed.side-left { left: 29.5%; } .bed.side-right { left: 70.5%; }
 .cushion { left: 50%; bottom: calc(12% - 5vmin); width: 44vmin; height: 10vmin; transform: translateX(-50%); }
 
-/* ---------- doors in the shared middle ---------- */
-#doors { position: absolute; left: 50%; top: calc(21.5vmin + var(--safe-top)); transform: translateX(-50%); display: flex; flex-direction: column; gap: 1.2vmin; align-items: center; transition: opacity .4s ease; }
-body:not([data-scene="play"]) #doors { opacity: 0; pointer-events: none; }
-.door {
-  position: relative; width: 15vmin; height: 11.6vmin; flex: none;
-  border-radius: 7.5vmin 7.5vmin 1.6vmin 1.6vmin; background: var(--door); border: .6vmin solid #fff;
-  box-shadow: 0 .8vmin 0 rgba(0,0,0,.14); transition: box-shadow .3s ease, transform .15s ease, opacity .3s ease;
-}
-.door::before { content: ''; position: absolute; left: 50%; top: 18%; bottom: 0; width: .35vmin; background: rgba(255,255,255,.55); transform: translateX(-50%); }
-.door-ico { position: absolute; left: 50%; top: .6vmin; width: 6.6vmin; height: 6.6vmin; transform: translateX(-50%); pointer-events: none; }
-.door-ico svg { width: 100%; height: 100%; overflow: visible; }
-.door-half { position: absolute; top: 0; bottom: 0; width: 50%; }
-.door-half.l { left: 0; } .door-half.r { right: 0; }
-.door-face { position: absolute; bottom: .7vmin; width: 4.4vmin; height: 4.4vmin; border-radius: 50%; overflow: hidden; background: #fff; border: .45vmin solid #fff; opacity: .55; pointer-events: none; }
-.door-half.l .door-face { left: .7vmin; border-color: var(--L); }
-.door-half.r .door-face { right: .7vmin; border-color: var(--R); }
-.door-face svg, .door-face img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
-.door.here { opacity: .45; background: linear-gradient(#6b5a4a, #8a7461); }
-.door.here .door-face { display: none; }
-.door.vote-left, .door.vote-right { box-shadow: 0 .8vmin 0 rgba(0,0,0,.14), 0 0 0 .9vmin #ffe57f, 0 0 4vmin #ffd23f; transform: scale(1.06); }
-.door.vote-left .door-half.l .door-face, .door.vote-right .door-half.r .door-face { opacity: 1; transform: scale(1.12); }
-.door.vote-left:not(.vote-right) .door-half.r .door-face,
-.door.vote-right:not(.vote-left) .door-half.l .door-face { animation: faceblink .55s ease-in-out infinite alternate; }
-@keyframes faceblink { from { opacity: .35; transform: scale(.95); } to { opacity: 1; transform: scale(1.25); } }
-.door.down { transform: scale(.95); }
-.door.nudge { animation: nudge .4s ease; }
-.door .badge { position: absolute; right: -1.6vmin; top: -1.4vmin; width: 5vmin; height: 5vmin; color: #ffc93c; filter: drop-shadow(0 .3vmin 0 #e0a800); animation: pulse 1.2s ease-in-out infinite; pointer-events: none; }
-.door .badge svg { width: 100%; height: 100%; }
-#doors.hint .door:not(.here) { animation: doorhint 1.2s ease-in-out 3; }
-#doors.hint .door:nth-child(2) { animation-delay: .15s; } #doors.hint .door:nth-child(3) { animation-delay: .3s; }
-#doors.hint .door:nth-child(4) { animation-delay: .45s; } #doors.hint .door:nth-child(5) { animation-delay: .6s; }
-@keyframes doorhint { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.1); box-shadow: 0 0 0 .9vmin #ffe57f; } }
+@keyframes hintpulse { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.1); box-shadow: 0 0 0 .9vmin #ffe57f; } }
 body[data-scene="game"] #gamebar, body[data-scene="climb"] #gamebar { display: flex; }
 body[data-scene="climb"] #dots { display: none; }
 
@@ -521,8 +497,8 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .cbtn.small { position: relative; width: 11vmin; height: 11vmin; padding: 1.8vmin; }
 .cbtn .badge { position: absolute; right: -1.4vmin; top: -1.4vmin; width: 5.2vmin; height: 5.2vmin; color: #ffc93c; filter: drop-shadow(0 .3vmin 0 #e0a800); animation: pulse 1.2s ease-in-out infinite; pointer-events: none; }
 .cbtn .badge svg { width: 100%; height: 100%; }
-.cbtn.hint { animation: doorhint 1.2s ease-in-out 3; }
-.cbtn.new { animation: newbtn 1s ease-out, doorhint 1.2s ease-in-out 1s 4; }
+.cbtn.hint { animation: hintpulse 1.2s ease-in-out 3; }
+.cbtn.new { animation: newbtn 1s ease-out, hintpulse 1.2s ease-in-out 1s 4; }
 
 #map { z-index: 62; background: rgba(46, 64, 120, .5); }
 #map .map-grid {

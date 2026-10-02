@@ -87,8 +87,8 @@ async function leave() {
   renderColumns();
 }
 // arriving in the front yard while someone is waiting at the door
-const _visitorArrive = () => { if (visitor && !visitor.el && S.room === 'frontyard') showVisitor(true); if (visitor && visitor.el) visitor.el.style.display = S.room === 'frontyard' ? '' : 'none'; };
-ROOM_HOOKS.push(_visitorArrive);
+const visitorRoomCheck = () => { if (visitor && !visitor.el && S.room === 'frontyard') showVisitor(true); if (visitor && visitor.el) visitor.el.style.display = S.room === 'frontyard' ? '' : 'none'; };
+ROOM_HOOKS.push(visitorRoomCheck);
 
 BUTTONS.hello = { icon: 'wave', label: 'Hello' };
 ROOMS.frontyard.acts.push('hello');

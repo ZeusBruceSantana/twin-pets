@@ -2,9 +2,17 @@
 /* Twin Pets: The heart of the game: saving, sounds, the pets, together moments, the jar, games, wishes and the memory book. */
 
 /* =====================================================================
-   4. SAVING (local storage on this device)
+   SAVING (local storage on this device)
    ===================================================================== */
-const SAVE_KEY = 'twin-pets-save-v1';
+// The test page (tests/index.html) runs the game with "?test" and its own save,
+// so running the tests never touches the girls' real progress.
+const TEST_MODE = /[?&]test\b/.test(location.search);
+const SAVE_KEY = TEST_MODE ? 'twin-pets-test-save' : 'twin-pets-save-v1';
+const TEST_ERRORS = [];   // in test mode, anything that goes wrong is noted for the test page
+if (TEST_MODE) {
+  addEventListener('error', e => TEST_ERRORS.push(String(e.message)));
+  addEventListener('unhandledrejection', e => TEST_ERRORS.push(String(e.reason && e.reason.message || e.reason)));
+}
 function freshPet() {
   return {
     asleep: false,
@@ -72,7 +80,7 @@ function save() {
 }
 
 /* =====================================================================
-   5. LITTLE HELPERS
+   LITTLE HELPERS
    ===================================================================== */
 const $ = (sel, root = document) => root.querySelector(sel);
 const SIDES = ['left', 'right'];
@@ -157,7 +165,7 @@ function onPress(elm, fn) {
 }
 
 /* =====================================================================
-   6. SOUNDS — all made in code, kept soft and gentle
+   SOUNDS — all made in code, kept soft and gentle
    ===================================================================== */
 const Sound = (() => {
   let ctx = null, master = null, echo = null, music = null, noiseBuf = null, primed = false;
@@ -361,7 +369,7 @@ const Sound = (() => {
     /* Other parts of the game add their own sounds: Sound.add('name', (s, ...args) => s.tone(...)) */
     add(name, maker) { lib[name] = (...args) => maker({ tone, noise, melody, NOTE, k3 }, ...args); },
     play(name, ...args) {
-      if (S.sound.muted) return;
+      if (S.sound.muted || TEST_MODE) return;
       const c = init();
       if (!c || !lib[name]) return;
       if (c.state !== 'running') { try { c.resume(); } catch (e) { /* ignore */ } }
@@ -378,7 +386,7 @@ const Sound = (() => {
 })();
 
 /* =====================================================================
-   7. TAP-TO-HEAR (the browser's built-in voice)
+   TAP-TO-HEAR (the browser's built-in voice)
    ===================================================================== */
 const Speech = {
   voice: null,
@@ -398,7 +406,7 @@ const Speech = {
     else speechSynthesis.onvoiceschanged = choose;
   },
   say(text) {
-    if (!text || S.sound.muted || !('speechSynthesis' in window)) return;
+    if (!text || S.sound.muted || TEST_MODE || !('speechSynthesis' in window)) return;
     try {
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.1;
@@ -446,7 +454,7 @@ document.addEventListener('pointerup', e => {
 });
 
 /* =====================================================================
-   8. THE SCREEN
+   THE SCREEN
    ===================================================================== */
 const stage = $('#stage');
 const world = $('#world');
@@ -615,7 +623,7 @@ function sayBubble(p, text, ms = 2800) {
 }
 
 /* =====================================================================
-   9. THE PETS: eat, play, sleep, and being tapped
+   THE PETS: eat, play, sleep, and being tapped
    ===================================================================== */
 /* Start a new action on a pet. Cancels whatever it was doing.
    Returns a function that says whether this action is still the current one. */
@@ -752,7 +760,7 @@ function petTapped(side) {
 }
 
 /* =====================================================================
-   10. TOGETHER MOMENTS (in the shared middle)
+   TOGETHER MOMENTS (in the shared middle)
    ===================================================================== */
 // Some together moments can happen very quickly over and over; count those only now and then.
 const COOLDOWN = { treat: 15000, trampoline: 20000 };
@@ -917,7 +925,7 @@ function endScene() {
 }
 
 /* =====================================================================
-   11. NEW THINGS APPEAR, ONE AT A TIME
+   NEW THINGS APPEAR, ONE AT A TIME
    ===================================================================== */
 const queue = [];
 function checkUnlocks() {
@@ -937,7 +945,7 @@ async function runQueue() {
   setTimeout(runQueue, 1500);
 }
 const newUntil = {};
-// Where each new button lives, so its door can sparkle if the girls are in another room.
+// Where each new button lives, so its room can get a star on the map if the girls are somewhere else.
 const UNLOCK_BUTTON = { treat: 'treat', ball: 'ballgame', seesaw: 'seesawgame', highfive: 'fivegame', book: 'book' };
 async function reveal(key) {
   S.unlocked[key] = true; save();
@@ -960,7 +968,7 @@ async function reveal(key) {
 }
 
 /* =====================================================================
-   12. THE FRIENDSHIP JAR (one jar, shared by both girls)
+   THE FRIENDSHIP JAR (one jar, shared by both girls)
    ===================================================================== */
 function jarSlots() {
   const n = SETTINGS.jarSize, xs = [30, 50, 70], out = [];
@@ -1013,7 +1021,7 @@ async function addHeart(from = midPets()) {
   const jar = $('#jar');
   jar.classList.remove('wiggle'); void jar.offsetWidth;
   if (S.jar < SETTINGS.jarSize) jar.classList.add('wiggle');
-  else renderCenter();                     // full: the playroom door shows a present
+  else renderCenter();                     // full: the house map button shows a present
   Sound.play('heart');
   sparkles(to.x, to.y, 6);
 }
@@ -1122,7 +1130,7 @@ const SURPRISE = {
 const cssVar = name => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 /* =====================================================================
-   13. TWO-PLAYER GAMES (they need both girls)
+   TWO-PLAYER GAMES (they need both girls)
    ===================================================================== */
 const GAMES = {
   ball:     { icon: 'catch',  act: 'throw', goal: 6 },   // throw the ball back and forth
@@ -1331,7 +1339,7 @@ function pawSpot(side, raised) {
 }
 
 /* =====================================================================
-   14. THOUGHT BUBBLES: a pet asks for something (picture + one word)
+   THOUGHT BUBBLES: a pet asks for something (picture + one word)
    ===================================================================== */
 const WISHES = {
   apple:  { icon: 'apple',      act: 'food:apple' },
@@ -1398,7 +1406,7 @@ function grantWish(p, act) {
 }
 
 /* =====================================================================
-   15. THE MEMORY BOOK: one short sentence a day, shared by both girls
+   THE MEMORY BOOK: one short sentence a day, shared by both girls
    ===================================================================== */
 // Most special first: the book uses the first one that happened that day.
 const BOOK_LINES = {

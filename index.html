@@ -204,6 +204,15 @@
 </template>
 
 <!-- The game code. js/settings.js holds the things that are safe to change. -->
+<!-- The game's code. The order matters: settings first, start.js last.
+     settings  names, settings and pet pictures (safe to change)
+     pictures  drawings for buttons and presents
+     core      saving, sounds, the pets, the jar, games, wishes, memory book
+     house     the rooms and the first things to do in them
+     screens   button strips, color picker, start screen, grown-up corner
+     map, newthings, panels   the house map, new things a few at a time, choice panels and activities
+     kitchen ... seasons      one file for each part of the house and each kind of fun
+     start     starts the game -->
 <script src="js/settings.js?v=4"></script>
 <script src="js/pictures.js?v=4"></script>
 <script src="js/core.js?v=4"></script>

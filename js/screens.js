@@ -2,7 +2,7 @@
 /* Twin Pets: Buttons, picking colors, the start screen and the grown-up corner. */
 
 /* =====================================================================
-   22. THE BUTTON STRIPS
+   THE BUTTON STRIPS
    ===================================================================== */
 const BUTTONS = {
   // playroom
@@ -11,10 +11,7 @@ const BUTTONS = {
   fivegame:   { icon: 'hand',       label: 'High five' },
   dress:      { icon: 'dress',      label: 'Dress' },
   back:       { icon: 'back',       label: 'Back' },
-  // kitchen
-  apple:      { icon: 'apple',      label: 'apple' },
-  fish:       { icon: 'fish',       label: 'fish' },
-  bone:       { icon: 'bone',       label: 'bone' },
+  // kitchen (the fridge, cooking and the picnic are in kitchen.js)
   treat:      { icon: 'treat',      label: 'Treat' },
   // bathroom
   bath:       { icon: 'roomBath',   label: 'Bath' },
@@ -98,10 +95,9 @@ function press(side, act, btn) {
   if (scene === 'act') { actPress(side, act, btn); return; }
   if (!canAct()) return;
   if (ACT_HANDLERS[act]) { ACT_HANDLERS[act](side, btn); return; }
-  if (FOOD_ACTS.includes(act)) feed(side, act);
-  else if (act === 'treat') giveTreat(side, btn);
+  if (act === 'treat') giveTreat(side, btn);
   else if (act === 'play') playBall(side);
-  else if (act === 'tricks') { sideMode[side] = 'tricks'; trickTouched[side] = now(); Sound.play('pick'); renderColumn(side); }
+  else if (act === 'tricks') { sideMode[side] = 'tricks'; modeTouched[side] = now(); Sound.play('pick'); renderColumn(side); }
   else if (act === 'back') { sideMode[side] = null; renderColumn(side); }
   else if (act === 'fivegame') startGame('highfive', side);
   else if (act === 'ballgame') startGame('ball', side);
@@ -115,7 +111,6 @@ function press(side, act, btn) {
   else if (act === 'wake') wakePet(side);
   else if (act === 'book') openBook();
 }
-const FOOD_ACTS = ['apple', 'fish', 'bone'];
 const SIDE_MODES = {};   // a girl's edge can switch to its own set of buttons (like Tricks)
 const SHOW_IF = {        // buttons that only show sometimes
   dress: side => S.pets[side].owned.some(i => WEARABLES[i] === 'head') && !has('closet'),
@@ -137,7 +132,7 @@ function nudge(elm) {
 }
 
 /* =====================================================================
-   23. PETS WAIT HAPPILY (little idle wiggles)
+   PETS WAIT HAPPILY (little idle wiggles)
    ===================================================================== */
 function idleTick() {
   // nobody has tapped for a while: go back to normal, gently
@@ -149,7 +144,7 @@ function idleTick() {
   introTick();
   timerTick();
   SIDES.forEach(side => {
-    if (sideMode[side] && sideMode[side] !== 'bath' && now() - trickTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
+    if (sideMode[side] && sideMode[side] !== 'bath' && now() - modeTouched[side] > 45000) { sideMode[side] = null; renderColumn(side); }
     if (pets[side].root.classList.contains('fluffy') !== isFluffy(side)) renderFluffy(side);
     tummyLook(side);
   });
@@ -169,7 +164,7 @@ function idleTick() {
 }
 
 /* =====================================================================
-   24. FIRST LAUNCH: PICK A COLOR
+   FIRST LAUNCH: PICK A COLOR
    ===================================================================== */
 const picking = { left: null, right: null };
 function openPicker() {
@@ -231,7 +226,7 @@ function finishPicking() {
 }
 
 /* =====================================================================
-   25. START SCREEN, FULL SCREEN, HOME SCREEN ICON
+   START SCREEN, FULL SCREEN, HOME SCREEN ICON
    ===================================================================== */
 const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isStandalone = () => navigator.standalone === true || matchMedia('(display-mode: standalone)').matches || matchMedia('(display-mode: fullscreen)').matches;
@@ -313,7 +308,7 @@ function makeHomeScreenIcon() {
 }
 
 /* =====================================================================
-   26. GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
+   GROWN-UP CORNER (press and hold the top-left corner for 3 seconds)
    ===================================================================== */
 (function setupCorner() {
   const corner = $('#corner');
@@ -417,7 +412,7 @@ function closeParent() {
 const PARENT_CLOSE_HOOKS = [];
 
 /* =====================================================================
-   27. NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
+   NO ZOOMING, NO SCROLLING, NO TEXT SELECTION, NO LONG-PRESS MENUS
    ===================================================================== */
 // (typing boxes in the grown-up corner still work normally)
 const isTyping = e => e.target && e.target.closest && e.target.closest('input, textarea');

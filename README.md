@@ -10,8 +10,9 @@ Each girl has her own big buttons along her edge of the screen. The pets
 play together in the shared middle. There are no scores, no winners, and the
 pets never get sick or sad. If nobody plays, they just wait happily.
 
-The whole game is one file, `index.html`. It needs no internet once it has
-loaded, no accounts and no outside servers.
+The game is a few plain files (`index.html`, `styles.css` and the `js`
+folder). It needs no internet once it has loaded, no accounts and no outside
+servers.
 
 ---
 
@@ -20,71 +21,113 @@ loaded, no accounts and no outside servers.
 **First time:** each girl taps a color on her half. They can't both pick the
 same one. Then tap the big green ▶ in the middle.
 
-### The pets' house
+### The shared middle
 
-The pets live in a house with five rooms. The game always opens in the
-**playroom**. Both pets are always in the same room.
+The middle of the screen belongs to both girls. In every room it has:
+- the **friendship jar** at the top. Every together moment adds a heart in both girls' colors.
+- the **house map** button (a little house). Tap it to see the whole house.
+- the **camera**, which takes a picture of the game for the memory book.
+- the **peekaboo** button for a little brother: an animal peeks out and says hello. No reading needed.
 
-**Doors** are in the shared middle of the screen, one for each room. Each door
-has both pets' faces on it: Livvie on the left half, Avery Peach on the right.
-**To move, both girls tap the same door within a few seconds**, each on her own
-half. When one girl taps, the door glows and her sister's pet face blinks to
-invite her. The door of the room they're in looks dark.
+### Moving around the house
 
-Each room shows **only its own buttons** along each girl's edge. The first time
-the girls visit a room, its name pops up (tap it to hear it) and its buttons glow.
+Tap the **house map**. Each room on the map has both pets' faces on it:
+Livvie on the left half, Avery Peach on the right. **To go somewhere, both
+girls tap the same room within a few seconds**, each on her own half. When one
+girl taps, the room glows and her sister's pet face blinks to invite her. Both
+pets always go together.
+
+A gold star on the map means something new is waiting in that room. A little
+present means the jar is full and presents are waiting in the playroom.
+
+### New things, a few at a time
+
+The house has lots to do, but it doesn't all appear at once. Each time the
+game is opened, **up to three new things introduce themselves**, one at a
+time, a minute or so apart. Each one shows its picture and name in the middle
+(tap the word to hear it), and its button pops in with a sparkle. If it's in
+another room, that room gets a star on the map. Brand-new players learn the
+basics first.
+
+### The rooms
+
+Each room shows **only its own buttons** along each girl's edge.
 
 | Room | Buttons | What happens |
 |---|---|---|
-| 🧸 **Playroom** | Play, Tricks, High five, Dress | Both tap **Play** close together and the pets chase each other. **Tricks** shows word cards (sit, spin, roll over, wave, dance): tap a card to hear the word, and the pet tries the trick. After 3 tries it learns it ("I can spin!") and does it every time after. Learned tricks show as little pictures under each girl's name. **Dress** tries on the hats, bows and crowns the pet was given. |
-| 🍲 **Kitchen** | apple, fish, bone, Treat | The pet eats and its tummy gets rounder. A full pet says *"No thanks, I'm full!"* The tummy empties slowly over about an hour of real time. A hungry pet asks for food in a thought bubble, but it never gets sick or sad. **Treat** tosses a treat to the sister's pet, who says *"Thank you!"* |
-| 🛁 **Bathroom** | Bath, Brush | **Bath** fills a tub with bubbles and a rubber duck (tap the duck!). The button turns into **Scrub** (tap 3 times, or rub the pet), then **Dry** with a towel. **Brush** 3 times and the fur goes fluffy and sparkly for a while. |
-| 🌳 **Backyard** | Bounce, Climb, Ball, Seesaw | **Bounce** (or tap the pet) jumps on the trampoline. Both girls tapping at the same time makes both pets bounce extra high. **Climb**: each girl taps again and again to climb her own side of a rainbow. The pets meet at the top and slide down together. Whoever gets there first waits happily, so it's never a race. **Ball** and **Seesaw** are the two-player games. Playing outside makes the pets a little muddy, and a bath cleans them. |
-| 🛏️ **Bedroom** | Sleep, Book | Put both pets to **Sleep** and they curl up together with a lullaby and "Goodnight!" Tap **Wake** for morning. **Book** opens the memory book. |
+| 🧸 **Playroom** | Play, Tricks, High five, Puppets, Tea party, Vet | Both tap **Play** close together and the pets chase each other. **Tricks** shows word cards (sit, spin, roll over, wave, dance): tap a card to hear the word and the pet tries it. After 3 tries it learns it. **Puppets**: each girl picks a prop (wand, microphone, top hat, cape), the curtains open, and her pet shows off its tricks, then both take a bow. **Tea party**: set the table, invite a stuffed friend (elephant, giraffe or octopus), pour pretend tea, and sip. **Vet**: listen to a silly heartbeat, tap the knee to make the leg kick, and give a sticker. The pets are never sick. |
+| 🍲 **Kitchen** | Fridge, Cook, Picnic, Treat | **Fridge** opens a panel of foods with pictures and words (fruit, veggies, pancakes, pizza, ice cream, fish, bone...). Livvie's favorite is **fish** and Avery Peach's is **peaches**: they get a happy dance. **Cook**: pick a smoothie, pizza or birthday cake, then one girl adds an ingredient and her sister stirs, taking turns. **Picnic**: both pets sit at the table and eat together. **Treat** tosses a treat to the sister's pet. The tummy gets rounder as the pet eats and empties over about an hour. |
+| 🛁 **Bathroom** | Bath, Teeth, Brush, Dryer, Spa | **Bath** fills a tub. While her pet is in the bath, a girl's buttons become bath toys: a **boat**, a **squirty fish**, and **fizzies** that change the water color. **Teeth** ends in a sparkly smile. **Dryer** makes the fur poof up big and funny, then settle. **Spa** pampers the **sister's** pet with paw polish and a bow (in the giver's color) and sparkle spray, for the rest of the day. Tap a pet's face in the **mirror** to make a funny face. |
+| 🌳 **Backyard** | Bounce, Climb, Ball, Seesaw, Garden | Trampolines, the rainbow climb (never a race), and the ball and seesaw games. **Garden**: Plant seeds, Water them, and they grow over real time (about 20 minutes). **Pick** what's ready and it goes into the fridge. |
+| 🛏️ **Bedroom** | Sleep, Book, Closet, Sleepover | **Sleep** both pets for the goodnight ending. **Book** is the memory book. **Closet** has everything each pet can wear; tap to put it on or take it off. **Sleepover**: the lights go down, the pets snuggle in a blanket fort, and each girl shines a flashlight to show shadow pictures (tap the word to hear it). |
+| 🏡 **Front yard** | Mail, Car, Hello | **Mail** (or tap the mailbox) reads letters written in the grown-up corner. Every word can be tapped to hear it. **Car**: both girls tap the car, then choose together where to go. When a visitor comes, **Hello** greets them. |
+| 🏫 **School** | Words, Art, Blocks | **Words**: the pets practice this week's school words on the chalkboard. Each girl taps to hear the word and her pet says it; when both have, a star and the next word. **Art**: one big canvas, half each. Finger-paint, tap **Done**, then both choose a room on the map to hang it in. **Blocks**: build a doghouse, a cozy den or a blanket fort, taking turns adding blocks in your own color. |
 
-The friendship jar sits at the top of every room. Every together moment adds
-a heart in both girls' colors.
+### Trips in the car
 
-**When the jar is full**, two wrapped presents arrive in the playroom, one
-from each girl. If they're in another room, a little present appears on the
-playroom door. Each girl taps **Give** to send her present to her **sister's
-pet**. The pet unwraps it and keeps it:
-- something to wear, like a bow, party hat, crown, flower or scarf, which the pet keeps wearing
-- or a toy for its shelf
+From the front yard, both girls tap **Car**, then both tap the same place:
+- 🏖️ **the beach**: splash in the waves, build a sandcastle together, find shells
+- 🌳 **the park**: swings, the slide, and ducks on the pond
+- 🍦 **the ice cream shop**: scoop flavors onto a cone (fish flavor is Livvie's favorite!), add sprinkles, lick
 
-Then there's a party (picnic, dance party or balloon party), and the jar
-starts over.
+Both tap **Home** to drive back.
 
-**Thought bubbles** work in every room. A pet asks for something with a
-picture and one word: apple, fish, bone, ball, nap, hug, bath, brush, bounce,
-or a trick it knows. Some wishes need a trip to another room together.
+### Little surprises
+
+- **Visitors:** sometimes Clover the bunny or Hoot the owl knocks at the front
+  door. Go to the front yard together and say **Hello**.
+- **Real stuffed animals:** about once a play session, each pet asks for
+  something from its real stuffed animal, like *"Give Livvie a real hug!"*
+  Tap the heart when it's done.
+- **Weather:** some days it rains (jump in the puddles, then it's bath time!).
+  In winter it can snow, and the girls can build a snowman in the backyard.
+- **Halloween:** all of October, the closet has cute costumes (pumpkin hat,
+  witch hat, bat wings), and pumpkins sit by the front door.
+- **Birthday:** on the pets' birthday (set it in the grown-up corner), there's
+  a party with balloons and a cake. Both girls blow out the candles.
+
+### The jar, presents and decorating
+
+**When the jar is full**, two wrapped presents arrive in the playroom. Each
+girl taps **Give** to send hers to her **sister's pet**: something to wear,
+or a toy for its shelf. Then there's a party, and then **the house gets a
+present too**: wallpaper, a rug or furniture (a plant, a lamp, a beanbag, a
+fish bowl). Both girls tap **Open**, then both choose a room on the map to put
+it in.
+
+### Reading
+
+**Tap any word to hear it read aloud**: names, room names, thought bubbles,
+trick cards, letters, school words, "Thank you", and everything in the memory
+book. **Thought bubbles** have a picture and one word.
 
 **The memory book** gets one short sentence a day about what the pets did
-together. Most sentences say where it happened, like *"Livvie and Avery Peach
-played chase in the playroom."* or *"bounced on the trampoline."*
-
-**Tap any word to hear it read aloud.** That includes names, room names,
-thought bubbles, trick cards, "Thank you", "No thanks, I'm full!",
-"Goodnight", and everything in the memory book.
-
-### For new players
-
-On a brand-new game, a few buttons appear one at a time as the girls share
-together moments: Treat, the jar, Ball, Seesaw, High five, thought bubbles,
-and the Book. When something new appears in another room, that room's door
-gets a little gold star.
+together, plus the pictures taken with the camera that day (tap a picture to
+see the next one).
 
 ---
 
 ## The hidden grown-up corner
 
 **Press and hold the top-left corner of the screen for 3 seconds.** A ring
-fills up, then the grown-up panel opens. In it you can:
+fills up, then the grown-up panel opens. Everything typed here stays on this
+tablet.
 
+- **Write a letter**: type a short letter. It goes in the mailbox in the front
+  yard, and the front yard gets a star on the map.
+- **School words**: type this week's words with commas between them
+  (`cat, sun, play`). The pets practice them at pet school. Leave it empty for
+  starter words.
+- **Kindness hearts**: saw them being kind to each other? Add a heart (or a
+  few) to their jar. They drop in when you close the panel.
+- **Play timer**: Off, 10, 15, 20, 30, 45 or 60 minutes. When time is up, the
+  pets yawn, go to the bedroom and fall asleep. **They stay asleep until a
+  grown-up wakes them here** (a **Wake the pets** button appears), even if the
+  game is closed and opened again.
+- **Pets' birthday**: tap a month and set the day.
 - turn the sound **on or off**, and change the **volume**
 - **change colors** (each girl picks again)
-- **show all new things now**, which is handy for trying everything without
-  waiting (on a brand-new game)
+- **show all new things now**, which is handy for trying everything at once
 - go **full screen** (on the Surface, when not already full screen)
 - **start over**, which erases everything. Tap it twice to confirm.
 
@@ -106,11 +149,13 @@ iPad or Surface. You only need to do this once.
 
    **https://zeusbrucesantana.github.io/twin-pets/**
 
-Whenever you change `index.html` on the main branch, the website updates by
-itself within a few minutes.
+Whenever the files on the main branch change, the website updates by itself
+within a few minutes. If the tablet still shows the old version, close the
+game completely and open it again.
 
 > The repository needs to stay **public** for free GitHub Pages. The game
-> keeps nothing private online. The girls' progress stays on the tablet.
+> keeps nothing private online. The girls' progress, letters and school words
+> stay on the tablet.
 
 ---
 
@@ -155,30 +200,32 @@ Tips:
 ## Saving
 
 The game saves by itself on the device it is played on. It saves:
-- the colors
-- the jar and what has been unlocked
-- the memory book
-- each pet's tummy, mud, fluffy fur, learned tricks, presents and what it is wearing
+- the colors, the jar, and which new things have appeared
+- the memory book and its pictures
+- each pet's tummy, mud, fluffy fur, learned tricks, presents, clothes and spa look
+- the garden, the fridge, paintings on the walls and decorations
+- letters, school words, the play timer and the pets' birthday
 
-Updates to the game keep the save. If you
-clear the browser's website data, the save is erased too. The game never
-sends anything anywhere.
+Updates to the game keep the save. If you clear the browser's website data,
+the save is erased too. The game never sends anything anywhere.
 
 ---
 
 ## Changing things yourself
 
-Open `index.html` in any text editor, or on GitHub by clicking the file and
-then the ✏️ pencil. Near the top of the `<script>` part is a section called
-**1. SETTINGS — safe to change**. There you can change:
+Open `js/settings.js` in any text editor, or on GitHub by clicking the file
+and then the ✏️ pencil. The section called **1. SETTINGS — safe to change**
+lets you change:
 
 - the girls' and pets' names
-- how many together moments it takes for each new thing to appear
+- how many together moments it takes for the first new things to appear
 - how many hearts fill the jar
 - which words the pets ask for in thought bubbles
-- how fast tummies empty, how long brushed fur stays fluffy, and how many
-  tries it takes to learn a trick
-- how many seconds the girls have to tap the same door
+- each pet's favorite food
+- how fast tummies empty, how long brushed fur stays fluffy, how many tries it
+  takes to learn a trick, and how long the garden takes to grow
+- how many new things appear each time the game is opened
+- how many seconds the girls have to tap the same room on the map
 
 **Your own pet pictures:** see [`art/README.md`](art/README.md).
 
@@ -188,6 +235,9 @@ then the ✏️ pencil. Near the top of the `<script>` part is a section called
 
 | File | What it is |
 |---|---|
-| `index.html` | The whole game: pictures, sounds and code in one file |
+| `index.html` | The page that loads everything, with the built-in pet drawings |
+| `styles.css` | How everything looks |
+| `js/settings.js` | **Safe to change**: names, settings and pet pictures |
+| `js/` (the other files) | The game itself, one file for each part (kitchen, bathroom, garden, school, trips...) |
 | `art/` | Optional: put your own pet drawings or photos here |
 | `BACKLOG.md` | What's done and ideas for later |

@@ -13,6 +13,7 @@ onPress($('#home-btn'), () => {
   else if (act && act.ready) endActivity(false);
 });
 renderJar();
+renderFeatureClasses();
 onTap($('#book'), e => { if (e.target.id === 'book') closeBook(); });
 $('#map .map-x').innerHTML = ICONS.close;
 onPress($('#map .map-x'), closeMap);

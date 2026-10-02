@@ -57,6 +57,7 @@ function showRoom(room) {
   document.querySelectorAll('.room').forEach(r => r.classList.toggle('on', r.dataset.room === room));
   SIDES.forEach(s => tummyLook(s));
   renderCenter();
+  renderThings();
 }
 
 /* ---------- pet faces (for the map) ---------- */
@@ -221,6 +222,7 @@ async function startBath(side) {
   });
   b.busy = false;
   mood(p, 'happy', 1500);
+  if (has('bathtoys')) sideMode[side] = 'bath';     // bath toys come out
   renderColumn(side);
 }
 function addFoam(p) {
@@ -294,6 +296,7 @@ function endBath(side) {
   [b.tub, b.duck, ...(b.bubbles || [])].forEach(e => e && e.remove());
   pets[side].art.querySelectorAll('.foam').forEach(f => f.remove());
   bath[side] = null;
+  if (sideMode[side] === 'bath') sideMode[side] = null;
 }
 const isFluffy = side => Date.now() < S.pets[side].fluffyUntil;
 function renderFluffy(side) { pets[side].root.classList.toggle('fluffy', isFluffy(side)); }

@@ -18,8 +18,8 @@ const SETTINGS = {
   jarSize: 10,
   // Words a pet can ask for in a thought bubble. Each one has a picture.
   // apple, fish, bone -> kitchen.  ball -> Play or Ball.  nap -> Sleep.  hug -> tap the pet.
-  // bath, brush -> bathroom.  bounce -> backyard.  tricks -> any trick the pet has learned.
-  wishes: ['apple', 'fish', 'bone', 'ball', 'nap', 'hug', 'bath', 'brush', 'bounce', 'tricks'],
+  // bath, brush, teeth -> bathroom.  bounce -> backyard.  tricks -> any trick the pet has learned.
+  wishes: ['apple', 'fish', 'bone', 'ball', 'nap', 'hug', 'bath', 'brush', 'teeth', 'bounce', 'tricks'],
   // Both girls tap the same door within this many milliseconds to change rooms.
   doorWindowMs: 5000,
   // How many hours a full tummy takes to get empty again.
@@ -30,6 +30,9 @@ const SETTINGS = {
   triesToLearn: 3,
   // How many new things introduce themselves each time the game is opened.
   newThingsPerSession: 3,
+
+  // each pet's favorite food (a happy dance when she gets it)
+  favorites: { left: 'fish', right: 'peach' },
 };
 
 /* =====================================================================

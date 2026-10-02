@@ -590,3 +590,40 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .column.many .btn .lbl { font-size: 2.9vmin; }
 #hint .hint-new { width: 6vmin; height: 6vmin; color: #ffc93c; filter: drop-shadow(0 .3vmin 0 #e0a800); }
 #hint .hint-new svg { width: 100%; height: 100%; }
+
+.spanel.three .spanel-grid { grid-template-columns: 1fr 1fr 1fr; gap: 1.1vmin; }
+.spanel.three .scard { height: 12.6vmin; }
+.spanel.three .scard .pic { width: 7vmin; height: 7vmin; }
+.spanel.three .scard .lbl { font-size: 2.3vmin; }
+
+/* the kitchen: food on a plate at the picnic table */
+.plate-food { position: absolute; left: 20%; top: 18%; width: 60%; height: 60%; transition: transform .25s ease; transform-origin: 50% 80%; }
+.scenery .plate-food svg { width: 100%; height: 100%; }
+
+/* things in a room you can tap (the mirror, the garden...) */
+#world > .thing { pointer-events: auto; position: absolute; z-index: 5; display: none; transform: translateX(-50%); }
+#world > .thing.on { display: block; }
+.thing.new { animation: thingnew 1.3s ease-in-out infinite; }
+@keyframes thingnew { 0%, 100% { filter: drop-shadow(0 0 0 #ffe57f); } 50% { filter: drop-shadow(0 0 2vmin #ffd23f); } }
+
+/* the bathroom */
+.thing-mirror .frame { position: absolute; inset: 0; width: 100%; height: 100%; }
+.thing-mirror .mhalf { position: absolute; top: 0; bottom: 0; width: 50%; }
+.thing-mirror .mhalf.l { left: 0; } .thing-mirror .mhalf.r { right: 0; }
+.thing-mirror .mface { position: absolute; top: 31%; width: 84%; aspect-ratio: 1.1; pointer-events: none; }
+.thing-mirror .mhalf.l .mface { right: -2%; } .thing-mirror .mhalf.r .mface { left: -2%; }
+.thing-mirror .mface > * { width: 100%; height: 100%; transform-origin: 50% 70%; display: block; }
+.tubtoy { position: absolute; z-index: 12; width: 8vmin; height: 8vmin; transform: translate(-50%, -50%); animation: bob 1.4s ease-in-out infinite; }
+.tubtoy svg { width: 100%; height: 100%; overflow: visible; }
+.asleep-eyes .pet-svg .eyes-open, .asleep-eyes .pet-svg .eyes-happy { display: none; }
+.asleep-eyes .pet-svg .eyes-closed { display: inline; }
+.art .poof { position: absolute; inset: 0; z-index: -1; pointer-events: none; transform-origin: 50% 58%; }
+.art .poof svg { width: 100%; height: 100%; overflow: visible; }
+.poofy .pet-svg .fluff { display: inline; }
+.art .spa { position: absolute; inset: 0; pointer-events: none; }
+.art .spa svg { width: 100%; height: 100%; overflow: visible; }
+.pet.sparkly .glitter { display: block; }
+.spanel-head { position: absolute; top: .6vmin; width: 11vmin; height: 9vmin; }
+.spanel.side-left .spanel-head { left: 2vmin; } .spanel.side-right .spanel-head { right: 2vmin; }
+.spanel-head > * { width: 100%; height: 100%; object-fit: contain; }
+.spanel.has-head { padding-top: 10.5vmin; }

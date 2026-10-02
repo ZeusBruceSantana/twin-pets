@@ -15,6 +15,7 @@ function freshPet() {
     owned: [],                          // presents this pet has been given
     gifted: {},                         // who gave each present (her color)
     wear: { head: null, neck: null },   // what the pet is wearing
+    spa: {},                            // spa day looks (just for today)
   };
 }
 function freshSave() {
@@ -34,6 +35,7 @@ function freshSave() {
     features: {},           // new things that have introduced themselves
     intro: { session: 0, given: 0 },
     freshActs: [],          // new buttons waiting in another room
+    fridge: {},             // food from the garden: { tomato: 2 }
   };
 }
 function merge(base, extra) {
@@ -346,6 +348,8 @@ const Sound = (() => {
   return {
     unlock,
     applyVolume,
+    /* Other parts of the game add their own sounds: Sound.add('name', (s, ...args) => s.tone(...)) */
+    add(name, maker) { lib[name] = (...args) => maker({ tone, noise, melody, NOTE, k3 }, ...args); },
     play(name, ...args) {
       if (S.sound.muted) return;
       const c = init();
@@ -654,6 +658,7 @@ async function feed(side, food) {
   mood(p, 'happy', 1300);
   floatHearts(p, 3);
   petAnim(p, [{ transform: 'translateY(0)' }, { transform: 'translateY(-7%)' }, { transform: 'translateY(0)' }], { duration: 380, easing: 'ease-out' });
+  EAT_HOOKS.forEach(f => f(side, food));
 }
 
 const lastPlay = { left: -1e9, right: -1e9 };
@@ -869,6 +874,7 @@ function restorePets() {
     $('#night-' + s).classList.remove('on');
     setPos(p, HOME[s].x, HOME[s].y);
     renderMud(s); renderWear(s); renderFluffy(s); renderToys(s); renderTrickList(s);
+    DRESS_HOOKS.forEach(f => f(s));
   });
   $('#night').classList.remove('on');
   $('#goodnight').classList.remove('on');
@@ -1330,9 +1336,9 @@ const WISHES = {
 };
 function wishChoices(side) {
   const p = pets[side];
-  if (isHungry(side)) return ['apple', 'fish', 'bone'].filter(w => w !== p.lastWish);   // a hungry pet asks for food
+  if (isHungry(side)) return HUNGRY_WISHES.filter(w => w !== p.lastWish);   // a hungry pet asks for food
   let list = SETTINGS.wishes.flatMap(w => (w === 'tricks' ? TRICKS.filter(t => knows(side, t.key)).map(t => t.word) : [w]));
-  list = list.filter(w => WISHES[w] && w !== p.lastWish);
+  list = list.filter(w => WISHES[w] && w !== p.lastWish && (!WISHES[w].feature || has(WISHES[w].feature)));
   if (isFull(side)) list = list.filter(w => !WISHES[w].act.startsWith('food:'));
   if (S.pets[side].mud >= 1 && list.includes('bath')) list.push('bath', 'bath');          // muddy pets think about baths
   return list;
@@ -1403,7 +1409,8 @@ let bookPage = 0;
 const bookDays = () => Object.keys(S.book).filter(k => S.book[k].length).sort();
 function bookSentence(types) {
   const both = SETTINGS.players.left.pet + ' and ' + SETTINGS.players.right.pet;
-  const best = Object.keys(BOOK_LINES).find(k => types.includes(k));
+  const rank = k => (BOOK_LINES[k].rank != null ? BOOK_LINES[k].rank : 100 - Object.keys(BOOK_LINES).indexOf(k));
+  const best = Object.keys(BOOK_LINES).filter(k => types.includes(k)).sort((a, b) => rank(b) - rank(a))[0];
   return both + ' ' + (best ? BOOK_LINES[best].line : 'are best friends.');
 }
 function dayWord(key) {

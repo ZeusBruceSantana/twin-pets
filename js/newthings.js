@@ -16,11 +16,14 @@ function startSessionIntros() {
   save();
   introAt = now() + 30000;          // let them settle in first
 }
+function nextNewThing() {
+  return NEW_THINGS.filter(n => !S.features[n.key]).sort((a, b) => a.order - b.order)[0];
+}
 function introTick() {
   if (scene !== 'play' || now() < introAt || $('#hint').classList.contains('show')) return;
   if (S.together < 3) return;         // brand-new players learn the basics first
   if ((S.intro.given || 0) >= SETTINGS.newThingsPerSession) return;
-  const next = NEW_THINGS.find(n => !S.features[n.key]);
+  const next = nextNewThing();
   if (!next) return;
   introduce(next);
   introAt = now() + 90000;            // the next one comes a while later
@@ -36,6 +39,7 @@ function introduce(n, quiet) {
     acts.forEach(a => { newUntil[a] = Date.now() + 7000; });
   }
   save();
+  renderFeatureClasses();
   if (!quiet) {
     showHint(n.icon, n.word, true);
     renderColumns();

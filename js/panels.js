@@ -8,9 +8,11 @@
    ===================================================================== */
 const panels = { left: null, right: null };
 /* items: [{ key, icon (svg), word, say?, badge?, cls? }]  onPick(key, card) */
-function openPanel(side, { items, onPick, keepOpen, say = true }) {
+/* head: show this pet's face at the top (whose pet the choices are for) */
+function openPanel(side, { items, onPick, keepOpen, say = true, cols = 2, head }) {
   closePanel(side);
-  const p = el('div', 'spanel side-' + side, `<div class="spanel-x">${ICONS.close}</div><div class="spanel-grid"></div>`);
+  const p = el('div', 'spanel side-' + side + (cols === 3 ? ' three' : ''), `<div class="spanel-x">${ICONS.close}</div><div class="spanel-grid"></div>`);
+  if (head) { const f = el('div', 'spanel-head'); fillFace(f, head); p.prepend(f); p.classList.add('has-head'); }
   const grid = p.querySelector('.spanel-grid');
   items.forEach(it => {
     const c = el('div', 'scard' + (it.cls ? ' ' + it.cls : ''), `<div class="pic">${it.icon}</div><div class="lbl">${it.word}</div>`);
@@ -61,7 +63,7 @@ async function startActivity(kind, starter, opts = {}) {
   a.ready = true;
   renderColumns();
 }
-function actPlan(side) { return act ? ACTIVITIES[act.kind].plan(act, side) : { acts: [] }; }
+function actPlan(side) { return act && act.ready ? ACTIVITIES[act.kind].plan(act, side) : { acts: [], big: true }; }
 async function actPress(side, key, btn) {
   const a = act;
   if (!a || !a.ready || a.ending) return;
@@ -107,4 +109,39 @@ function popIn(e, ms = 350) {
 
 /* Buttons and rooms that other parts of the game add. */
 const ACT_HANDLERS = {};   // button -> function (side, btn)
+const EAT_HOOKS = [];      // called after a pet eats: (side, food)
+const DRESS_HOOKS = [];    // called to re-draw extra things on a pet: (side)
+const HUNGRY_WISHES = ['apple', 'fish', 'bone'];
+/* Body classes like "f-mirror" show things that belong to a new thing. */
+function renderFeatureClasses() {
+  NEW_THINGS.forEach(n => document.body.classList.toggle('f-' + n.key, has(n.key)));
+  renderThings();
+}
 const FEATURE_OF = {};     // button -> the "new thing" it needs before it shows
+
+/* =====================================================================
+   THINGS IN A ROOM YOU CAN TAP (the mirror, the garden, the easel...)
+   They show only in their own room, once their "new thing" has appeared.
+   The first time, they glow gently until someone taps them.
+   ===================================================================== */
+const THINGS = [];
+function roomThing(key, room, feature, html, css) {
+  const e = el('div', 'thing thing-' + key, html);
+  Object.assign(e.style, css);
+  world.append(e);
+  THINGS.push({ key, el: e, room, feature });
+  return e;
+}
+function renderThings() {
+  THINGS.forEach(t => {
+    const on = t.room === S.room && (!t.feature || has(t.feature));
+    t.el.classList.toggle('on', on);
+    t.el.classList.toggle('new', on && !S.seen['thing-' + t.key]);
+  });
+}
+function thingTapped(key) {
+  if (S.seen['thing-' + key]) return;
+  S.seen['thing-' + key] = true;
+  save();
+  renderThings();
+}

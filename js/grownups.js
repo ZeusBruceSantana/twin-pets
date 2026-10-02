@@ -145,6 +145,7 @@ function timerTick() {
   if (['boot', 'pick', 'title', 'goodnight', 'night', 'morning'].includes(scene) || $('#parent').classList.contains('show')) return;
   if (scene === 'map') closeMap();
   if (scene === 'letter') closeLetter();
+  if (scene === 'trips') closeTrips();
   closeBook();
   if (scene !== 'play') {                 // let a game finish first (but not forever)
     if (!bedtimeWait) bedtimeWait = now();

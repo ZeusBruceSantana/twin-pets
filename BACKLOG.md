@@ -34,7 +34,7 @@
 - [x] Never compares the girls: no scores, no winner, no happier pet
 - [x] Pets never get sick, sad or die. Ignored wishes simply fade away
 - [x] Gentle sounds made in code, with small variations so repeats stay pleasant
-- [x] One self-contained `index.html`, no build step, works on GitHub Pages
+- [x] No build step, works on GitHub Pages (one `index.html` at first; now a few plain files)
 - [x] Pet art organized so drawings or photos can be swapped in (`art/README.md`)
 
 ### The pets' house
@@ -52,12 +52,53 @@
 - [x] Memory book sentences mention the rooms ("Livvie and Avery Peach bounced on the trampoline.")
 - [x] Saved progress from before the house (colors, jar, memory book, unlocks, sound) loads unchanged
 
+### Filling out the house
+- [x] The game is split into a few plain files (still no build step, still works on GitHub Pages)
+- [x] With seven rooms there were too many doors for the middle, so the doors became a **house map**: both girls tap the same room to travel together
+- [x] New things introduce themselves gently: up to three each time the game is opened, one at a time, with a star on the map if they're in another room
+- [x] Saved progress from before (colors, jar, memory book, unlocks, tricks, presents, sound) loads unchanged
+
+**Stage A: kitchen and bathroom**
+- [x] Fridge with pictures and words: fruit, veggies, pancakes, pizza, ice cream (and fish and bone)
+- [x] Favorite foods with a happy dance: Livvie loves fish, Avery Peach loves peaches
+- [x] Cooking together, one adds and the other stirs: smoothie, pizza, birthday cake
+- [x] Picnic table where both pets eat together
+- [x] Bath toys: boat, squirty fish, fizzies that change the water color
+- [x] Brushing teeth for a sparkly smile
+- [x] Blow dryer: the fur poofs up big and funny, then settles
+- [x] Spa day: each girl pampers her sister's pet (paw polish, a bow, sparkle spray)
+- [x] Mirror with funny faces
+
+**Stage B: garden, closet, front yard, photos, grown-up corner**
+- [x] Garden in the backyard: plant, water, grows over real time; the harvest goes into the fridge
+- [x] Dress-up closet in the bedroom with everything each pet can wear, any time
+- [x] New front yard with a mailbox for letters from the grown-up corner; every word can be tapped to hear it
+- [x] Photo booth: the camera in the middle takes a picture of the game (not the tablet's camera) for the memory book
+- [x] Grown-up corner: write a letter, this week's school words, kindness hearts for the jar, a play timer, the pets' birthday. Easy to use on a tablet, stays on the device, never in the code
+- [x] Play timer: the pets yawn, go to bed, and stay asleep until a grown-up wakes them
+
+**Stage C: pretend play**
+- [x] Pet school (a new room): the pets practice school words with tap-to-hear; starter words if none are set
+- [x] Vet check-up: silly heartbeat, knee tap that makes the leg kick, a sticker. Never sick
+- [x] Tea party: set the table, pour pretend tea, invite stuffed friends (an elephant, a giraffe, an octopus, all made up for this game)
+- [x] Puppet stage: props the girls pick plus the tricks the pets have learned
+- [x] Art easel: one canvas, half each; finger-paint and hang it on a wall in any room
+- [x] Block building: doghouse, cozy den, blanket fort
+
+**Stage D: places, visitors, seasons**
+- [x] Trips: both tap the car in the front yard and go to the beach, the park or the ice cream shop
+- [x] Visitors: Clover the bunny and Hoot the owl knock at the front door
+- [x] Sleepover: blanket fort and flashlight stories
+- [x] Decorating: wallpaper, rugs and furniture come as presents and are placed room by room
+- [x] Weather: rain puddles make the pets muddy; snow in winter, with a snowman
+- [x] Holidays: cute Halloween costumes in October; a birthday party on the pets' birthday
+- [x] About once a play session, a pet asks for something from its real stuffed animal ("Give Livvie a real hug!")
+- [x] Peekaboo button for a little brother: an animal peeks out with a sound, no reading
+
 ## Later ideas
 
 - [ ] **Real pet art from photos or drawings**: swap in the girls' own drawings or photos of their real toys (the `art` folder is ready; see `art/README.md`)
-- [ ] **School word lists**: load the words the girls are learning at school into the thought bubbles, trick cards and memory book
 - [ ] **Recorded voices**: record Mom, Dad or the girls reading the words, instead of the browser voice
-- [ ] **Decorating the house**: the girls decorate the rooms together (wallpaper, rugs, where the toys go)
 - [ ] **Swap day**: each girl looks after her sister's pet for a day
 - [ ] **Real bedtime dimming**: the game gets darker and calmer near real bedtime, and gently suggests going to the bedroom
 
@@ -66,4 +107,7 @@
 - [ ] Let grown-ups choose the unlock speed and tummy speed from the grown-up corner, without editing the file
 - [ ] More surprises and presents (bubbles party, a rainbow party, a kite, a cape)
 - [ ] An optional "both tap to start" step for the two-player games, if one girl starting a game while her sister is busy causes squabbles
-- [ ] A closet in the playroom to take off a scarf or choose between all the clothes
+- [ ] Let grown-ups move or remove a decoration or a painting
+- [ ] Use the school words in thought bubbles and the memory book too, not just at pet school
+- [ ] More places to drive to (a farm, a library, the snow) and more visitors
+- [ ] A way to look at the memory book's pictures bigger, or delete one

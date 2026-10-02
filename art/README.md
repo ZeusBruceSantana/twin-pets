@@ -38,14 +38,15 @@ On GitHub, open the repository, click the **art** folder, then
 
 ## 4. Tell the game to use them
 
-Open `index.html` on GitHub and click the ✏️ pencil to edit. Find the section
-called **2. PET ART** (use your browser's Find, Ctrl+F or ⌘F, and search for
-`PET_ART`). Change `null` to the file names, in quotes:
+Open the `js` folder on GitHub, click `settings.js`, and click the ✏️ pencil
+to edit. Find the section called **2. PET ART** (use your browser's Find,
+Ctrl+F or ⌘F, and search for `PET_ART`). Change `null` to the file names, in
+quotes, and leave the rest of each line as it is:
 
 ```js
 const PET_ART = {
-  left:  { awake: 'art/livvie.png',      asleep: 'art/livvie-sleeping.png', drawing: 'art-livvie' },
-  right: { awake: 'art/avery-peach.png', asleep: null,                      drawing: 'art-peach' },
+  left:  { awake: 'art/livvie.png',      asleep: 'art/livvie-sleeping.png', drawing: 'art-livvie', face: '30 20 140 125' },
+  right: { awake: 'art/avery-peach.png', asleep: null,                      drawing: 'art-peach',  face: '18 26 164 118' },
 };
 ```
 
@@ -56,7 +57,12 @@ built-in drawing, so check the spelling (capital letters matter) if your
 picture doesn't show up.
 
 Note: some things only work with the built-in drawings: the happy and sleepy
-faces, wagging tails, the rounder tummy in the kitchen, and fluffy fur tufts.
-Your pictures still do the rest: they bounce, munch, dance, curl up, get
-muddy, sparkle after brushing, and wear their presents. Presents are placed for
-a pet whose head is at the top middle of the picture.
+faces, wagging tails, the rounder tummy in the kitchen, fluffy fur tufts, and
+the funny faces in the bathroom mirror. Your pictures still do the rest: they
+bounce, munch, dance, curl up, get muddy, sparkle, poof up under the dryer, and
+wear their clothes. Clothes, costumes, glasses, the spa bow and paw polish, and
+the vet sticker are placed for a pet whose head is at the top middle of the
+picture and whose paws are at the bottom.
+
+When your pictures are in use, the little pet faces on the house map, in the
+closet and in the mirror show your whole picture.

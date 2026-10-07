@@ -43,4 +43,7 @@ function wearItem(side, item, card) {
 BUTTONS.closet = { icon: 'closet', label: 'Closet' };
 ROOMS.bedroom.acts.push('closet');
 FEATURE_OF.closet = 'closet';
-NEW_THINGS.push({ key: 'closet', order: 5, room: 'bedroom', acts: ['closet'], icon: 'closet', word: 'closet' });
+// The closet is the next new thing as soon as either pet has been given something to wear,
+// so nobody is ever stuck in a scarf with no way to take it off.
+const ownsClothes = () => SIDES.some(s => S.pets[s].owned.some(i => WEARABLES[i]));
+NEW_THINGS.push({ key: 'closet', order: -1, when: ownsClothes, room: 'bedroom', acts: ['closet'], icon: 'closet', word: 'closet' });

@@ -54,6 +54,7 @@ function freshSave() {
     kindPending: 0,         // kindness hearts a grown-up added, waiting to drop in the jar
     paintings: [],          // paintings from the art easel, hanging on the walls: { img, room }
     decor: {},              // decorations in each room: { playroom: { wp, rug, items: [] } }
+    roomPictures: {},       // pictures chosen on this device for a room: { backyard: { img, at } }
   };
 }
 function merge(base, extra) {
@@ -85,17 +86,18 @@ function save() {
   saveTimer = setTimeout(saveNow, 250);
 }
 const flushSave = () => { if (saveTimer) saveNow(); };   // write any change that is waiting
-function saveNow() {
+function saveNow() {        // returns true when everything was written
   clearTimeout(saveTimer);
   saveTimer = 0;
-  if (erasing) return;
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) {
+  if (erasing) return true;
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return true; } catch (e) {
     // The tablet's space for the game is full: let go of the oldest camera pictures
     // (everything else is kept) until it fits.
     while (S.photos && S.photos.length) {
       S.photos.shift();
-      try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return; } catch (e2) { /* still too big */ }
+      try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return true; } catch (e2) { /* still too big */ }
     }
+    return false;
   }
 }
 

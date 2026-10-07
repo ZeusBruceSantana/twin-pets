@@ -6,6 +6,8 @@
 const CACHE = 'twin-pets-files';
 
 // When first installed: keep a copy of the page and every file it uses.
+const EXTRA_FILES = ['art/rooms/frontyard.jpg'];   // pictures the page only asks for once the game is running
+
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
@@ -15,7 +17,7 @@ self.addEventListener('install', event => {
     await cache.put('./', page);
     const files = [...html.matchAll(/(?:src|href)="([^"#]+)"/g)].map(m => m[1])
       .filter(u => !/^(https?:|data:|mailto:)/.test(u));
-    await Promise.all([...new Set(files)].map(u => cache.add(u).catch(() => {})));
+    await Promise.all([...new Set([...files, ...EXTRA_FILES])].map(u => cache.add(u).catch(() => {})));
   })());
   self.skipWaiting();
 });

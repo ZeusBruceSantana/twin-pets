@@ -92,7 +92,7 @@ function renderMap() {
     let tile;
     if (roomOpen(room) && (!mapMode || mapMode.allow(room))) {
       const R = ROOMS[room];
-      tile = voteTile(room, ICONS[R.icon], R.word, R.door, (side, d) => {
+      tile = voteTile(room, roomIconHtml(room), R.word, R.door, (side, d) => {
         mapTouched = now();
         if (mapMode) {
           castVote(side, room, grid, () => { const m = mapMode; mapMode = null; closeMap(); m.pick(room); });

@@ -67,6 +67,13 @@ picture and whose paws are at the bottom.
 When your pictures are in use, the little pet faces on the house map, in the
 closet and in the mirror show your whole picture.
 
+## Pictures of the front yard and backyard
+
+Rooms have their own pictures too (a drawing or photo behind the pets). The
+easy way to change them is on the tablet: grown-up corner → **Pictures** (see
+the README). The picture that comes with the game for each room is set in
+`ROOM_ART` in `js/settings.js`, and the files live in `art/rooms/`.
+
 ## 5. A new home-screen icon (optional)
 
 The home-screen icon shows both pets together. To make it from your new

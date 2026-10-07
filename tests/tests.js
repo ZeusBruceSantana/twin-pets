@@ -49,7 +49,7 @@ test('Saves from every earlier version still load', async () => {
     Object.keys(old.unlocked).forEach(k => expect(S.unlocked[k], `${name}: "${k}" still unlocked`));
     if (old.pets.left.tricks) expectEqual(S.pets.left.tricks, old.pets.left.tricks, `${name}: tricks kept`);
     if (old.pets.left.owned) expectEqual(S.pets.left.owned, old.pets.left.owned, `${name}: presents kept`);
-    ['garden', 'letters', 'photos', 'paintings', 'decor', 'timer', 'fridge'].forEach(k => expect(S[k] !== undefined, `${name}: new "${k}" was added`));
+    ['garden', 'letters', 'photos', 'paintings', 'decor', 'timer', 'fridge', 'roomPictures'].forEach(k => expect(S[k] !== undefined, `${name}: new "${k}" was added`));
   }
 });
 
@@ -368,6 +368,128 @@ test('The closet is the next new thing as soon as a pet is given something to we
 });
 
 /* =====================================================================
+   PICTURES OF THE OUTDOOR ROOMS
+   ===================================================================== */
+// a pretend photo (picture file) made inside the game's window
+const makeFile = (name = 'drawing.png', type = 'image/png', w = 800, h = 600) => G(`(async () => {
+  const c = document.createElement('canvas'); c.width = ${w}; c.height = ${h};
+  const g = c.getContext('2d'); g.fillStyle = '#6a5'; g.fillRect(0, 0, ${w}, ${h}); g.fillStyle = '#c3a'; g.fillRect(${w / 8}, ${h / 6}, ${w / 3}, ${h / 3});
+  const blob = await new Promise(r => c.toBlob(r, '${type}'));
+  return new File([blob], '${name}', { type: '${type}' });
+})()`);
+const roomHasPicture = room => $g(`#rooms .room-${room}`).classList.contains('has-picture');
+
+test('The front yard shows the drawing that came with the game', async () => {
+  await openGame(played());
+  await startPlaying();
+  await until(() => G('ROOM_PIC.frontyard'), 5000, 'the picture to load');
+  expectEqual(G('ROOM_PIC.frontyard'), 'art/rooms/frontyard.jpg', 'the drawing is the front yard picture');
+  expect(roomHasPicture('frontyard'), 'the front yard has a picture');
+  const img = $g('#rooms .room-frontyard .room-picture');
+  expect(img && img.naturalWidth > 500, 'the picture really loaded');
+  expectEqual(W.getComputedStyle($g('#rooms .room-frontyard .facade')).display, 'none', 'the cartoon house is hidden behind it');
+  expect(!roomHasPicture('backyard'), 'the backyard keeps its built-in scenery until it has a picture');
+  await goTo('frontyard');
+  expect($g('#col-left .btn-mailbox') && $g('#col-left .btn-car'), 'the mailbox and car are still there');
+});
+
+test('The map shows a little round picture of a room that has one', async () => {
+  await openGame(played());
+  await startPlaying();
+  await until(() => G('ROOM_PIC.frontyard'), 5000, 'the picture');
+  tap($g('#midbtns .mapbtn'));
+  await until(() => G('scene') === 'map', 3000, 'the map');
+  expect($g('#map .mtile[data-key="frontyard"] img.room-thumb'), 'the front yard tile shows the drawing');
+  expect(!$g('#map .mtile[data-key="backyard"] img.room-thumb'), 'the backyard tile shows its usual picture');
+});
+
+test('A photo chosen on the tablet replaces a room picture, is kept, and can be undone', async () => {
+  await openGame(played());
+  await startPlaying();
+  const file = await makeFile('backyard-drawing.png', 'image/png', 3000, 2000);
+  expectEqual(await W.setRoomPicture('backyard', file), 'ok', 'the photo is accepted');
+  expect(roomHasPicture('backyard'), 'the backyard now has the picture');
+  const size = G('S.roomPictures.backyard.img.length');
+  expect(size < 500000, 'it was shrunk to save space (' + size + ' characters)');
+  const dims = await G(`(async () => { const i = new Image(); i.src = S.roomPictures.backyard.img; await i.decode(); return [i.naturalWidth, i.naturalHeight]; })()`);
+  expectEqual(dims, [1400, 933], 'the longest side is 1400');
+  expect(saved().roomPictures.backyard.img.startsWith('data:image/jpeg'), 'it is saved on the device');
+  await reopenGame();
+  await startPlaying();
+  await until(() => G('ROOM_PIC.backyard'), 5000, 'the saved picture to load');
+  expect(roomHasPicture('backyard'), 'still there after closing and opening the game');
+  // a photo for the front yard replaces the one that came with the game, and "original" brings it back
+  expectEqual(await W.setRoomPicture('frontyard', await makeFile()), 'ok', 'the front yard accepts a photo too');
+  expect(G('ROOM_PIC.frontyard').startsWith('data:image/jpeg'), 'the new photo is showing');
+  await W.useOriginalPicture('frontyard');
+  expectEqual(G('ROOM_PIC.frontyard'), 'art/rooms/frontyard.jpg', 'the original drawing is back');
+  await W.useOriginalPicture('backyard');
+  expect(!roomHasPicture('backyard'), 'the built-in scenery is back in the backyard');
+  expectEqual(G('S.roomPictures'), {}, 'nothing is left over');
+});
+
+test('Something that is not a picture is refused, and nothing changes', async () => {
+  await openGame(played());
+  await startPlaying();
+  const notPicture = G(`new File(['hello'], 'note.txt', { type: 'text/plain' })`);
+  expectEqual(await W.setRoomPicture('backyard', notPicture), 'bad', 'a text file is refused');
+  const broken = G(`new File(['not really a picture'], 'broken.jpg', { type: 'image/jpeg' })`);
+  expectEqual(await W.setRoomPicture('backyard', broken), 'bad', 'a broken picture is refused');
+  expect(!roomHasPicture('backyard'), 'the backyard is unchanged');
+  expectEqual(G('S.roomPictures'), {}, 'nothing was saved');
+});
+
+test('If the device is full, the picture is refused and the game is unharmed', async () => {
+  await openGame(played());
+  await startPlaying();
+  const limit = G('JSON.stringify(S).length') + 2000;
+  G(`window.__realSet = Storage.prototype.setItem;
+     Storage.prototype.setItem = function (k, v) { if (String(v).length > ${limit}) throw new DOMException('full', 'QuotaExceededError'); return window.__realSet.call(this, k, v); };`);
+  const result = await W.setRoomPicture('backyard', await makeFile('big.png', 'image/png', 1400, 900));
+  G('Storage.prototype.setItem = window.__realSet');
+  expectEqual(result, 'full', 'it says there is no room');
+  expect(!roomHasPicture('backyard'), 'the backyard is unchanged');
+  expectEqual(G('S.roomPictures'), {}, 'nothing half-saved');
+  expectEqual(saved().jar, FIXTURES.v4.jar, 'the rest of the game is saved as before');
+});
+
+test('The grown-up corner has a Pictures page for the front yard and the backyard', async () => {
+  await openGame(played());
+  await startPlaying();
+  await until(() => G('ROOM_PIC.frontyard'), 5000, 'the picture');
+  G('openParent()');
+  tap($g('.ptile[data-page="pictures"]'));
+  await sleep(100);
+  const text = $g('#parent').textContent;
+  expect(text.includes('front yard') && text.includes('backyard'), 'both rooms are listed');
+  expectEqual($$g('[data-pick]').map(b => b.dataset.pick), ['frontyard', 'backyard'], 'each has a Choose a photo button');
+  expectEqual($$g('[data-original]').length, 0, '"Use the original" only shows once a photo was chosen');
+  await W.setRoomPicture('backyard', await makeFile());
+  G('renderParent()');
+  expectEqual($$g('[data-original]').map(b => b.dataset.original), ['backyard'], '"Use the original" appears for the backyard');
+});
+
+test('A chosen picture is kept in a backup and comes back when restored', async () => {
+  await openGame(played());
+  await startPlaying();
+  await W.setRoomPicture('backyard', await makeFile());
+  G('openParent()');
+  tap($g('.ptile[data-page="backup"]'));
+  await sleep(100);
+  tap($g('[data-save]'));
+  await sleep(300);
+  const backup = JSON.parse(G('lastBackupText'));
+  expect(backup.save.roomPictures.backyard.img.startsWith('data:image/jpeg'), 'the backup has the picture');
+  await openGame(played());                                   // a different game ("a new tablet")
+  expectEqual(G('S.roomPictures'), {}, 'the new game has no picture');
+  G(`window.__r = readBackup(${JSON.stringify(JSON.stringify(backup))}); localStorage.setItem(SAVE_KEY, JSON.stringify(__r.save))`);
+  await reopenGame();
+  await startPlaying();
+  await until(() => G('ROOM_PIC.backyard'), 5000, 'the restored picture');
+  expect(roomHasPicture('backyard'), 'the backyard picture came back');
+});
+
+/* =====================================================================
    PROTECTING PROGRESS: backups, restore, damaged saves, full storage
    ===================================================================== */
 async function openBackupPage() {
@@ -388,7 +510,7 @@ test('A backup file has everything, and the corner shows the backup date', async
   const file = JSON.parse(G('lastBackupText'));
   expectEqual(file.app, 'twin-pets', 'it is a Twin Pets backup');
   const now = G('S');
-  ['colors', 'jar', 'together', 'book', 'paintings', 'letters', 'decor', 'schoolWords', 'garden', 'unlocked', 'features', 'birthday']
+  ['colors', 'jar', 'together', 'book', 'paintings', 'letters', 'decor', 'schoolWords', 'garden', 'unlocked', 'features', 'birthday', 'roomPictures']
     .forEach(k => expectEqual(file.save[k], now[k], `the backup has "${k}"`));
   expectEqual(file.save.pets.left.tricks, now.pets.left.tricks, 'the backup has the tricks');
   expect(G('S.backupAt') > Date.now() - 10000, 'the backup date is remembered');

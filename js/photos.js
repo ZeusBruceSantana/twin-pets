@@ -70,7 +70,9 @@ function photoView(shot, k = 0.3) {
   Object.assign(box.style, { width: W() * k + 'px', height: H() * k + 'px' });
   Object.assign(inner.style, { width: W() + 'px', height: H() + 'px', transform: `scale(${k})` });
   const markup = roomMarkup(shot.room).replace(/ id="[^"]*"/g, '');
-  inner.append(el('div', 'room room-' + shot.room + ' on', markup));
+  const room = el('div', 'room room-' + shot.room + ' on' + (ROOM_PIC[shot.room] ? ' has-picture' : ''), markup);
+  if (ROOM_PIC[shot.room]) { const pic = new Image(); pic.className = 'room-picture'; pic.src = ROOM_PIC[shot.room]; room.prepend(pic); }
+  inner.append(room);
   SIDES.forEach(s => {
     const d = shot[s];
     const p = el('div', 'pet side-' + s + ' ' + d.cls, d.html);

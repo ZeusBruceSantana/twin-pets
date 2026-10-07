@@ -64,7 +64,7 @@ Each room shows **only its own buttons** along each girl's edge.
 | 🛁 **Bathroom** | Bath, Teeth, Brush, Dryer, Spa | **Bath** fills a tub. While her pet is in the bath, a girl's buttons become bath toys: a **boat**, a **squirty fish**, and **fizzies** that change the water color. **Teeth** ends in a sparkly smile. **Dryer** makes the fur poof up big and funny, then settle. **Spa** pampers the **sister's** pet with paw polish and a bow (in the giver's color) and sparkle spray, for the rest of the day. Tap a pet's face in the **mirror** to make a funny face. |
 | 🌳 **Backyard** | Bounce, Climb, Ball, Seesaw, Garden | Trampolines, the rainbow climb (never a race), and the ball and seesaw games. **Garden**: Plant seeds, Water them, and they grow over real time (about 20 minutes). **Pick** what's ready and it goes into the fridge. |
 | 🛏️ **Bedroom** | Sleep, Book, Closet, Sleepover | **Sleep** both pets for the goodnight ending. **Book** is the memory book. **Closet** has everything each pet can wear; tap to put it on or take it off. It is the very next new thing to appear once either pet has been given something to wear, so nobody is left stuck in a scarf. **Sleepover**: the lights go down, the pets snuggle in a blanket fort, and each girl shines a flashlight to show shadow pictures (tap the word to hear it). |
-| 🏡 **Front yard** | Mail, Car, Hello | **Mail** (or tap the mailbox) reads letters written in the grown-up corner. Every word can be tapped to hear it. **Car**: both girls tap the car, then choose together where to go. When a visitor comes, **Hello** greets them. |
+| 🏡 **Front yard** | Mail, Car, Hello | The picture behind it is a **drawing** (see [Room pictures](#room-pictures-the-front-yard-and-backyard)). **Mail** (or tap the mailbox) reads letters written in the grown-up corner. Every word can be tapped to hear it. **Car**: both girls tap the car, then choose together where to go. When a visitor comes, **Hello** greets them. |
 | 🏫 **School** | Words, Art, Blocks | **Words**: the pets practice this week's school words on the chalkboard. Each girl taps to hear the word and her pet says it; when both have, a star and the next word. **Art**: one big canvas, half each. Finger-paint, tap **Done**, then both choose a room on the map to hang it in. **Blocks**: build a doghouse, a cozy den or a blanket fort, taking turns adding blocks in your own color. |
 
 ### Trips in the car
@@ -120,6 +120,8 @@ tablet.
 - **Backup**: save everything to a backup file, or restore from one. See
   [Backups](#backups-keep-their-progress-safe) below. The tile shows the date
   of the last backup, and glows gently if it's been more than a month.
+- **Pictures**: choose a photo or drawing for the front yard or the backyard.
+  See [Room pictures](#room-pictures-the-front-yard-and-backyard) below.
 - **Write a letter**: type a short letter. It goes in the mailbox in the front
   yard, and the front yard gets a star on the map.
 - **School words**: type this week's words with commas between them
@@ -216,7 +218,7 @@ The game saves by itself on the device it is played on. It saves:
 - the colors, the jar, and which new things have appeared
 - the memory book and its pictures
 - each pet's tummy, mud, fluffy fur, learned tricks, presents, clothes and spa look
-- the garden, the fridge, paintings on the walls and decorations
+- the garden, the fridge, paintings on the walls, decorations and room pictures
 - letters, school words, the play timer and the pets' birthday
 
 Updates to the game keep the save. If you clear the browser's website data,
@@ -228,10 +230,41 @@ are let go first, so everything else keeps saving.
 
 ---
 
+## Room pictures: the front yard and backyard
+
+The front yard and the backyard can show a **drawing or photo** instead of the
+built-in scenery. The front yard comes with a drawing of a purple house (with a
+rainbow, a sun and a little blue bird). The pets, the mailbox, the car, the
+trampolines and the garden all sit on top of it.
+
+**To change a picture, right on the tablet** (nothing to edit, nothing to
+upload):
+1. Open the grown-up corner (hold the top-left corner for 3 seconds) and tap
+   **Pictures**.
+2. Tap **Choose a photo** next to the front yard or the backyard.
+3. On the iPad, pick a photo from the library, or choose **Take Photo** to
+   photograph a drawing right then. On the Surface, pick a file.
+4. Done. The new picture shows straight away, and the little round picture of
+   the room on the house map changes too.
+
+**Tips:** wide pictures (landscape) fit best, and the middle of the picture is
+what stays visible. If a photo has a lot of table around the drawing, crop it
+first in the Photos app. Tap **Use the original** to go back to the picture that
+came with the game (or the built-in scenery).
+
+Pictures you choose are saved **on the tablet only**, and **backups include
+them**. Restoring a backup on a new tablet brings them back too.
+
+*For the game's own pictures:* the front yard's drawing lives in
+`art/rooms/frontyard.jpg`. Which picture each room starts with is set in
+`ROOM_ART` in `js/settings.js`.
+
+---
+
 ## Backups: keep their progress safe
 
 A backup is one small file with **everything**: colors, the jar, the memory
-book and its pictures, paintings, letters, tricks, decorations, school words,
+book and its pictures, paintings, room pictures, letters, tricks, decorations, school words,
 clothes, the garden and more. Make one every few weeks, and before moving to
 a new tablet.
 

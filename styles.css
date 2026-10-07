@@ -663,7 +663,7 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .cbtn.small.camera { color: #8b7fd1; }
 
 /* grown-up corner pages */
-.ptiles { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.2vmin; }
+.ptiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(13vmin, 1fr)); gap: 1.2vmin; }
 .ptile small { display: block; margin-top: .3vmin; font-size: 2.1vmin; font-weight: 700; color: #857f96; }
 .ptile { display: flex; flex-direction: column; align-items: center; gap: .8vmin; padding: 1.4vmin .8vmin; border-radius: 2.4vmin; background: #f7f4fb; border: .5vmin solid #e3ddef; font: 800 2.5vmin/1.1 var(--font); text-align: center; }
 .ptile .pico { width: 7vmin; height: 7vmin; } .ptile .pico svg { width: 100%; height: 100%; }
@@ -872,3 +872,19 @@ body:not([data-scene="play"]) .request { display: none; }   /* waits for the act
 #dedication .ded-line { font: 900 4.6vmin/1.3 var(--font); color: #b0884f; text-align: center; }
 #dedication .ded-line.big { font-size: 6.4vmin; color: var(--ink); }
 #dedication .ded-line .word { margin: 0 .3vmin; }
+
+/* =====================================================================
+   PICTURES OF THE OUTDOOR ROOMS (front yard, backyard)
+   ===================================================================== */
+.room-picture { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; pointer-events: none; -webkit-user-drag: none; }
+.room.has-picture .bg { display: none; }
+body.w-rain .room.has-picture .room-picture { filter: saturate(.8) brightness(.93); }
+.room-thumb { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: 50% 45%; border: .6vmin solid #fff; box-shadow: 0 .4vmin 0 rgba(0,0,0,.12); -webkit-user-drag: none; }
+.pic-rows { display: flex; flex-direction: column; gap: 1.6vmin; }
+.pic-row { display: flex; align-items: center; gap: 2vmin; }
+.pic-row .pbtn { flex: none; white-space: nowrap; }
+.pic-thumb { flex: none; width: 17vmin; height: 12.5vmin; border-radius: 1.6vmin; overflow: hidden; background: #f1eef7; border: .5vmin solid #d9d3e6; display: flex; align-items: center; justify-content: center; }
+.pic-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.pic-thumb svg { width: 60%; height: 80%; }
+.pic-info { flex: 1; display: flex; flex-direction: column; gap: .6vmin; min-width: 0; font-size: 3.4vmin; }
+.pic-info span { font-size: 2.4vmin; font-weight: 600; color: #857f96; }

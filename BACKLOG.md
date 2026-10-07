@@ -96,6 +96,7 @@
 - [x] Peekaboo button for a little brother: an animal peeks out with a sound, no reading
 
 ### After the first play-tests
+- [x] Room pictures: the front yard shows a child's drawing of a house, and the backyard is ready for the other twin's drawing. Grown-ups can change either picture on the tablet (grown-up corner → Pictures, from the photo library or the camera); pictures stay on the device and are kept in backups
 - [x] The closet appears as soon as a pet is given something to wear (a pet could be stuck wearing a scarf with no way to take it off)
 
 ### Protect and polish
@@ -143,3 +144,5 @@
 - [ ] A way to look at the memory book's pictures bigger, or delete one
 - [ ] Let grown-ups choose how often backups are suggested, or remind them on the start screen
 - [ ] A volume slider just for the music
+- [ ] Room pictures for more rooms (the playroom, kitchen, school...), and a way to move or zoom a picture before using it
+- [ ] The girls' own drawings as other places (the start screen, the map button)

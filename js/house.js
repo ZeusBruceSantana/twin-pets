@@ -31,11 +31,11 @@ function roomMarkup(room) {
   if (room === 'bathroom') return `<div class="wall"></div><div class="floor"></div>${tints}
     ${both(s => `<div class="deco towel side-${s}">${ICONS.towelHook}</div>`)}
     ${[10, 36, 64, 90].map((x, i) => `<div class="bub" style="left:${x}%; animation-delay:${-i * 3.5}s; animation-duration:${12 + i * 2}s"></div>`).join('')}`;
-  if (room === 'backyard') return `<div class="sky"></div>
-    <div class="cloud" style="top:14%; animation-delay:-20s"></div>
-    <div class="cloud" style="top:27%; animation-delay:-65s; animation-duration:120s"></div>
-    <div class="fence"></div>
-    <svg class="ground" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+  if (room === 'backyard') return `<div class="sky bg"></div>
+    <div class="cloud bg" style="top:14%; animation-delay:-20s"></div>
+    <div class="cloud bg" style="top:27%; animation-delay:-65s; animation-duration:120s"></div>
+    <div class="fence bg"></div>
+    <svg class="ground bg" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
       <path d="M0 58 C 160 22, 320 44, 500 52 C 690 60, 850 22, 1000 50 L1000 200 L0 200Z" fill="#cdeeb6"/>
       <path d="M0 96 C 200 66, 360 86, 500 90 C 650 94, 810 64, 1000 92 L1000 200 L0 200Z" fill="#b8e29e"/>
     </svg>

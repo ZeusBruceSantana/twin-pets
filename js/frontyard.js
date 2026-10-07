@@ -13,10 +13,10 @@ Object.assign(ICONS, {
    ===================================================================== */
 ROOMS.frontyard = { word: 'front yard', icon: 'roomFront', door: '#ffd1a8', acts: ['mailbox'], feature: 'frontyard' };
 ROOM_ORDER.push('frontyard');
-ROOM_MARKUP.frontyard = () => `<div class="sky"></div>
-  <div class="cloud" style="top:12%; animation-delay:-40s"></div>
-  <div class="cloud" style="top:24%; animation-delay:-80s; animation-duration:130s"></div>
-  <div class="deco facade"><svg viewBox="0 0 300 130" preserveAspectRatio="xMidYMax meet">
+ROOM_MARKUP.frontyard = () => `<div class="sky bg"></div>
+  <div class="cloud bg" style="top:12%; animation-delay:-40s"></div>
+  <div class="cloud bg" style="top:24%; animation-delay:-80s; animation-duration:130s"></div>
+  <div class="deco facade bg"><svg viewBox="0 0 300 130" preserveAspectRatio="xMidYMax meet">
     <path d="M14 58 L150 6 L286 58Z" fill="#ff9a8a" stroke="#e07a6a" stroke-width="5" stroke-linejoin="round"/>
     <rect x="30" y="56" width="240" height="74" fill="#fff4dd" stroke="#e8cf9e" stroke-width="5"/>
     <rect x="128" y="74" width="44" height="56" rx="6" fill="#c99a6b" stroke="#a87a4b" stroke-width="4"/><circle cx="162" cy="104" r="3.5" fill="#ffd23f"/>
@@ -25,7 +25,7 @@ ROOM_MARKUP.frontyard = () => `<div class="sky"></div>
     <g><circle cx="60" cy="126" r="7" fill="#ff8fb8"/><circle cx="76" cy="124" r="7" fill="#ffd23f"/><circle cx="92" cy="126" r="7" fill="#c3a6ff"/>
        <circle cx="208" cy="126" r="7" fill="#c3a6ff"/><circle cx="224" cy="124" r="7" fill="#ff8fb8"/><circle cx="240" cy="126" r="7" fill="#ffd23f"/></g>
   </svg></div>
-  <svg class="ground" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
+  <svg class="ground bg" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
     <path d="M0 40 C 200 30, 800 30, 1000 40 L1000 200 L0 200Z" fill="#b8e29e"/>
     <path d="M470 34 L530 34 L600 200 L400 200Z" fill="#f1e2c6"/>
   </svg>`;

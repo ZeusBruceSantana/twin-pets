@@ -53,6 +53,20 @@ const PET_ART = {
   right: { awake: null, asleep: null, drawing: 'art-peach',  face: '18 26 164 118' },   // Avery Peach, on Avery's side
 };   // ("drawing" and "face" are for the built-in pictures. Leave them as they are.)
 
+/* =====================================================================
+   3. PICTURES OF THE OUTDOOR ROOMS (a drawing or photo instead of the built-in scenery)
+   ---------------------------------------------------------------------
+   The easy way: on the tablet, open the grown-up corner (hold the top-left
+   corner for 3 seconds), tap Pictures, and choose a photo. Nothing to edit.
+   This list is the picture that comes with the game for each room, used when
+   no picture has been chosen on the tablet. null means the built-in scenery.
+   (To use a file from the "art/rooms" folder, put its name here in quotes.)
+   ===================================================================== */
+const ROOM_ART = {
+  frontyard: 'art/rooms/frontyard.jpg',   // a drawing of the house
+  backyard: null,
+};
+
 /* The colors the girls can choose from. */
 const COLORS = [
   { id: 'pink',   main: '#ff7eb6', light: '#ffe3ef', dark: '#c2367a' },

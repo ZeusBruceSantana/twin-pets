@@ -95,6 +95,9 @@
 - [x] About once a play session, a pet asks for something from its real stuffed animal ("Give Livvie a real hug!")
 - [x] Peekaboo button for a little brother: an animal peeks out with a sound, no reading
 
+### After the first play-tests
+- [x] The closet appears as soon as a pet is given something to wear (a pet could be stuck wearing a scarf with no way to take it off)
+
 ### Protect and polish
 **Stage 1: cleanup and tests**
 - [x] Tidied the code (old door leftovers, unused bits, clearer comments) with no change in how the game plays

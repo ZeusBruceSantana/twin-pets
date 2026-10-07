@@ -348,6 +348,25 @@ test('Each room and place has its own tune, and none at bedtime', async () => {
   expectEqual(G(`JSON.stringify(compose(PIECES.kitchen)) === JSON.stringify(compose(PIECES.kitchen))`), true, 'a room always has the same tune');
 });
 
+test('The closet is the next new thing as soon as a pet is given something to wear', async () => {
+  const s = played();
+  ['closet', 'costumes', 'sleepover', 'cook', 'teeth', 'picnic', 'mirror'].forEach(k => delete s.features[k]);     // lots of new things still waiting (ahead of the closet in the old order)
+  s.pets.left.owned = ['scarf']; s.pets.left.wear = { head: null, neck: 'scarf', face: null };
+  s.pets.right.owned = [];
+  await openGame(s);
+  await startPlaying();
+  expectEqual(G('nextNewThing().key'), 'closet', 'with a scarf on, the closet is first in line');
+  const s2 = played();
+  ['closet', 'sleepover', 'cook'].forEach(k => delete s2.features[k]);
+  s2.pets.left.owned = ['bear']; s2.pets.right.owned = ['rocket'];                       // toys only
+  await openGame(s2);
+  await startPlaying();
+  expect(G('nextNewThing().key') !== 'closet', 'with only toys, the closet waits its turn');
+  // and once it has appeared, the scarf can come off
+  G(`introduce(NEW_THINGS.find(n => n.key === 'closet'), true); S.pets.left.owned = ['scarf']; S.pets.left.wear.neck = 'scarf'; wearItem('left', 'scarf')`);
+  expectEqual(G('S.pets.left.wear.neck'), null, 'tapping the scarf in the closet takes it off');
+});
+
 /* =====================================================================
    PROTECTING PROGRESS: backups, restore, damaged saves, full storage
    ===================================================================== */

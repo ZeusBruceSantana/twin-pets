@@ -44,7 +44,7 @@ PARENT_PAGES.words = {
   render(panel) {
     parentShell(panel, "This week's school words", `
       <textarea id="p-words" rows="3" placeholder="cat, sun, play, little">${esc(S.schoolWords.join(', '))}</textarea>
-      <div class="note">Put commas between words. The pets practice them at pet school. Leave it empty to use starter words.</div>
+      <div class="note">Put commas between words. The pets practice them at pet school. Leave it empty to use starter words. When Home Core is connected, its words of the week come first.</div>
       <div class="row"><div class="pbtn go" data-save>Save words</div></div>`);
     bindP(panel, '[data-save]', b => {
       const raw = $('#p-words').value;

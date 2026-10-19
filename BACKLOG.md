@@ -126,6 +126,11 @@
 - [x] Home-screen icon with both pets together (remake it from new art with `icons/make-icons.html`)
 - [x] Dedication page from the ♥ on the start screen: "Made by Dad for Leah and Avery, 2026."
 
+### Home Core
+- [x] Grown-up corner: connect to the family's Home Core game link, and choose which child goes with each pet (by color and symbol; no names are sent)
+- [x] Pet school practices each girl's words of the week from Home Core (else the typed words, else starter words)
+- [x] A pet cheers once a day when her jobs are all done, and once for each reward a parent approves
+
 ## Later ideas
 
 - [ ] **Real pet art from photos or drawings**: swap in the real pictures from Dad's photos or drawings (the `art` folder is ready; see `art/README.md`, and remake the icon with `icons/make-icons.html`)

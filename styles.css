@@ -672,12 +672,14 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .panel.sub { width: min(86vw, 104vmin); }
 .panel .row.wrap { flex-wrap: wrap; justify-content: center; }
 .panel .row.wrap .pbtn { flex: 0 0 auto; min-width: 13vmin; }
-.panel textarea {
+.panel textarea, .panel input.ptext {
   width: 100%; font: 600 max(18px, 3vmin)/1.35 var(--font); color: var(--ink); padding: 1.6vmin 2vmin;
   border: .5vmin solid #d9d3e6; border-radius: 2vmin; background: #fffdf8; resize: none;
   -webkit-user-select: text; user-select: text; -webkit-touch-callout: default; touch-action: auto;
 }
-.panel textarea:focus { outline: none; border-color: #8b7fd1; }
+.panel textarea:focus, .panel input.ptext:focus { outline: none; border-color: #8b7fd1; }
+/* Home Core: a child's color, as a dot beside her color and symbol */
+.hcdot { display: inline-block; width: 2.4vmin; height: 2.4vmin; border-radius: 50%; margin-right: 1vmin; vertical-align: -0.3vmin; }
 .panel .note.big { font-size: 3vmin; color: var(--ink); }
 .months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1vmin; }
 .pbtn.small { padding: 1.4vmin .6vmin; font-size: 2.8vmin; }

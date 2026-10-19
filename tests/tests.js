@@ -256,6 +256,83 @@ test('School words: commas, new lines, and empty for starter words', async () =>
   expectEqual(G('S.schoolWords'), [], 'empty means starter words');
 });
 
+/* Home Core: the family's app. The game asks the link with fetch, so the tests answer for Home Core. */
+const HC_LINK = 'https://app.example/game/' + 'a'.repeat(64) + '.json';
+const hcAnswer = (kids, today = '2026-10-19') => ({ ok: true, game: { today, kids } });
+const hcKidRow = (id, color, symbol, extra = {}) => Object.assign({ id, color, symbol, words: [], jobs: { done: 0, total: 0 }, points: 0, rewards: [] }, extra);
+function answerHomeCore(json, status = 200) {
+  G(`window.__hcAsked = 0; window.fetch = async () => { window.__hcAsked++; return { ok: ${status === 200}, status: ${status}, json: async () => (${JSON.stringify(json)}) }; }`);
+}
+async function connectHomeCore(kids) {
+  answerHomeCore(hcAnswer(kids));
+  G('openParent()');
+  tap($g('.ptile[data-page="homecore"]'));
+  $g('#p-hclink').value = HC_LINK;
+  tap($g('[data-connect]'));
+  await until(() => G('S.homeCore.status') === 'ok', 4000, 'the game to reach Home Core');
+}
+
+test('Home Core: a wrong link is refused; the right one connects, and each pet is matched to a child by color and symbol', async () => {
+  await openGame(played());
+  await startPlaying();
+  answerHomeCore(hcAnswer([]));
+  G('openParent()');
+  tap($g('.ptile[data-page="homecore"]'));
+  $g('#p-hclink').value = 'https://example.com/not-a-game-link';
+  tap($g('[data-connect]'));
+  expect(/isn't a game link/.test($g('#p-hcwhy').textContent), 'a wrong link says so');
+  expectEqual(G('S.homeCore.link'), '', 'and is not kept');
+  G('closeParent()');
+  await connectHomeCore([hcKidRow('k1', 'lavender', 'star'), hcKidRow('k2', 'shell', 'heart')]);
+  const text = $g('#parent').textContent;
+  expect(text.includes('Lavender star') && text.includes('Shell pink heart'), 'each child shows as her color and symbol');
+  tap($g('[data-side="left"][data-kid="k1"]'));
+  tap($g('[data-side="right"][data-kid="k2"]'));
+  expectEqual(saved().homeCore.pick, { left: 'k1', right: 'k2' }, 'the choice is saved on this device');
+});
+
+test('Home Core: pet school practices the girls\' words of the week, else the typed words', async () => {
+  await openGame(played());
+  await startPlaying();
+  G(`S.schoolWords = ['typed']`);
+  expectEqual(G('schoolWordPool()'), ['typed'], 'not connected: the typed words');
+  await connectHomeCore([hcKidRow('k1', 'lavender', 'star', { words: ['cat', 'sun'] }), hcKidRow('k2', 'shell', 'heart', { words: ['sun', 'map'] })]);
+  G(`S.homeCore.pick = { left: 'k1', right: 'k2' }`);
+  expectEqual(G('schoolWordPool()'), ['cat', 'sun', 'map'], 'both girls\' words, each once');
+  G(`S.homeCore.kids.forEach(k => { k.words = []; })`);
+  expectEqual(G('schoolWordPool()'), ['typed'], 'no words in Home Core: the typed words again');
+});
+
+test('Home Core: a pet cheers once when her jobs are all done, and once for an approved reward', async () => {
+  await openGame(played());
+  await startPlaying();
+  await connectHomeCore([hcKidRow('k1', 'lavender', 'star', { jobs: { done: 2, total: 2 }, rewards: [{ name: 'Movie night', on: '2026-10-19' }] }),
+    hcKidRow('k2', 'shell', 'heart', { jobs: { done: 1, total: 3 } })]);
+  G(`S.homeCore.pick = { left: 'k1', right: 'k2' }`);
+  G('closeParent()');
+  await until(() => /All my jobs are done/.test(G(`pets.left.root.textContent`)), 8000, 'the left pet to cheer about her jobs');
+  await until(() => /Movie night/.test(G(`pets.left.root.textContent`)), 9000, 'the left pet to cheer about the reward');
+  expect(!/All my jobs/.test(G(`pets.right.root.textContent`)), 'the right pet waits: her jobs aren\'t all done');
+  expectEqual(saved().homeCore.cheered.jobs, { left: '2026-10-19' }, 'the jobs cheer is noted for today');
+  await reopenGame();
+  await startPlaying();
+  await sleep(4500);
+  expect(!/All my jobs|Movie night/.test(G(`pets.left.root.textContent`)), 'opening the game again does not cheer twice');
+});
+
+test('Home Core: a stopped link says so, and Disconnect forgets everything', async () => {
+  await openGame(played());
+  await startPlaying();
+  await connectHomeCore([hcKidRow('k1', 'lavender', 'star')]);
+  answerHomeCore({ ok: false, error: 'gone' }, 404);
+  tap($g('[data-again]'));
+  await until(() => G('S.homeCore.status') === 'stopped', 4000, 'the game to notice the link stopped');
+  expect(/stopped working/.test($g('#parent').textContent), 'the page says the link stopped');
+  tap($g('[data-forget]'));
+  expectEqual(saved().homeCore.link, '', 'Disconnect forgets the link');
+  expect($g('#p-hclink'), 'and asks for a link again');
+});
+
 test('Kindness hearts drop into the jar when the corner closes', async () => {
   const s = played(); s.jar = 1;
   await openGame(s);

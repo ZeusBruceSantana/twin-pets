@@ -55,6 +55,7 @@ function freshSave() {
     paintings: [],          // paintings from the art easel, hanging on the walls: { img, room }
     decor: {},              // decorations in each room: { playroom: { wp, rug, items: [] } }
     roomPictures: {},       // pictures chosen on this device for a room: { backyard: { img, at } }
+    homeCore: {},           // the family's Home Core game link and which child goes with each pet (homecore.js)
   };
 }
 function merge(base, extra) {

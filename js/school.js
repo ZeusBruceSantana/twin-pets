@@ -64,7 +64,7 @@ function hideBoard(a) {          // the chalkboard steps aside for the easel and
 ACT_HANDLERS.words = side => { thingTapped('board'); startActivity('school', side); };
 ACTIVITIES.school = {
   async start(a) {
-    const pool = S.schoolWords.length ? S.schoolWords : STARTER_WORDS;
+    const pool = schoolWordPool();   // Home Core's words for the two girls, else the typed ones, else starter words (homecore.js)
     a.data.words = shuffle(pool.slice()).slice(0, Math.min(4, pool.length));
     a.data.i = 0;
     a.data.said = { left: false, right: false };

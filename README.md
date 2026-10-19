@@ -127,6 +127,12 @@ tablet.
 - **School words**: type this week's words with commas between them
   (`cat, sun, play`). The pets practice them at pet school. Leave it empty for
   starter words.
+- **Home Core**: connect the game to the family's Home Core app. In Home Core, a parent opens **More**, **Settings**,
+  **Game link**, makes the link and copies it; paste it here and tap **Connect**, then choose which child goes with
+  each pet (Home Core shows each child as her color and symbol, like "Lavender star": it never sends anyone's name).
+  While the game is open it looks every few minutes: pet school practices each girl's **words of the week**, and her
+  pet cheers once when **all of today's jobs are done** and once for each **reward a parent approves**. **Disconnect**
+  forgets the link. If the link stops working (a parent made a new one), this tile says so.
 - **Kindness hearts**: saw them being kind to each other? Add a heart (or a
   few) to their jar. They drop in when you close the panel.
 - **Play timer**: Off, 10, 15, 20, 30, 45 or 60 minutes. When time is up, the
@@ -165,7 +171,9 @@ game completely and open it again.
 
 > The repository needs to stay **public** for free GitHub Pages. The game
 > keeps nothing private online. The girls' progress, letters and school words
-> stay on the tablet.
+> stay on the tablet. When Home Core is connected, the game only reads from it
+> (words, how many jobs are done, approved rewards; never a name), and the link
+> is kept on the tablet too.
 
 ---
 

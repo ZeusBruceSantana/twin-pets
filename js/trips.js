@@ -54,7 +54,7 @@ onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));
 const PLACES = {
   beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell'] },
   park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['ducks', 'bubbles'] },
-  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo'], need: 'farm' },
+  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['milkgame', 'egghunt', 'feedgame', 'tractor'], need: 'farm' },
   icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle'] },
   library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh'], need: 'library' },
   snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball'], need: 'snowhill' },
@@ -164,7 +164,7 @@ Object.assign(BUTTONS, {
   splash: { icon: 'splash', label: 'Splash' }, castle: { icon: 'castle', label: 'Castle' }, shell: { icon: 'shell', label: 'Shells' },
   ducks: { icon: 'ducks', label: 'Ducks' },
   scoop: { icon: 'scoop', label: 'Scoop' }, lick: { icon: 'lick', label: 'Lick' }, sprinkle: { icon: 'sprinkles', label: 'Sprinkles' },
-  hay: { icon: 'hay', label: 'Hay' }, eggs: { icon: 'egg', label: 'Eggs' }, moo: { icon: 'moo', label: 'Animals' },
+  milkgame: { icon: 'milk', label: 'Milk' }, egghunt: { icon: 'egg', label: 'Eggs' }, feedgame: { icon: 'moo', label: 'Feed' }, tractor: { icon: 'tractorBtn', label: 'Tractor' },
   pickbook: { icon: 'openbook', label: 'Books' }, stack: { icon: 'bookstack', label: 'Stack' }, shh: { icon: 'shh', label: 'Shh' },
   sled: { icon: 'sled', label: 'Sled' }, angel: { icon: 'snowangel', label: 'Angel' }, snowball: { icon: 'snowball', label: 'Snowball' },
   meetfriend: { icon: 'wave', label: 'Hello' },
@@ -334,27 +334,6 @@ const TRIP_PLAY = {
     top.classList.add('sprinkled');
     const r = top.getBoundingClientRect();
     sparkles(r.left + r.width / 2, r.top, 8, ['#ff7a7a', '#5aa9ff', '#ffd23f', '#6cc551', '#a77bff']);
-  },
-
-  /* ---- the farm ---- */
-  async eggs(a, side, p) {
-    begin(p, 3200);
-    const at = petPoint(p, side === 'left' ? 0.9 : 0.1, 0.98);
-    const egg = prop(ICONS.egg, 6, at.x, at.y);
-    egg.dataset.owner = side;
-    egg.style.zIndex = 31;
-    Sound.play('pop');
-    await animate(egg.firstChild, [{ transform: 'translateY(40%) scale(.3)' }, { transform: 'translateY(-40%) scale(1.15)' }, { transform: 'translateY(-30%) scale(1)' }], { duration: 400, fill: 'forwards' });
-    await animate(egg.firstChild, [-12, 12, -10, 10, 0].map(r => ({ transform: `translateY(-30%) rotate(${r}deg)` })), { duration: 700, fill: 'forwards' });
-    Sound.play('crack');
-    egg.firstChild.innerHTML = ICONS.chick;
-    sparkles(at.x, at.y - 40, 7, ['#ffe066', '#fff4e0', '#ffffff']);
-    animate(egg.firstChild, [{ transform: 'translateY(-30%) scale(.5)' }, { transform: 'translateY(-50%) scale(1.2)' }, { transform: 'translateY(-30%) scale(1)' }], { duration: 400, fill: 'forwards' });
-    Sound.play('peep');
-    mood(p, 'happy', 1400);
-    floatHearts(p, 2);
-    await wait(1600);
-    egg.remove();
   },
 
   /* ---- the library ---- */

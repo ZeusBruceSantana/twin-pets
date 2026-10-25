@@ -1114,3 +1114,37 @@ test('The prize pool has about sixty things for the house and the electronics al
   G(`placeDecor('rugChecker', 'kitchen'); placeDecor('wpNightStars', 'kitchen')`);
   expectEqual(G('TEST_ERRORS'), [], 'the electronics worked');
 });
+
+test('At the museum the girls can see the same picture in seven art styles, and the puzzle asks which is which', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'museum' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the museum trip');
+  tap($g('#col-left .btn-look'));
+  await until(() => $g('.spanel.side-left'), 2000, 'the art panel');
+  expectEqual($$g('.spanel.side-left .scard').map(c => c.dataset.key), ['real', 'dots', 'bold', 'swirls', 'shapes', 'dreamy', 'splash'], 'seven styles');
+  tap($g('.spanel.side-left .scard[data-key="dots"]'), { hold: 40 });
+  await sleep(500);
+  expect($g('.mframe.f1.hung svg'), 'the picture hangs in the middle frame');
+  expectEqual($g('.mcap-name').textContent.trim(), 'Pointillism', 'it says the style name');
+  expect($g('.pet.side-left').classList.contains('sty-dots'), 'the pet joins in');
+  for (const k of ['real', 'bold', 'swirls', 'shapes', 'dreamy']) { G(`showArtStyle(act, 'right', artStyle('${k}'))`); await sleep(120); }
+  expectEqual(G('S.artAll || false'), false, 'not all seen yet');
+  G(`showArtStyle(act, 'right', artStyle('splash'))`);
+  expectEqual(G('S.artAll'), true, 'seeing them all earns a prize');
+  expectEqual(G('S.puzzleOwed'), 1, 'the prize is waiting');
+  expectEqual(G('TEST_ERRORS'), [], 'no problems');
+  G('endActivity(false)');
+  await until(() => G('scene') === 'play', 8000, 'play');
+  await goTo('school');
+  G(`startPuzzle('style', 'museum')`);
+  await until(() => G('scene') === 'puzzle', 3000, 'the style puzzle');
+  for (let round = 0; round < 2; round++) {
+    for (const side of ['l', 'r']) {
+      for (const opt of $$g(`#puzzle .pz-half.${side} .pz-opt`)) { tap(opt); if (opt.classList.contains('good')) break; await sleep(30); }
+    }
+    await sleep(1300);
+  }
+  await until(() => G('pz === null'), 8000, 'the style puzzle to finish');
+  expectEqual(G('S.puzzles'), 1, 'solved');
+});

@@ -70,17 +70,18 @@ const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
 /* The town map: a little illustrated map. Each place sits where it belongs (the beach by the sea,
    the river running down to it, the snowy hill in the mountains), with roads joining them.
    Both girls tap the same place to drive there. */
-const TOWN_POS = {   // where each place is on the map: [% across, % down]
-  woods: [11, 20], park: [33, 14], library: [58, 22], snowhill: [87, 16],
-  river: [24, 52], museum: [50, 50], restaurant: [74, 56],
-  beach: [13, 84], farm: [43, 84], icecream: [72, 86],
+const TOWN_POS = {   // where each place is on the map: [% across, % down]. Room for 15 (5 across, 3 down); the empty spots are for places still to come.
+  woods: [10, 17], park: [30, 13], library: [50, 19], station: [70, 15], snowhill: [90, 17],
+  river: [11, 52], fair: [31, 50], museum: [51, 52], restaurant: [71, 50], trail: [90, 52],
+  beach: [11, 85], farm: [33, 85], bakery: [91, 85], icecream: [72, 86],
 };
-const TOWN_ROADS = [['woods', 'park'], ['park', 'library'], ['library', 'snowhill'], ['park', 'river'], ['library', 'museum'], ['museum', 'restaurant'],
-  ['river', 'museum'], ['river', 'beach'], ['museum', 'farm'], ['restaurant', 'icecream'], ['farm', 'icecream'], ['farm', 'beach']];
+const TOWN_ROADS = [['woods', 'park'], ['park', 'library'], ['library', 'station'], ['station', 'snowhill'], ['library', 'snowhill'], ['park', 'river'], ['river', 'beach'], ['river', 'fair'], ['fair', 'museum'],
+  ['library', 'museum'], ['museum', 'restaurant'], ['restaurant', 'trail'], ['fair', 'farm'], ['farm', 'beach'], ['farm', 'icecream'], ['restaurant', 'icecream'], ['icecream', 'bakery']];
 function townRoads() {
-  const d = TOWN_ROADS.map(([a, b], i) => {
+  const here = TOWN_ROADS.filter(([a, b]) => TOWN_POS[a] && TOWN_POS[b] && PLACES[a] && PLACES[b]);   // only roads between places that exist
+  const d = here.map(([a, b], i) => {
     const [x1, y1] = TOWN_POS[a], [x2, y2] = TOWN_POS[b];
-    const X1 = x1 * 2, X2 = x2 * 2, mx = (X1 + X2) / 2, my = (y1 + y2) / 2, dx = X2 - X1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1, off = (i % 2 ? 1 : -1) * 5;
+    const X1 = x1 * 2, X2 = x2 * 2, mx = (X1 + X2) / 2, my = (y1 + y2) / 2, dx = X2 - X1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1, off = (i % 2 ? 1 : -1) * 4;
     return `M${X1} ${y1} Q${mx - dy / len * off} ${my + dx / len * off} ${X2} ${y2}`;
   });
   return `<path d="${d.join(' ')}" class="rd"/><path d="${d.join(' ')}" class="rl"/>`;
@@ -92,13 +93,13 @@ const TOWN_TERRAIN = `<svg class="town-terrain" viewBox="0 0 200 100" preserveAs
   <rect width="200" height="100" fill="#bfe8a8"/>
   <ellipse cx="104" cy="34" rx="62" ry="24" fill="#cdefb8"/><ellipse cx="150" cy="78" rx="44" ry="16" fill="#cdefb8"/>
   <path d="M0 56 C 10 54, 17 64, 18 76 C 19 90, 12 98, 0 100Z" fill="#ffe2a8"/><path d="M0 62 C 7 60, 12 68, 13 78 C 14 88, 9 96, 0 100Z" fill="#8fd0ff"/>
-  <g fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"><path d="M60 -4 C 54 16, 68 30, 52 50 C 40 66, 24 72, 4 86" stroke="#bfe6ff" stroke-width="38" vector-effect="non-scaling-stroke"/><path d="M60 -4 C 54 16, 68 30, 52 50 C 40 66, 24 72, 4 86" stroke="#7fc4ff" stroke-width="26" vector-effect="non-scaling-stroke"/></g>
-  <ellipse cx="86" cy="26" rx="8" ry="4.5" fill="#8fd0ff"/>
+  <g fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"><path d="M72 -4 C 64 14, 44 26, 34 42 C 28 54, 18 70, 4 86" stroke="#bfe6ff" stroke-width="38" vector-effect="non-scaling-stroke"/><path d="M72 -4 C 64 14, 44 26, 34 42 C 28 54, 18 70, 4 86" stroke="#7fc4ff" stroke-width="26" vector-effect="non-scaling-stroke"/></g>
+  <ellipse cx="86" cy="30" rx="8" ry="4.5" fill="#8fd0ff"/>
   <g fill="#3f9a5a">${[[6, 8], [14, 34], [4, 26], [30, 36], [36, 6], [22, 4], [44, 20], [8, 44], [24, 44], [40, 40]].map(([x, y]) => treeAt(x, y, .85)).join('')}</g>
   ${mountainAt(158, 22, .6)}${mountainAt(172, 28, .5)}${mountainAt(186, 24, .65)}${mountainAt(150, 32, .45)}
-  <g><rect x="66" y="74" width="18" height="12" fill="#f5d36a"/><rect x="86" y="88" width="16" height="10" fill="#e8c24a"/><rect x="108" y="72" width="16" height="12" fill="#9fdc7a"/><rect x="122" y="88" width="18" height="10" fill="#f5d36a"/>
-    <path d="M66 77 H84 M66 80 H84 M66 83 H84 M108 75 H124 M108 78 H124 M108 81 H124" stroke="#d9a93a" stroke-width=".7" opacity=".7"/></g>
-  ${[[96, 36], [104, 40], [112, 32], [132, 46], [126, 68], [104, 68], [142, 58], [118, 52]].map(([x, y]) => houseAt(x, y)).join('')}
+  <g><rect x="76" y="72" width="18" height="12" fill="#f5d36a"/><rect x="96" y="86" width="16" height="10" fill="#e8c24a"/><rect x="40" y="76" width="16" height="10" fill="#9fdc7a"/><rect x="100" y="70" width="14" height="10" fill="#f5d36a"/>
+    <path d="M76 75 H94 M76 78 H94 M76 81 H94 M40 79 H56 M40 82 H56" stroke="#d9a93a" stroke-width=".7" opacity=".7"/></g>
+  ${[[84, 36], [92, 40], [100, 34], [118, 40], [126, 66], [112, 66], [142, 62], [86, 62]].map(([x, y]) => houseAt(x, y)).join('')}
   <g fill="#3f9a5a">${[[176, 44], [186, 52], [180, 62], [190, 36]].map(([x, y]) => treeAt(x, y, .9)).join('')}</g>
   <g fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">${townRoads().replace(/class="rd"/, 'stroke="#9aa6bd" stroke-width="20" vector-effect="non-scaling-stroke"').replace(/class="rl"/, 'stroke="#fff" stroke-width="2.4" stroke-dasharray="9 10" vector-effect="non-scaling-stroke"')}</g>
 </svg>`;

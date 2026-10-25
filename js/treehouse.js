@@ -105,16 +105,13 @@ Sound.add('wxsnow', s => { [88, 91, 95, 100].forEach((m, i) => s.tone(s.NOTE(m),
 Sound.add('wxwind', s => { s.noise(0, 1.1, { filter: 'bandpass', freq: 700, to: 1800, q: 0.7, vol: 0.06, attack: 0.3 }); });
 
 /* ---------- fruit catch ---------- */
-const catchTaps = { left: -1e9, right: -1e9 };
 const CATCH_NEED = 8;
 const CATCH_FRUIT = ['apple', 'peach', 'strawberry', 'banana'];
 const CATCH_RANGE = { left: [16, 44], right: [56, 84] };      // how far each pet can slide (% across)
 ACT_HANDLERS.catch = side => {
-  catchTaps[side] = now();
   Sound.play('pick');
   hopPet(side);
-  if (now() - catchTaps[other(side)] < SETTINGS.doorWindowMs) { catchTaps.left = catchTaps.right = -1e9; startActivity('fruitcatch', side); }
-  else invite(other(side), 'catch', SETTINGS.doorWindowMs);
+  bothTap('catch', side, () => startActivity('fruitcatch', side));
 };
 ACTIVITIES.fruitcatch = {
   async start(a) {

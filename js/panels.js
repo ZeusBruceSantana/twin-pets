@@ -99,6 +99,15 @@ async function endActivity(done, bookType, a = act) {   // a: the activity that 
   if (done) togetherMoment(bookType || a.kind);
   endScene();
 }
+/* "Both girls tap it": the first tap makes her sister's button glow; when both have tapped within a few
+   seconds, onBoth() runs. (key is the button's name.) */
+const bothTaps = {};
+function bothTap(key, side, onBoth) {
+  const t = bothTaps[key] || (bothTaps[key] = { left: -1e9, right: -1e9 });
+  t[side] = now();
+  if (now() - t[other(side)] < SETTINGS.doorWindowMs) { t.left = t.right = -1e9; onBoth(); }
+  else invite(other(side), key, SETTINGS.doorWindowMs);
+}
 /* A picture placed in the scene for an activity (removed when it ends). */
 function actProp(a, svg, css, z = 11) {
   const e = el('div', 'scenery', svg);

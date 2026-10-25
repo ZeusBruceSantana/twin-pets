@@ -67,10 +67,15 @@ function showRoom(room) {
 }
 
 /* ---------- pet faces (for the map) ---------- */
-function faceDrawing(side) {
-  const svg = document.getElementById(PET_ART[side].drawing).content.querySelector('svg').cloneNode(true);
-  svg.setAttribute('viewBox', PET_ART[side].face);
-  return svg;
+const faceCache = {};
+function faceDrawing(side) {          // just the face (the tail, paws and fluff are outside the picture, so they are left out: fewer things to draw on the maps)
+  if (!faceCache[side]) {
+    const svg = document.getElementById(PET_ART[side].drawing).content.querySelector('svg').cloneNode(true);
+    svg.setAttribute('viewBox', PET_ART[side].face);
+    svg.querySelectorAll('.tail, .tail-front, .fluff, .paws').forEach(e => e.remove());
+    faceCache[side] = svg;
+  }
+  return faceCache[side].cloneNode(true);
 }
 function fillFace(box, side) {
   box.innerHTML = '';

@@ -358,7 +358,7 @@ function parentAction(what) {
   } else if (what === 'reset') {
     if (resetArmed && Date.now() - resetArmed < 6000) {
       erasing = true;
-      try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* ignore */ }
+      try { localStorage.removeItem(SAVE_KEY); HEAVY.forEach(k => localStorage.removeItem(heavyKey(k))); } catch (e) { /* ignore */ }
       location.reload();
       return;
     }

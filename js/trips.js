@@ -39,18 +39,13 @@ ROOMS.frontyard.acts.push('car');
 BUTTONS.car = { icon: 'car', label: 'Car' };
 FEATURE_OF.car = 'trips';
 const carThing = roomThing('car', 'frontyard', 'trips', `<div class="carbox">${ICONS.car}</div>`, { left: '50%', bottom: '1%', width: '27vmin', height: '19vmin' });
-const carTaps = { left: -1e9, right: -1e9 };
 function tapCar(side) {
   if (scene !== 'play') return;
   thingTapped('car');
-  carTaps[side] = now();
   Sound.play('honk');
   animate(carThing.firstChild, [{ transform: 'translateY(0)' }, { transform: 'translateY(-6%) rotate(-2deg)' }, { transform: 'translateY(0)' }], { duration: 300 });
   hopPet(side);
-  if (now() - carTaps[other(side)] < SETTINGS.doorWindowMs) {   // both tapped the car: where shall we go?
-    carTaps.left = carTaps.right = -1e9;
-    openTrips();
-  } else invite(other(side), 'car', SETTINGS.doorWindowMs);
+  bothTap('car', side, openTrips);                                // both tapped the car: where shall we go?
 }
 ACT_HANDLERS.car = side => tapCar(side);
 onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));

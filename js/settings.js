@@ -29,7 +29,7 @@ const SETTINGS = {
   // How many tries it takes a pet to learn a trick.
   triesToLearn: 3,
   // How many new things introduce themselves each time the game is opened.
-  newThingsPerSession: 3,
+  newThingsPerSession: 5,
 
   // each pet's favorite food (a happy dance when she gets it)
   favorites: { left: 'fish', right: 'peach' },

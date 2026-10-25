@@ -52,12 +52,12 @@ onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));
 
 /* ---------- choosing where to go (both tap the same place) ---------- */
 const PLACES = {
-  beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell'] },
-  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['ducks', 'bubbles'] },
-  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo'], need: 'farm' },
-  icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle'] },
-  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh'], need: 'library' },
-  snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball'], need: 'snowhill' },
+  beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell', 'puzzle'] },
+  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['ducks', 'bubbles', 'puzzle'] },
+  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo', 'puzzle'], need: 'farm' },
+  icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle', 'puzzle'] },
+  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh', 'puzzle'], need: 'library' },
+  snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball', 'puzzle'], need: 'snowhill' },
 };
 const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
 /* The town map: a little illustrated map. Each place sits where it belongs (the beach by the sea,

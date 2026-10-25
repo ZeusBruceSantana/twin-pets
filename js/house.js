@@ -631,7 +631,7 @@ async function givePresent(side, btn) {
   pr.given[side] = true;
   renderColumn(side);
   const to = other(side), pt = pets[to], b = pr.box[side];
-  const c = colorById(S.colors[side]) || COLORS[0];
+  const c = colorById(S.colors[to]) || COLORS[0];
   const item = choosePresent(to);
   Sound.play('toss');
   await arc(b, { x: parseFloat(b.style.left), y: parseFloat(b.style.top) }, () => petPoint(pt, 0.5, 0.86), 1000, H() * 0.3);
@@ -654,7 +654,7 @@ async function givePresent(side, btn) {
   // remember it
   const ps = S.pets[to];
   if (!ps.owned.includes(item)) ps.owned.push(item);
-  ps.gifted[item] = S.colors[side];
+  ps.gifted[item] = S.colors[to];      // a gift is drawn in the color of the pet who gets it
   let target;
   if (WEARABLES[item]) {
     ps.wear[WEARABLES[item]] = item;

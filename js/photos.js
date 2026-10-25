@@ -61,7 +61,10 @@ function takeShot() {
     const cls = ['happy', 'fluffy', 'sparkly', 'asleep', 'wag'].filter(c => p.root.classList.contains(c)).join(' ');
     return { x: p.x, y: p.y, cls, html: copy.innerHTML };
   };
-  return { day: todayKey(), at: Date.now(), room: S.room, left: pet('left'), right: pet('right') };
+  // the room exactly as it looks right now: wallpaper or paint, rug, furniture, paintings (pictures are added back when it is shown)
+  const roomEl = $('#rooms .room-' + S.room), rc = roomEl ? roomEl.cloneNode(true) : null;
+  if (rc) rc.querySelectorAll('img').forEach(i => i.remove());
+  return { day: todayKey(), at: Date.now(), room: S.room, roomCls: roomEl ? [...roomEl.classList].filter(c => c !== 'on').join(' ') : '', roomHtml: rc ? rc.innerHTML : '', left: pet('left'), right: pet('right') };
 }
 /* A small copy of the whole screen, drawn from the saved picture. */
 function photoView(shot, k = 0.3) {
@@ -69,8 +72,8 @@ function photoView(shot, k = 0.3) {
   const inner = el('div', 'shot-in');
   Object.assign(box.style, { width: W() * k + 'px', height: H() * k + 'px' });
   Object.assign(inner.style, { width: W() + 'px', height: H() + 'px', transform: `scale(${k})` });
-  const markup = roomMarkup(shot.room).replace(/ id="[^"]*"/g, '');
-  const room = el('div', 'room room-' + shot.room + ' on' + (ROOM_PIC[shot.room] ? ' has-picture' : ''), markup);
+  const markup = (shot.roomHtml || roomMarkup(shot.room)).replace(/ id="[^"]*"/g, '');       // (older pictures only have the bare room)
+  const room = el('div', (shot.roomHtml ? shot.roomCls : 'room room-' + shot.room) + ' on' + (ROOM_PIC[shot.room] ? ' has-picture' : ''), markup);
   if (ROOM_PIC[shot.room]) { const pic = new Image(); pic.className = 'room-picture'; pic.src = ROOM_PIC[shot.room]; room.prepend(pic); }
   inner.append(room);
   SIDES.forEach(s => {

@@ -202,19 +202,29 @@ async function teaInvite(a, side, key) {
 }
 async function teaPour(a, side) {
   const cups = a.data.cups[side];
-  const pot = prop(ICONS.teapot, 10, 0, 0);
+  const pot = prop(ICONS.teapot, 12, 0, 0);
   pot.style.zIndex = 33;
   pot.style.color = side === 'left' ? 'var(--L)' : 'var(--R)';
+  const flip = side === 'left' ? 'scaleX(-1) ' : '';
   for (const c of cups) {
     const r = c.getBoundingClientRect();
-    pot.style.left = r.left + r.width / 2 + (side === 'left' ? -1 : 1) * r.width * 0.6 + 'px';
-    pot.style.top = r.top - r.height * 0.6 + 'px';
-    pot.firstChild.style.transform = side === 'left' ? 'scaleX(-1)' : '';
-    await animate(pot.firstChild, [{ transform: (side === 'left' ? 'scaleX(-1) ' : '') + 'rotate(0)' }, { transform: (side === 'left' ? 'scaleX(-1) ' : '') + 'rotate(-35deg)' }], { duration: 350, fill: 'forwards' });
+    const potW = pot.offsetWidth || r.width * 1.7, potH = pot.offsetHeight || potW;
+    const cx = r.left + r.width / 2, px = cx + (side === 'left' ? -1 : 1) * potW * 0.42, py = r.top - potH * 0.75;       // the pot hovers above the cup with its spout over it
+    pot.style.left = px + 'px';
+    pot.style.top = py + 'px';
+    pot.firstChild.style.transform = flip + 'rotate(0)';
+    await animate(pot.firstChild, [{ transform: flip + 'rotate(0)' }, { transform: flip + 'rotate(-38deg)' }], { duration: 400, fill: 'forwards' });
+    // a stream of tea from the spout into the cup, and the cup fills up
+    const stream = el('div', 'teastream');
+    const spoutX = cx, spoutY = py + potH * 0.1;
+    Object.assign(stream.style, { left: spoutX + 'px', top: spoutY + 'px', height: Math.max(8, r.top + r.height * 0.4 - spoutY) + 'px' });
+    world.append(stream);
     Sound.play('pour');
+    animate(stream, [{ transform: 'translateX(-50%) scaleY(0)', opacity: 1 }, { transform: 'translateX(-50%) scaleY(1)', opacity: 1, offset: .25 }, { transform: 'translateX(-50%) scaleY(1)', opacity: 1, offset: .8 }, { transform: 'translateX(-50%) scaleY(1)', opacity: 0 }], { duration: 900, fill: 'forwards' }).then(() => stream.remove());
     c.classList.add('full');
-    await wait(500);
-    sparkles(r.left + r.width / 2, r.top, 3, ['#ffffff', '#ffe7f0']);
+    for (let i = 0; i < 4; i++) { setTimeout(() => sparkles(r.left + r.width / 2, r.top + r.height * 0.35, 2, ['#e8b98a', '#ffffff', '#c98a5a']), 150 + i * 180); }
+    await wait(950);
+    await animate(pot.firstChild, [{ transform: flip + 'rotate(-38deg)' }, { transform: flip + 'rotate(0)' }], { duration: 250, fill: 'forwards' });
   }
   pot.remove();
   mood(pets[side], 'happy', 1000);

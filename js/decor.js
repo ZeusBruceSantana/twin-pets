@@ -171,7 +171,7 @@ ACTIVITIES.gift = {
     const shown = keys.map((key, i) => {
       const x = keys.length === 1 ? 50 : 36 + i * 28;
       const g = actProp(a, `<div class="giftitem" style="--ring:${colors[i % 2]}"><div class="gpic">${DECOR[key].svg}</div><div class="gword"></div></div>`,
-        { left: x + '%', bottom: '30%', width: '22vmin', height: '24vmin', transform: 'translateX(-50%)' }, 33);
+        { left: x + '%', bottom: '40%', width: '22vmin', height: '24vmin', transform: 'translateX(-50%)' }, 33);
       sayableInto(g.querySelector('.gword'), DECOR[key].word);
       return g;
     });

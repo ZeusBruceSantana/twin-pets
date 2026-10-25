@@ -135,6 +135,12 @@
 - [x] Town map for the car, with roads; the farm, the library and the snowy hill join the beach, park and ice cream shop one at a time
 - [x] Animal friends (Clover, Hoot, Woolly, Daisy, Truffle, Lily, Puddle, Whiskers) made by saying hello together; each girl picks one to sit beside her pet from the bedroom
 
+### More places, puzzles and a bigger prize pool
+- [x] River (fishing, boats, skipping stones), woods (tent, campfire, stars), art museum, fancy restaurant; the town map holds ten places
+- [x] Puzzles (what comes next, odd one out, jigsaw), each girl solves her half; both girls get a prize (two presents, and every third puzzle a special friend)
+- [x] About forty things to win for the house: paint colors, wallpapers, rugs, furniture and tappable electronics (radio, TV, music box, disco ball, night light, robot)
+- [x] Eleven more animal friends (nineteen in all)
+
 ## Later ideas
 
 
@@ -148,7 +154,8 @@
 - [ ] Let grown-ups choose the unlock speed and tummy speed from the grown-up corner, without editing the file
 - [ ] More surprises and presents (bubbles party, a rainbow party, a kite, a cape)
 - [ ] An optional "both tap to start" step for the two-player games, if one girl starting a game while her sister is busy causes squabbles
-- [ ] Let grown-ups move or remove a decoration or a painting
+- [ ] Let grown-ups move or remove a decoration or a painting (a room now holds a rug, a wall and three pieces of furniture, and the oldest piece makes room)
+- [ ] More puzzle kinds (counting, matching pairs, copy the tune) and puzzles at the older places
 - [ ] Use the school words in thought bubbles and the memory book too, not just at pet school
 - [ ] More places to drive to and more visitors
 - [ ] A way to look at the memory book's pictures bigger, or delete one

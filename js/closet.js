@@ -58,8 +58,7 @@ function paintOutfit(side, colorId) {
 // One time: gifts used the giver's color, so a pet's things came out in her sister's color. Draw them in her own.
 if (!S.giftColorFixed) {
   SIDES.forEach(s => S.pets[s].owned.forEach(i => { S.pets[s].gifted[i] = S.colors[s]; }));
-  S.giftColorFixed = true;
-  save();
+  S.giftColorFixed = true;   // no save() here: it is kept the next time the game saves, so Start over and Restore stay clean
 }
 function wearItem(side, item, card) {
   const ps = S.pets[side], slot = WEARABLES[item];

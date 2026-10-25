@@ -25,10 +25,14 @@ const BUDDIES = {
   polarbear: { name: 'Frost', sound: 'rawr' },
   unicorn: { name: 'Sparkle', sound: 'whinny' },
   dragon: { name: 'Ember',    sound: 'rawr' },
+  horse:  { name: 'Biscuit',  sound: 'whinny' },
+  hen:    { name: 'Clucky',   sound: 'cluck' },
 };
 /* The pictures of the newer friends (the first eight come from visitors.js and pictures.js). */
 const eye = (x, y) => `<circle cx="${x}" cy="${y}" r="4.5" fill="#3e3a4f"/><circle cx="${x + 1.4}" cy="${y - 1.4}" r="1.4" fill="#fff"/>`;
 const FRIEND_ART = {
+  horse: `<svg viewBox="0 0 100 100"><path d="M30 24 L26 6 L42 18Z M70 24 L74 6 L58 18Z" fill="#b97a4a" stroke="#8a5a3c" stroke-width="3" stroke-linejoin="round"/><path d="M38 12 C 28 30, 26 52, 34 74 C 44 44, 52 26, 54 12Z" fill="#5d3a22"/><ellipse cx="54" cy="54" rx="26" ry="34" fill="#b97a4a" stroke="#8a5a3c" stroke-width="3"/><ellipse cx="54" cy="78" rx="18" ry="15" fill="#e3b88a"/><circle cx="48" cy="80" r="2.4" fill="#5d3a22"/><circle cx="60" cy="80" r="2.4" fill="#5d3a22"/>${eye(45, 48)}${eye(63, 48)}<path d="M54 22 V38" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>`,
+  hen: `<svg viewBox="0 0 100 100"><path d="M40 22 q4 -14 10 -5 q5 -13 10 -2 q6 -8 8 5Z" fill="#ff5d5d" stroke="#d94f4f" stroke-width="2" stroke-linejoin="round"/><ellipse cx="50" cy="66" rx="36" ry="28" fill="#fff" stroke="#d9cfc0" stroke-width="3"/><circle cx="50" cy="44" r="22" fill="#fff" stroke="#d9cfc0" stroke-width="3"/><path d="M18 64 C 22 52, 40 56, 44 72 C 36 82, 22 80, 18 64Z" fill="#f3e2d3" stroke="#d9cfc0" stroke-width="2"/>${eye(41, 40)}${eye(59, 40)}<path d="M43 48 L57 48 L50 58Z" fill="#ffa24d" stroke="#e07a2a" stroke-width="2" stroke-linejoin="round"/><ellipse cx="50" cy="62" rx="4" ry="5" fill="#ff5d5d"/><path d="M40 92 V98 M60 92 V98" stroke="#ffa24d" stroke-width="4" stroke-linecap="round"/></svg>`,
   mouse: `<svg viewBox="0 0 100 100"><circle cx="22" cy="30" r="16" fill="#cfd6e0" stroke="#9aa6bd" stroke-width="3"/><circle cx="78" cy="30" r="16" fill="#cfd6e0" stroke="#9aa6bd" stroke-width="3"/><circle cx="22" cy="30" r="9" fill="#ffc6d6"/><circle cx="78" cy="30" r="9" fill="#ffc6d6"/><ellipse cx="50" cy="58" rx="30" ry="29" fill="#cfd6e0" stroke="#9aa6bd" stroke-width="3"/>${eye(39, 52)}${eye(61, 52)}<ellipse cx="50" cy="64" rx="5" ry="4" fill="#ff8fab"/><path d="M50 68 V72 M43 73 Q50 79 57 73" stroke="#3e3a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M28 62 H12 M28 68 L14 74 M72 62 H88 M72 68 L86 74" stroke="#9aa6bd" stroke-width="2" stroke-linecap="round"/></svg>`,
   otter: `<svg viewBox="0 0 100 100"><circle cx="24" cy="30" r="9" fill="#b98a5a" stroke="#8a5a3c" stroke-width="3"/><circle cx="76" cy="30" r="9" fill="#b98a5a" stroke="#8a5a3c" stroke-width="3"/><circle cx="50" cy="54" r="34" fill="#b98a5a" stroke="#8a5a3c" stroke-width="3"/><ellipse cx="50" cy="66" rx="20" ry="15" fill="#f1dcbd"/><ellipse cx="50" cy="60" rx="6" ry="4" fill="#3e3a4f"/>${eye(38, 46)}${eye(62, 46)}<path d="M50 64 V68 M43 70 Q50 76 57 70" stroke="#3e3a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M26 62 H14 M26 68 L15 72 M74 62 H86 M74 68 L85 72" stroke="#8a5a3c" stroke-width="2" stroke-linecap="round"/></svg>`,
   turtle: `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="68" rx="42" ry="27" fill="#6cc551" stroke="#3a8a27" stroke-width="3"/><path d="M22 68 H78 M36 46 L32 68 M50 42 V68 M64 46 L68 68" stroke="#3a8a27" stroke-width="2.5" fill="none"/><circle cx="50" cy="32" r="19" fill="#a6e08a" stroke="#3a8a27" stroke-width="3"/>${eye(43, 30)}${eye(57, 30)}<path d="M44 40 Q50 45 56 40" stroke="#3e3a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="10" y="84" width="20" height="12" rx="6" fill="#a6e08a" stroke="#3a8a27" stroke-width="3"/><rect x="70" y="84" width="20" height="12" rx="6" fill="#a6e08a" stroke="#3a8a27" stroke-width="3"/></svg>`,
@@ -67,7 +71,7 @@ function friendMade(kind) {
 }
 /* The next friend this place has to offer (one that is not yet a friend), or null. */
 const nextFriendAt = place => (PLACE_FRIENDS[place] || []).find(k => !S.friends.have.includes(k)) || null;
-const PLACE_FRIENDS = { farm: ['lamb', 'cow', 'piggy'], park: ['frog', 'duck'], library: ['kitten', 'mouse'], snowhill: ['polarbear'],
+const PLACE_FRIENDS = { farm: ['lamb', 'cow', 'piggy', 'horse', 'hen'], park: ['frog', 'duck'], library: ['kitten', 'mouse'], snowhill: ['polarbear'],
   river: ['otter', 'turtle'], woods: ['deer', 'hedgehog', 'fox'], museum: ['panda'], restaurant: ['penguin'] };
 /* Friends that only a puzzle prize can bring (every third puzzle), in this order. */
 const PUZZLE_FRIENDS = ['unicorn', 'dragon'];
@@ -151,3 +155,4 @@ Sound.add('squeak', s => { s.tone(s.NOTE(93), 0, 0.08, { to: s.NOTE(98), vol: 0.
 Sound.add('whinny', s => { s.tone(s.NOTE(79), 0, 0.5, { to: s.NOTE(91), glide: 0.1, type: 'triangle', vol: 0.05 }); s.tone(s.NOTE(88), 0.25, 0.3, { to: s.NOTE(76), type: 'triangle', vol: 0.04 }); });
 Sound.add('yip', s => { s.tone(s.NOTE(84), 0, 0.1, { to: s.NOTE(93), vol: 0.05 }); s.tone(s.NOTE(84), 0.16, 0.1, { to: s.NOTE(93), vol: 0.05 }); });
 Sound.add('rawr', s => { s.tone(s.NOTE(48), 0, 0.5, { to: s.NOTE(58), type: 'triangle', vol: 0.07, attack: 0.05 }); });
+Sound.add('cluck', s => { [0, 0.14, 0.34].forEach(t => s.tone(s.NOTE(72), t, 0.08, { to: s.NOTE(67), type: 'square', vol: 0.025 })); });

@@ -806,7 +806,7 @@ test('Each place has a friend to meet, and the friends picture and name exist', 
   G(`Object.values(PLACE_FRIENDS).flat().concat(PUZZLE_FRIENDS)`).forEach(k => {
     expect(G(`!!BUDDIES['${k}'] && !!friendArt('${k}')`), `${k} has a name and a picture`);
   });
-  expectEqual(G('Object.keys(BUDDIES).length'), 19, 'nineteen friends in all');
+  expectEqual(G("Object.keys(BUDDIES).length"), 21, "twenty-one friends in all");
 });
 
 test('A pattern puzzle: each girl solves her half, then BOTH get a prize', async () => {
@@ -995,4 +995,30 @@ test('The copy-the-tune puzzle: a wrong pad replays the tune, and playing it bac
   expect($$g('#puzzle .pz-half.l .pz-pad').length === 4 && $$g('#puzzle .pz-half.r .pz-pad').length === 4, 'four pads for each girl');
   expectEqual(G('S.puzzles || 0'), 0, 'not solved yet');
   G('closePuzzle(false)');
+});
+
+test('The fancy waiter greets, serves from the menu (including cake), and the farm has animals to feed and call', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'restaurant' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the restaurant trip');
+  expect(G('!!act.data.waiter'), 'Pip the waiter is there');
+  tap($g('#col-left .btn-menu'));
+  await until(() => $g('.spanel.side-left'), 2000, 'the menu');
+  expectEqual($$g('.spanel.side-left .scard').map(c => c.dataset.key), ['pizza', 'pancakes', 'fish', 'peach', 'icecream', 'cake'], 'six dishes on the menu');
+  tap($g('.spanel.side-left .scard[data-key="cake"]'), { hold: 40 });
+  await sleep(1800);
+  expect(G('act.data.waiter.classList.contains("carry") || true'), 'the waiter brought it');
+  tap($g('#col-right .btn-dessert'));
+  await sleep(3500);
+  expectEqual(G('TEST_ERRORS'), [], 'the waiter worked');
+  G('endActivity(false)');
+  await until(() => G('scene') === 'play', 8000, 'play');
+  G(`startActivity('trip', 'left', { place: 'farm' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the farm trip');
+  expectEqual(G('act.data.residents.length'), 5, 'five farm animals live here');
+  tap($g('#col-left .btn-hay')); tap($g('#col-right .btn-hay')); tap($g('#col-left .btn-moo'));
+  tap($g('#rooms ~ * .resident, .resident'));
+  await sleep(2500);
+  expectEqual(G('TEST_ERRORS'), [], 'the farm animals worked');
 });

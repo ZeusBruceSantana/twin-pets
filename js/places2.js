@@ -289,7 +289,7 @@ Object.assign(TRIP_PLAY, {
   menu(a, side, p) {
     openPanel(side, {
       cols: 3,
-      items: DISHES.map(k => ({ key: k, word: FOODS[k].word, icon: ICONS[k] })),
+      items: DISHES.map(k => ({ key: k, word: DISH_WORD[k], icon: ICONS[k] })),
       onPick: k => { if (act === a) serveDish(a, side, k); },
     });
   },
@@ -323,22 +323,8 @@ Object.assign(TRIP_PLAY, {
       if (a.data.glass && a.data.glass[side] && a.data.glass[side].el === g) { a.data.glass[side] = null; g.remove(); }
     }
   },
-  async dessert(a, side, p) {
-    begin(p, 2600);
-    const at = petPoint(p, side === 'left' ? 0.95 : 0.05, 0.7);
-    const sweet = prop(pick([ICONS.cupcake, ICONS.cake, ICONS.icecream]), 8, at.x, at.y);
-    sweet.dataset.owner = side;
-    sweet.style.zIndex = 31;
-    Sound.play('pop');
-    await animate(sweet.firstChild, [{ transform: 'translateY(40%) scale(.3)' }, { transform: 'translateY(-20%) scale(1.15)' }, { transform: 'translateY(0) scale(1)' }], { duration: 450 });
-    await wait(500);
-    p.root.classList.add('chomp');
-    Sound.play('chomp');
-    await wait(800);
-    p.root.classList.remove('chomp');
-    sweet.remove();
-    mood(p, 'happy', 1400);
-    floatHearts(p, 2);
+  async dessert(a, side, p) {                                  // the waiter brings something sweet
+    await serveDish(a, side, pick(['cake', 'icecream']));
   },
 });
 const MUSEUM_ART = [['sun', 'sun'], ['rainbow', 'rainbow'], ['moon', 'moonBig'], ['flower', 'flower'], ['fish', 'fish'], ['butterfly', 'butterfly']];
@@ -353,10 +339,18 @@ function hangArt(a, side, word) {
   mood(pets[side], 'happy', 1400);
 }
 const DISHES = ['pizza', 'pancakes', 'fish', 'peach', 'icecream', 'cake'];
+const DISH_WORD = { pizza: 'pizza', pancakes: 'pancakes', fish: 'fish', peach: 'peach', icecream: 'ice cream', cake: 'cake' };
 async function serveDish(a, side, dish) {
   const p = pets[side];
-  begin(p, 4200);
+  begin(p, 6000);
   const at = petPoint(p, side === 'left' ? 0.95 : 0.05, 0.86);
+  const wt = a.data.waiter;
+  if (wt) {                                                      // the waiter brings it on a tray
+    wt.classList.add('carry');
+    waiterSay(a, 'Bonjour!', 1400);
+    Sound.play('chime');
+    await waiterWalk(a, at.x + (side === 'left' ? 9 : -9) * 8);
+  }
   const plate = prop(ICONS.plate, 13, at.x, at.y);
   plate.dataset.owner = side;
   plate.style.zIndex = 30;
@@ -368,14 +362,17 @@ async function serveDish(a, side, dish) {
   lid.dataset.owner = side;
   lid.style.zIndex = 32;
   Sound.play('pop');
+  if (wt) wt.classList.remove('carry');
   await animate(lid.firstChild, [{ transform: 'translateY(-60%) scale(.5)', opacity: 0 }, { transform: 'translateY(0) scale(1)', opacity: 1 }], { duration: 350, fill: 'forwards' });
-  await wait(700);
-  Sound.play('open');                                           // ta-da: lift the lid
+  await wait(500);
+  Sound.play('open');                                           // ta-da: the waiter lifts the lid
   food.style.visibility = '';
   animate(food.firstChild, [{ transform: 'scale(.4)' }, { transform: 'scale(1.15)' }, { transform: 'scale(1)' }], { duration: 400 });
+  if (wt) waiterBow(wt);
   await animate(lid.firstChild, [{ transform: 'translateY(0) rotate(0)', opacity: 1 }, { transform: 'translateY(-90%) rotate(-25deg)', opacity: 0 }], { duration: 500, fill: 'forwards' });
   lid.remove();
-  const fav = dish === SETTINGS.favorites[side] || (dish === 'fish' && side === 'left') || (dish === 'peach' && side === 'right');
+  const fav = (dish === 'fish' && side === 'left') || (dish === 'peach' && side === 'right') || dish === SETTINGS.favorites[side];
+  if (wt) waiterSay(a, 'Bon appétit!', 1800);
   await wait(400);
   p.root.classList.add('chomp');
   Sound.play('chomp');
@@ -385,6 +382,89 @@ async function serveDish(a, side, dish) {
   mood(p, 'happy', 1600);
   floatHearts(p, fav ? 4 : 2);
   if (fav) sayBubble(p, 'My favorite!', 1800);
-  await wait(500);
+  await wait(400);
   plate.remove();
+  if (wt && act === a) await waiterWalk(a, W() / 2);             // back to the middle
 }
+
+/* ---------- the fancy waiter (Pip the penguin) ---------- */
+PLACE_START.restaurant = async a => {
+  const w = actProp(a, `<div class="waiter"><div class="wbody">${friendArt('penguin')}</div><div class="wtray">${ICONS.cloche}</div><div class="wname"></div></div>`,
+    { left: W() / 2 + 'px', bottom: '24%', width: '15vmin', height: '17vmin', transform: 'translateX(-50%)' }, 9);
+  sayableInto(w.querySelector('.wname'), BUDDIES.penguin.name);
+  a.data.waiter = w;
+  w.style.pointerEvents = 'auto';
+  onTap(w, () => { if (!a.busy) { Sound.play('chime'); waiterBow(w); waiterSay(a, pick(['Welcome!', 'Bonjour!', 'Voilà!']), 1600); } });
+  animate(w, [{ opacity: 0, marginBottom: '-6vmin' }, { opacity: 1, marginBottom: '0vmin' }], { duration: 500, fill: 'backwards' });
+  await wait(300);
+  waiterSay(a, 'Welcome!', 2200);
+};
+async function waiterWalk(a, toX) {
+  const w = a.data.waiter;
+  if (!w) return;
+  const x0 = parseFloat(w.style.left) || W() / 2;
+  w.classList.add('walking');
+  await tween(Math.max(500, Math.abs(toX - x0) * 3.2), t => { w.style.left = x0 + (toX - x0) * t + 'px'; });
+  w.classList.remove('walking');
+}
+function waiterBow(w) { animate(w.firstChild, [{ transform: 'rotate(0)' }, { transform: 'rotate(22deg) translateY(4%)' }, { transform: 'rotate(0)' }], { duration: 700, easing: 'ease-in-out' }); }
+function waiterSay(a, text, ms = 1800) {
+  const w = a.data.waiter;
+  if (!w) return;
+  w.querySelectorAll('.wsay').forEach(b => b.remove());
+  const b = el('div', 'wsay');
+  wordsInto(b, text);
+  w.append(b);
+  animate(b, [{ transform: 'translateX(-50%) scale(0)' }, { transform: 'translateX(-50%) scale(1.08)' }, { transform: 'translateX(-50%) scale(1)' }], { duration: 300, easing: 'ease-out' });
+  setTimeout(() => animate(b, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }).then(() => b.remove()), ms);
+}
+
+/* ---------- the farm animals: they live at the farm, and the girls can feed and call them ---------- */
+const FARM_RESIDENTS = [          // [animal, left %, bottom %, size in vmin]
+  ['hen', 31, 40, 8], ['horse', 40, 45, 13], ['cow', 52, 47, 14], ['lamb', 64, 45, 10], ['piggy', 75, 43, 10],
+];
+PLACE_START.farm = async a => {
+  a.data.residents = FARM_RESIDENTS.map(([kind, x, y, size], i) => {
+    const e = actProp(a, `<div class="resident">${friendArt(kind)}</div>`, { left: x + '%', bottom: y + '%', width: size + 'vmin', height: size + 'vmin', transform: 'translateX(-50%)' }, 8);
+    e.dataset.kind = kind;
+    e.style.pointerEvents = 'auto';
+    e.firstChild.style.animationDelay = -i * 0.7 + 's';
+    onTap(e, () => { if (!a.busy) residentCalls(e); });
+    animate(e, [{ opacity: 0, transform: 'translateX(-50%) translateY(20%)' }, { opacity: 1, transform: 'translateX(-50%) translateY(0)' }], { duration: 400, delay: i * 120, fill: 'backwards' });
+    return e;
+  });
+  await wait(600);
+};
+function residentCalls(e) {
+  Sound.play(BUDDIES[e.dataset.kind].sound);
+  animate(e.firstChild, [{ transform: 'translateY(0)' }, { transform: 'translateY(-18%) scale(1.08)' }, { transform: 'translateY(0)' }, { transform: 'translateY(-8%)' }, { transform: 'translateY(0)' }], { duration: 700, easing: 'ease-out' });
+  const r = e.getBoundingClientRect();
+  sparkles(r.left + r.width / 2, r.top, 4);
+}
+Object.assign(TRIP_PLAY, {
+  async hay(a, side, p) {                                       // feed the next animal in turn
+    begin(p, 2600);
+    const list = a.data.residents || [];
+    if (!list.length) return;
+    const an = list[(a.data.hayN = (a.data.hayN || 0) + 1) % list.length];
+    const from = petPoint(p, 0.5, 0.5);
+    const r = an.getBoundingClientRect();
+    const to = { x: r.left + r.width / 2, y: r.top + r.height * 0.45 };
+    const bale = prop(ICONS.hay, 5, from.x, from.y);
+    bale.style.zIndex = 32;
+    bale.dataset.owner = side;
+    await arc(bale, from, to, 750, 90, 220);
+    bale.remove();
+    Sound.play('chomp');
+    animate(an.firstChild, [{ transform: 'scale(1)' }, { transform: 'scale(1.12,.9)' }, { transform: 'scale(1)' }, { transform: 'scale(1.12,.9)' }, { transform: 'scale(1)' }], { duration: 800 });
+    Sound.play(BUDDIES[an.dataset.kind].sound);
+    mood(p, 'happy', 1400);
+    floatHearts(p, 2);
+    sparkles(to.x, to.y - 10, 5, ['#ffd23f', '#ffe9a8', '#fff']);
+  },
+  async moo(a, side, p) {                                       // everybody calls out, one after another
+    begin(p, 2800);
+    mood(p, 'happy', 2200);
+    for (const an of (a.data.residents || [])) { residentCalls(an); await wait(380); }
+  },
+});

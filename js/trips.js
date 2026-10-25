@@ -139,6 +139,7 @@ setInterval(() => { if (scene === 'trips' && now() - tripsTouched > 25000) close
 
 /* ---------- the trip ---------- */
 const PLACE_MARKUP = {};   // places added by other files draw their scenery here
+const PLACE_START = {};    // things that are already at a place when the girls arrive: (a) => ...
 function placeMarkup(place) {
   if (PLACE_MARKUP[place]) return PLACE_MARKUP[place]();
   if (place === 'beach') return `<div class="tsky beach"></div><div class="sun"></div>
@@ -201,6 +202,7 @@ ACTIVITIES.trip = {
     await fadePets(true);
     await animate(car, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
     await Promise.all([movePet('left', HOME.left.x, HOME.left.y, 600), movePet('right', HOME.right.x, HOME.right.y, 600)]);
+    if (PLACE_START[place]) await PLACE_START[place](a);
     showHint(PLACES[place].icon, PLACES[place].word);
   },
   plan(a, side) {
@@ -232,22 +234,6 @@ async function driveHome(a) {
 }
 
 /* ---------- farm and library helpers ---------- */
-const FARM_ANIMALS = ['cow', 'lamb', 'piggy'];
-const farmAnimal = a => FARM_ANIMALS[(a.data.farmN = (a.data.farmN || 0) + 1) % FARM_ANIMALS.length];
-/* A farm animal pops up beside a pet. Returns the animal and where it is. */
-async function animalVisit(side, kind) {
-  const at = petPoint(pets[side], side === 'left' ? -0.12 : 1.12, 0.78);
-  const an = prop(friendArt(kind), 13, at.x, at.y);
-  an.style.zIndex = 31;
-  an.dataset.owner = side;
-  Sound.play(BUDDIES[kind].sound);
-  await animate(an.firstChild, [{ transform: 'translateY(60%) scale(.3)', opacity: 0 }, { transform: 'translateY(-10%) scale(1.08)', opacity: 1 }, { transform: 'translateY(0) scale(1)', opacity: 1 }], { duration: 450, easing: 'ease-out', fill: 'forwards' });
-  return { an, at };
-}
-async function leaveFarm(an) {
-  await animate(an, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
-  an.remove();
-}
 const LIBRARY_BOOKS = [['moon', '#a77bff', 'moon'], ['sun', '#ffb020', 'sun'], ['fish', '#5aa9ff', 'fish'], ['star', '#ff7a9a', 'star'], ['apple', '#6cc551', 'apple'], ['heart', '#ff8fb8', 'heart']];
 const bookCover = (c, icon) => `<svg viewBox="0 0 100 100"><rect x="20" y="8" width="62" height="84" rx="7" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M28 8 V92" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="34" y="20" width="40" height="40" rx="6" fill="#fff" opacity=".9"/><g transform="translate(37 23) scale(.34)">${ICONS[icon].replace(/^<svg[^>]*>|<\/svg>$/g, '')}</g></svg>`;
 async function readBook(side, word) {
@@ -367,23 +353,6 @@ const TRIP_PLAY = {
   },
 
   /* ---- the farm ---- */
-  async hay(a, side, p) {
-    begin(p, 2400);
-    const kind = farmAnimal(a);
-    const { an, at } = await animalVisit(side, kind);
-    const from = petPoint(p, 0.5, 0.5);
-    const bale = prop(ICONS.hay, 6, from.x, from.y);
-    bale.style.zIndex = 32;
-    bale.dataset.owner = side;
-    await arc(bale, from, at, 650, 50, 200);
-    bale.remove();
-    Sound.play('chomp');
-    animate(an.firstChild, [{ transform: 'scale(1)' }, { transform: 'scale(1.1,.9)' }, { transform: 'scale(1)' }, { transform: 'scale(1.1,.9)' }, { transform: 'scale(1)' }], { duration: 800 });
-    mood(p, 'happy', 1400);
-    floatHearts(p, 2);
-    await wait(1000);
-    await leaveFarm(an);
-  },
   async eggs(a, side, p) {
     begin(p, 3200);
     const at = petPoint(p, side === 'left' ? 0.9 : 0.1, 0.98);
@@ -402,15 +371,6 @@ const TRIP_PLAY = {
     floatHearts(p, 2);
     await wait(1600);
     egg.remove();
-  },
-  async moo(a, side, p) {
-    begin(p, 2000);
-    const kind = farmAnimal(a);
-    const { an } = await animalVisit(side, kind);
-    mood(p, 'happy', 1200);
-    floatHearts(p, 1);
-    await wait(900);
-    await leaveFarm(an);
   },
 
   /* ---- the library ---- */

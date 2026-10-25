@@ -425,6 +425,19 @@ test('Each room and place has its own tune, and none at bedtime', async () => {
   expectEqual(G(`JSON.stringify(compose(PIECES.kitchen)) === JSON.stringify(compose(PIECES.kitchen))`), true, 'a room always has the same tune');
 });
 
+test('Closet tabs show one kind of thing, and the Colors tab repaints the outfit', async () => {
+  const s = played();
+  s.pets.left.owned = ['crown', 'scarf', 'cape']; s.pets.left.wear = { head: 'crown', neck: null, face: null }; s.pets.left.gifted = { crown: 'teal' };
+  delete s.giftColorFixed;
+  await openGame(s);
+  await startPlaying();
+  expectEqual(G('S.pets.left.gifted.crown'), 'purple', 'old gifts are drawn in her own color');
+  G(`ACT_HANDLERS.closet('left')`);
+  expectEqual(G(`closetCards('left', 'neck').map(c => c.key).join()`), 'scarf', 'the neck tab holds only neck things');
+  G(`paintOutfit('left', 'green')`);
+  expectEqual(G('S.pets.left.gifted.crown'), 'green', 'the Colors tab repaints what she wears');
+});
+
 test('The closet is the next new thing as soon as a pet is given something to wear', async () => {
   const s = played();
   ['closet', 'costumes', 'sleepover', 'cook', 'teeth', 'picnic', 'mirror'].forEach(k => delete s.features[k]);     // lots of new things still waiting (ahead of the closet in the old order)
@@ -1340,4 +1353,46 @@ test('Every file the page loads asks for the same version number', async () => {
   const html = await (await fetch('../index.html')).text();
   const versions = [...new Set([...html.matchAll(/\?v=(\w+)/g)].map(m => m[1]))];
   expectEqual(versions.length, 1, 'one version number for every script and the stylesheet (bump them together when files change): ' + versions.join(','));
+});
+
+test('Puzzles come first among the new things, with a button in the middle of every room and at every older place', async () => {
+  const s = played(); delete s.features.puzzles;
+  await openGame(s);
+  await startPlaying();
+  expectEqual(G('nextNewThing().key'), 'puzzles', 'puzzles are the very next new thing');
+  G(`introduce(nextNewThing(), true); renderCenter()`);
+  await sleep(300);
+  expect($g('#midbtns .cbtn.puzzlebtn'), 'a Puzzle button sits in the middle');
+  tap($g('#midbtns .cbtn.puzzlebtn'));
+  await until(() => G('scene') === 'puzzle', 3000, 'a puzzle to open');
+  G('closePuzzle(false)');
+  for (const place of ['beach', 'park', 'icecream']) expect(G(`PLACES.${place}.acts.includes('puzzle')`), place + ' has a Puzzle button');
+});
+
+test('Every function in the game has its own name (two files must never share one, or one silently replaces the other)', async () => {
+  const names = {};
+  for (const f of ['trips', 'places2', 'fancy', 'playroom', 'fair', 'arcade', 'treehouse', 'garage', 'puzzles', 'artstyles', 'decor', 'decor2', 'rewards', 'friends', 'photos', 'house', 'core', 'kitchen', 'bathroom', 'school', 'seasons', 'visitors']) {
+    const text = await (await fetch('../js/' + f + '.js')).text();
+    for (const m of text.matchAll(/^(?:async\s+)?function\s+(\w+)/gm)) (names[m[1]] = names[m[1]] || []).push(f);
+  }
+  const twice = Object.entries(names).filter(([, v]) => v.length > 1).map(([k, v]) => k + ' in ' + v.join(' and '));
+  expectEqual(twice, [], 'no function name is used by two files');
+});
+
+test('A photo keeps the room as it looks (wallpaper, rug, furniture), and the tea party pours', async () => {
+  const s = played(); s.decor = { playroom: { wp: 'wpPolka', rug: 'rugHeart', items: ['radio'] } }; s.features.tea = true;
+  await openGame(s);
+  await startPlaying();
+  const view = G(`(() => { const v = photoView(takeShot(), 0.5); return { wall: v.querySelector('.wall').style.background.includes('svg'), rug: !!v.querySelector('.drug'), radio: !!v.querySelector('.ditem-radio') }; })()`);
+  expectEqual(view, { wall: true, rug: true, radio: true }, 'the picture has the wallpaper, the rug and the radio');
+  G(`startActivity('tea', 'left')`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'the tea party');
+  G(`teaSet(act, 'left')`);
+  await sleep(2200);
+  G(`teaPour(act, 'left')`);
+  await sleep(500);
+  expect($g('.teastream'), 'a stream of tea pours from the pot');
+  await sleep(1600);
+  expect($g('.scenery.full, .full'), 'the cup is full');
+  expectEqual(G('TEST_ERRORS'), [], 'no problems');
 });

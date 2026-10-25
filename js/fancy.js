@@ -27,9 +27,9 @@ TRIP_PLAY.hightea = async function (a, side, p) {
   if (t.lock[side]) return;
   t.lock[side] = true;
   try {
-    if (d === 0) await teaPour(a, side);
-    else if (d === 1) await teaTreat(a, side);
-    else await teaSip(a, side);
+    if (d === 0) await highTeaPour(a, side);
+    else if (d === 1) await highTeaTreat(a, side);
+    else await highTeaSip(a, side);
   } finally { t.lock[side] = false; }
 };
 async function setUpHighTea(a) {
@@ -54,7 +54,7 @@ async function setUpHighTea(a) {
   if (w) await waiterWalk(a, W() * 0.5 + (w.offsetWidth || 90));
   a.busy = false;
 }
-async function teaPour(a, side) {
+async function highTeaPour(a, side) {
   const t = a.data.tea, p = pets[side];
   begin(p, 2400);
   const dir = side === 'left' ? -1 : 1;
@@ -64,7 +64,7 @@ async function teaPour(a, side) {
   mood(p, 'happy', 1000);
   t.stage[side] = 1;
 }
-async function teaTreat(a, side) {
+async function highTeaTreat(a, side) {
   const t = a.data.tea, p = pets[side];
   begin(p, 2600);
   const from = { x: W() / 2, y: H() * 0.6 }, to = petPoint(p, 0.5, 0.62);
@@ -80,7 +80,7 @@ async function teaTreat(a, side) {
   floatHearts(p, 1);
   t.stage[side] = 2;
 }
-async function teaSip(a, side) {
+async function highTeaSip(a, side) {
   const t = a.data.tea, p = pets[side], cup = t.cups[side];
   begin(p, 2800);
   const at = petPoint(p, side === 'left' ? 1.0 : 0.0, 0.9), mouth = petPoint(p, 0.5, 0.58);

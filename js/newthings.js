@@ -15,7 +15,7 @@ function startSessionIntros() {
   S.intro.session = (S.intro.session || 0) + 1;
   S.intro.given = 0;
   save();
-  introAt = now() + 30000;          // let them settle in first
+  introAt = now() + 15000;          // let them settle in first
   SESSION_HOOKS.forEach(f => f());
 }
 function nextNewThing() {
@@ -29,7 +29,7 @@ function introTick() {
   const next = nextNewThing();
   if (!next) return;
   introduce(next);
-  introAt = now() + 90000;            // the next one comes a while later
+  introAt = now() + 40000;            // the next one comes a while later
 }
 function introduce(n, quiet) {
   S.features[n.key] = true;

@@ -239,3 +239,5 @@ There are 23 games above (8 learning, 8 classic, 7 pretend-play). The playroom a
 | Spot the Silly | Puzzle round at the museum, school and restaurant |
 
 **Build batches:** (1) arcade joy and two new places: Bubble Party, Pop-Ups, Claw Crane, Fruit Catch, Weather Machine, Dance Paws, plus Fun Fair and Treehouse; (2) learning rounds: Spot the Silly, Seed to Flower, Rhyme Boats, Ten-Frame, Sound Soup, Weather Wardrobe; (3) shops, money and friends: Coin Jar, Kindness Helpers, Little Shop, Friends' Cafe, Choo-Choo Train, plus Bakery Cafe and Train Station; (4) explore and collect: Hop Trail, Photo Safari, Habitat Homes, Story Theater, Treasure Map, Room Makeover, plus Nature Trail.
+
+- [x] Closet sorted into picture tabs (head, face, neck, back, colors); gifts are drawn in the receiver's own color, with a Colors tab to repaint the outfit and a one-time fix for old saves (`S.giftColorFixed`).

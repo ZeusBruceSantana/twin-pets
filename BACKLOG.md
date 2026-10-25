@@ -146,7 +146,7 @@
 - [x] Fancy waiter (Pip the penguin) who carries the dishes at the restaurant
 - [x] Farm animals that live at the farm (hen, horse, cow, lamb, piggy): tap to hear them, and they join the games
 - [x] Farm games: milk the cow (bucket and milking, swap halfway), egg hunt (hay piles, golden egg for both), feed each animal its favorite, tractor ride (steer and honk, swap each lap)
-- [x] Library games: story corner (hero, place, thing), shelve the books, hide and seek (hide and find, swap), the quiet game with the librarian cat
+- [x] Library games: story corner (hero, place, thing), catch the flying books, hide and seek (hide and find, swap), the quiet game with the librarian cat
 - [x] Four more puzzle kinds (shadow, count, pairs, copy the tune)
 - [x] A bigger prize pool: 27 more things for the house, 10 things to wear, 5 toys, and prizes that alternate between house presents and a gift for each pet
 

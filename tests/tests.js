@@ -726,7 +726,7 @@ test('The library has four games; telling a story together ends with a heart', a
   await startPlaying();
   G(`startActivity('trip', 'left', { place: 'library' })`);
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the library trip to start');
-  expectEqual(buttons('left').join(','), 'storygame,shelvegame,hidegame,shhgame,meetfriend,tripcar', 'the library buttons');
+  expectEqual(buttons('left').join(','), 'storygame,catchgame,hidegame,shhgame,meetfriend,tripcar', 'the library buttons');
   const hearts = G('S.together');
   tap($g('#col-left .btn-storygame'));
   await sleep(500);

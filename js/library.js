@@ -1,6 +1,6 @@
 'use strict';
 /* Twin Pets: the library. Four little games, each needing both girls: tell a story (each girl picks a hero, a place and
-   a thing, and the pets act it out), shelve the books (each girl her own shelves), hide and seek (one hides the friend, one
+   a thing, and the pets act it out), catch the flying books (each girl onto her own shelves), hide and seek (one hides the friend, one
    finds it, then they swap) and the quiet game (tiptoe past the sleepy librarian cat; freeze when she looks). A miss never ends a game. */
 
 Object.assign(ICONS, {
@@ -70,82 +70,95 @@ async function storyPlay(a) {                                               // b
   townEnd(a, true, 'story');
 }
 
-/* ---------- 2. shelve the books: tap the shelf that matches the book (each girl has her own shelves) ---------- */
-const SHELF_BOOKS = ['moon', 'sun', 'apple'].map(w => LIBRARY_BOOKS.find(b => b[0] === w));
-TRIP_PLAY.shelvegame = function (a, side) {
-  const g = townStart(a, { id: 'shelve', q: {}, plan: () => ({ acts: [], defs: {} }) }, 'bookstack', 'books');
+/* ---------- 2. flying books: books flap out of the bookcases; each girl catches them onto her own shelves ---------- */
+const BOOKS_NEED = 9;
+TRIP_PLAY.catchgame = function (a, side) {
+  const g = townStart(a, {
+    id: 'catch', n: { left: 0, right: 0 }, flying: 0, gold: false,
+    plan: (s, g) => (g.gold ? { acts: ['goldbook'], defs: { goldbook: { icon: 'bookstack', label: 'Book' } }, clsOf: { goldbook: 'invite' } } : { acts: [], defs: {} }),
+  }, 'bookstack', 'books');
   if (!g) { hopPet(side); return; }
   SIDES.forEach(s => {
-    const q = g.q[s] = { books: shuffle([0, 0, 1, 1, 2, 2]), n: 0, miss: 0, done: false, rows: [] };
-    const unit = el('div', 'shunit ' + s);
-    shuffle([0, 1, 2]).forEach(b => {
-      const row = el('div', 'shrow', `<div class="shtab">${bookCover(SHELF_BOOKS[b][1], SHELF_BOOKS[b][2])}</div><div class="shbooks"></div>`);
-      row.dataset.b = b;
-      tgHit(row, () => shelfPut(a, s, row));
-      q.rows[b] = row;
-      unit.append(row);
-    });
+    const unit = el('div', 'shunit ' + s, '<div class="shrow"><div class="shbooks"></div></div>'.repeat(3));
     g.field.append(unit);
     popIn(unit);
-    q.unit = unit;
-    shelfNext(g, s);
+    g['unit' + s] = unit;
   });
   Sound.play('page');
+  g.timers.push(setInterval(() => catchSpawn(a, g), 650));
 };
-function shelfNext(g, s) {
-  const q = g.q[s];
-  if (q.cur) q.cur.remove();
-  if (q.n >= q.books.length) return;
-  const [, color, icon] = SHELF_BOOKS[q.books[q.n]];
-  q.cur = el('div', 'shcur ' + s, bookCover(color, icon));
-  g.field.append(q.cur);
-  popIn(q.cur);
+function catchSpawn(a, g) {
+  if (!g.on || a.data.game !== g || g.gold || scene !== 'act' || g.flying >= 5) return;
+  const [, color, icon] = pick(LIBRARY_BOOKS);
+  const e = el('div', 'fbook', '<i class="wing l"></i><i class="wing r"></i>' + bookCover(color, icon));
+  const fromLeft = Math.random() < 0.5, y = rand(0.3, 0.5);
+  const x0 = fromLeft ? 0.2 : 0.8, x1 = fromLeft ? 0.85 : 0.15, W_ = W(), H_ = H();
+  e.dataset.color = color; e.dataset.icon = icon;
+  Object.assign(e.style, { left: 0, top: 0 });
+  g.field.append(e);
+  g.flying++;
+  const pts = [0, 0.25, 0.5, 0.75, 1].map((t, i) => ({ transform: `translate(${(x0 + (x1 - x0) * t) * W_}px, ${(y + (i % 2 ? -0.07 : 0.05)) * H_}px)`, offset: t }));
+  const an = e.animate(pts, { duration: rand(3800, 5000), easing: 'ease-in-out' });
+  let caught = false;
+  tgHit(e, ev => {
+    if (caught || !g.on) return;
+    caught = true;
+    an.pause();
+    catchBook(a, g, e, sideOfTap(ev));
+  });
+  an.onfinish = () => { if (!caught) { e.remove(); } g.flying--; if (caught) return; };
 }
-async function shelfPut(a, s, row) {
-  const g = a.data.game;
-  const q = g && g.id === 'shelve' && g.q[s];
-  if (!q || q.done || q.busy) return;
-  const b = +row.dataset.b;
-  if (b !== q.books[q.n]) {                                                 // the wrong shelf: the book wiggles, and after two tries the right shelf glows
-    Sound.play('soft');
-    animate(q.cur, [-6, 6, -4, 4, 0].map(r => ({ transform: `rotate(${r}deg)` })), { duration: 400 });
-    if (++q.miss >= 2) { const r = q.rows[q.books[q.n]]; r.classList.add('hint'); setTimeout(() => r.classList.remove('hint'), 1800); }
-    return;
-  }
-  q.busy = true;
-  q.miss = 0;
-  const [, color, icon] = SHELF_BOOKS[b];
-  const from = q.cur.getBoundingClientRect(), slot = row.querySelector('.shbooks').getBoundingClientRect();
-  const fly = prop(bookCover(color, icon), 11, from.left + from.width / 2, from.top + from.height / 2);
-  fly.style.zIndex = 33;
-  q.cur.style.visibility = 'hidden';
-  await arc(fly, { x: from.left + from.width / 2, y: from.top + from.height / 2 }, { x: slot.left + slot.width / 2 + row.querySelector('.shbooks').children.length * 40, y: slot.top + slot.height / 2 }, 500, 70);
-  fly.remove();
-  q.busy = false;
+async function catchBook(a, g, e, side) {
+  Sound.play('lbflap');
+  const unit = g['unit' + side], rows = unit.querySelectorAll('.shbooks'), n = g.n[side];
+  if (n >= BOOKS_NEED) { e.remove(); g.flying--; hopPet(side); return; }                 // her shelves are full: it flies off, nothing lost
+  g.n[side]++;
+  const r = e.getBoundingClientRect(), slot = rows[Math.floor(n / 3)].getBoundingClientRect();
+  e.style.pointerEvents = 'none';
+  const to = { x: slot.left + (n % 3) * 0.9 * 8 * 8.2 + 40, y: slot.top + slot.height / 2 };
+  await tween(420, t => { e.style.transform = `translate(${r.left + (to.x - r.left) * t}px, ${r.top + (to.y - r.top) * t - Math.sin(t * Math.PI) * 60}px) scale(${1 - 0.3 * t})`; });
+  g.flying--;
+  e.remove();
   if (!g.on) return;
-  row.querySelector('.shbooks').append(el('i', '', bookCover(color, icon)));
+  rows[Math.floor(n / 3)].append(el('i', '', bookCover(e.dataset.color, e.dataset.icon)));
   Sound.play('block');
-  hopPet(s);
-  mood(pets[s], 'happy', 800);
-  q.n++;
-  shelfNext(g, s);
-  if (q.n >= q.books.length) {                                              // her shelves are full
-    q.done = true;
+  hopPet(side);
+  mood(pets[side], 'happy', 800);
+  if (g.n[side] >= BOOKS_NEED) { Sound.play('wish'); floatHearts(pets[side], 3); sparkles(to.x, to.y, 10); }
+  if (!g.gold && SIDES.every(s => g.n[s] >= BOOKS_NEED)) {                              // both shelves are full: a golden book flies in for both girls
+    g.gold = true;
+    g.field.querySelectorAll('.fbook').forEach(b => b.remove());
+    g.gb = el('div', 'fbook gold tg-hit', '<i class="wing l"></i><i class="wing r"></i>' + bookCover('#ffd23f', 'star'));
+    g.field.append(g.gb);
+    onTap(g.gb, ev => bothTap('goldbook', sideOfTap(ev), () => catchFinish(a, g)));
     Sound.play('wish');
-    const r = q.unit.getBoundingClientRect();
-    sparkles(r.left + r.width / 2, r.top + r.height / 2, 12);
-    floatHearts(pets[s], 3);
-    if (SIDES.every(x => g.q[x].done)) {
-      await wait(900);
-      if (!g.on) return;
-      const cat = el('div', 'libcat', friendArt('kitten'));                 // the librarian cat peeks out to say well done
-      g.field.append(cat);
-      popIn(cat);
-      Sound.play('shh');
-      await wait(1700);
-      townEnd(a, true, 'shelve');
-    }
+    showHint('bookstack', 'golden book');
+    renderColumns();
   }
+}
+TRIP_PLAY.goldbook = function (a, side) {
+  const g = a.data.game;
+  if (!g || g.id !== 'catch' || !g.gold) return;
+  hopPet(side);
+  Sound.play('pop');
+  bothTap('goldbook', side, () => catchFinish(a, g));
+};
+async function catchFinish(a, g) {                                                       // every book bursts out and flutters round the room
+  if (g.finishing) return;
+  g.finishing = true;
+  Sound.play('lbflap');
+  for (let i = 0; i < 12; i++) {
+    const [, color, icon] = pick(LIBRARY_BOOKS);
+    const e = el('div', 'fbook', '<i class="wing l"></i><i class="wing r"></i>' + bookCover(color, icon));
+    e.style.pointerEvents = 'none';
+    g.field.append(e);
+    e.animate([{ transform: `translate(${W() / 2}px, ${H() * 0.45}px) scale(.3)`, opacity: 1 }, { transform: `translate(${rand(0.15, 0.85) * W()}px, ${rand(0.1, 0.5) * H()}px) scale(1)`, opacity: 1, offset: 0.6 }, { transform: `translate(${rand(0.1, 0.9) * W()}px, ${-0.2 * H()}px) scale(1)`, opacity: 0 }], { duration: 2200, delay: i * 90, fill: 'forwards' });
+  }
+  g.gb.remove();
+  SIDES.forEach(s => doTrick(s, 'spin', true));
+  Sound.play('tada');
+  await wait(2800);
+  townEnd(a, true, 'catch');
 }
 
 /* ---------- 3. hide and seek: one girl hides the friend among the book stacks, the other finds it, then they swap ---------- */
@@ -299,13 +312,14 @@ TRIP_PLAY.tiptoe = async function (a, side) {
 };
 
 /* ---------- memory book and sounds ---------- */
-Object.assign(BUTTONS, { storygame: { icon: 'openbook', label: 'Story' }, shelvegame: { icon: 'bookstack', label: 'Shelve' }, hidegame: { icon: 'friend-mouse', label: 'Hide' }, shhgame: { icon: 'shh', label: 'Shh' } });
+Object.assign(BUTTONS, { storygame: { icon: 'openbook', label: 'Story' }, catchgame: { icon: 'bookstack', label: 'Catch' }, hidegame: { icon: 'friend-mouse', label: 'Hide' }, shhgame: { icon: 'shh', label: 'Shh' } });
 Object.assign(BOOK_LINES, {
   story: { line: 'told a story together.', icon: 'openbook', rank: 96.4 },
-  shelve: { line: 'put every book on its shelf.', icon: 'bookstack', rank: 96.4 },
+  catch: { line: 'caught the flying books and found the golden book.', icon: 'bookstack', rank: 96.4 },
   hide: { line: 'played hide and seek in the library.', icon: 'friend-mouse', rank: 96.4 },
   shh: { line: 'tiptoed past the sleepy librarian cat.', icon: 'shh', rank: 96.4 },
 });
 Sound.add('lbgiggle', s => { [88, 92, 90, 95].forEach((m, i) => s.tone(s.NOTE(m), i * 0.09, 0.1, { type: 'triangle', vol: 0.05 })); });
+Sound.add('lbflap', s => { [0, 0.08, 0.16].forEach(t => s.noise(t, 0.07, { filter: 'bandpass', freq: 900, q: 1, vol: 0.05 })); });
 Sound.add('lbtip', s => { s.noise(0, 0.05, { filter: 'bandpass', freq: 1800, q: 1.5, vol: 0.03 }); });
 Sound.add('lbpurr', s => { for (let i = 0; i < 16; i++) s.tone(110, i * 0.09, 0.07, { type: 'sawtooth', vol: 0.03 }); });

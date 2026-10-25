@@ -56,7 +56,7 @@ const PLACES = {
   park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['ducks', 'bubbles', 'puzzle'] },
   farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['milkgame', 'egghunt', 'feedgame', 'tractor', 'puzzle'], need: 'farm' },
   icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle', 'puzzle'] },
-  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['storygame', 'shelvegame', 'hidegame', 'shhgame', 'puzzle'], need: 'library' },
+  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['storygame', 'catchgame', 'hidegame', 'shhgame', 'puzzle'], need: 'library' },
   snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball', 'puzzle'], need: 'snowhill' },
 };
 const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);

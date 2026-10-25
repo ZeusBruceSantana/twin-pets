@@ -1321,3 +1321,17 @@ test('Every file the page loads asks for the same version number', async () => {
   const versions = [...new Set([...html.matchAll(/\?v=(\w+)/g)].map(m => m[1]))];
   expectEqual(versions.length, 1, 'one version number for every script and the stylesheet (bump them together when files change): ' + versions.join(','));
 });
+
+test('Puzzles come first among the new things, with a button in the middle of every room and at every older place', async () => {
+  const s = played(); delete s.features.puzzles;
+  await openGame(s);
+  await startPlaying();
+  expectEqual(G('nextNewThing().key'), 'puzzles', 'puzzles are the very next new thing');
+  G(`introduce(nextNewThing(), true); renderCenter()`);
+  await sleep(300);
+  expect($g('#midbtns .cbtn.puzzlebtn'), 'a Puzzle button sits in the middle');
+  tap($g('#midbtns .cbtn.puzzlebtn'));
+  await until(() => G('scene') === 'puzzle', 3000, 'a puzzle to open');
+  G('closePuzzle(false)');
+  for (const place of ['beach', 'park', 'icecream']) expect(G(`PLACES.${place}.acts.includes('puzzle')`), place + ' has a Puzzle button');
+});

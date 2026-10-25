@@ -14,8 +14,14 @@ const PZ_THEMES = {
   museum:     { icons: ['sun', 'rainbow', 'flower'], pic: 'sunny' },
   restaurant: { icons: ['pizza', 'peach', 'cake'], pic: 'cake' },
   school:     { icons: ['star', 'heart', 'apple'], pic: 'sunny' },
+  beach:      { icons: ['shell', 'castle', 'splash'], pic: 'boat' },
+  park:       { icons: ['swing', 'slide', 'ducks'], pic: 'sunny' },
+  farm:       { icons: ['hay', 'egg', 'chick'], pic: 'sunny' },
+  icecream:   { icons: ['scoop', 'lick', 'cupcake'], pic: 'cake' },
+  library:    { icons: ['openbook', 'bookstack', 'shh'], pic: 'camp' },
+  snowhill:   { icons: ['sled', 'snowball', 'snowangel'], pic: 'camp' },
 };
-const PZ_SCHOOL_THEMES = ['school', 'river', 'woods', 'museum', 'restaurant'];
+const PZ_SCHOOL_THEMES = ['school', 'beach', 'park', 'farm', 'river', 'woods', 'museum', 'icecream', 'library', 'restaurant'];
 // original pictures for the jigsaws (each corner is different)
 const PZ_PICS = {
   sunny: '<rect width="100" height="100" fill="#bfe9fb"/><circle cx="78" cy="20" r="12" fill="#ffd23f"/><path d="M8 42 a8 8 0 0 1 14 -5 a10 10 0 0 1 18 2 a7 7 0 0 1 0 12 H12 a7 7 0 0 1 -4 -9Z" fill="#fff"/><path d="M0 62 C 24 46, 44 58, 62 52 C 80 46, 92 54, 100 50 V100 H0Z" fill="#8fd16a"/><g fill="none" stroke-width="5"><path d="M56 96 a24 24 0 0 1 44 -14" stroke="#ff8a8a"/><path d="M60 96 a20 20 0 0 1 38 -10" stroke="#ffd27a"/><path d="M64 96 a16 16 0 0 1 30 -8" stroke="#8ac8ff"/></g><path d="M24 90 V70" stroke="#4f9a34" stroke-width="3"/><g fill="#ff9ab4"><circle cx="24" cy="64" r="5"/><circle cx="19" cy="69" r="5"/><circle cx="29" cy="69" r="5"/><circle cx="24" cy="74" r="5"/></g><circle cx="24" cy="69" r="4" fill="#ffd23f"/>',
@@ -335,7 +341,9 @@ ACT_HANDLERS.puzzle = side => {
   startPuzzle(PUZZLE_TYPES[n % PUZZLE_TYPES.length], PZ_SCHOOL_THEMES[n % PZ_SCHOOL_THEMES.length]);
 };
 // in town: each place has its own kinds of puzzle, one after another
-const PLACE_PUZZLE = { river: ['pattern', 'count', 'shadow', 'tune'], woods: ['odd', 'match', 'count', 'shadow'], museum: ['style', 'jigsaw', 'style', 'shadow', 'match', 'pattern'], restaurant: ['pattern', 'match', 'count', 'tune'] };
+const PLACE_PUZZLE = { beach: ['pattern', 'count', 'shadow'], park: ['odd', 'match', 'tune'], farm: ['count', 'shadow', 'match'], icecream: ['pattern', 'count', 'match'], library: ['shadow', 'match', 'odd'], snowhill: ['pattern', 'tune', 'odd'], river: ['pattern', 'count', 'shadow', 'tune'], woods: ['odd', 'match', 'count', 'shadow'], museum: ['style', 'jigsaw', 'style', 'shadow', 'match', 'pattern'], restaurant: ['pattern', 'match', 'count', 'tune'] };
 TRIP_PLAY.puzzle = (a, side) => { const kinds = PLACE_PUZZLE[a.opts.place] || ['pattern']; startPuzzle(kinds[(S.puzzles || 0) % kinds.length], a.opts.place, { act: a }); };
-NEW_THINGS.push({ key: 'puzzles', order: 23.5, requires: 'decor', room: 'school', acts: ['puzzle'], icon: 'puzzleBtn', word: 'puzzles' });
+// Puzzles come FIRST among the new things (and have a button in the shared middle of every room), so nobody waits for them.
+NEW_THINGS.push({ key: 'puzzles', order: 0.8, acts: ['puzzlebtn'], icon: 'puzzleBtn', word: 'puzzles' });
+CENTER_BUTTONS.push({ key: 'puzzlebtn', icon: 'puzzleBtn', show: () => has('puzzles'), tap: () => ACT_HANDLERS.puzzle('left') });
 BOOK_LINES.puzzle = { line: 'solved a puzzle together.', icon: 'puzzleBtn', rank: 97.5 };

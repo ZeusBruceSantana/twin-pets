@@ -121,8 +121,7 @@ put it back). Two girls can't have the same friend at once. Tap a friend to hear
 
 Each girl solves **her own half** of a puzzle. There are seven kinds: *what comes next?*, *which one is different?*, *whose shadow is this?*, *how many?*, *find the pairs* (a wrong pair just turns back over), *copy the tune* (a wrong pad replays the tune), and a jigsaw where each girl has the pieces for her side of the picture.
 The puzzles are all pictures, with no timer and no losing: a wrong try just wobbles, and
-after two the right answer glows. They are at the school (**Puzzle**) and at the river,
-woods, museum and restaurant.
+after two the right answer glows. Puzzles are the first new thing to appear, and there is a **Puzzle button in the shared middle of every room** (next to the camera). They are also at the school and at every town place (beach, park, farm, ice cream shop, library, snowy hill, river, woods, museum, restaurant).
 
 When both halves are done, **both girls get a prize**. They alternate: two presents for the house (one from each box; both open them, then choose a room for each on the map), or a **gift for each pet** (something to wear, or a toy for the shelf) that flies to her pet. Every third puzzle also brings a special new animal friend.
 

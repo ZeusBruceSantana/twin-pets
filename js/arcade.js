@@ -5,7 +5,7 @@
 
 ICONS.bubble = '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#dff4ff" fill-opacity=".6" stroke="#7fc4ff" stroke-width="4"/><path d="M26 40 C 30 28, 40 22, 52 22" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="70" cy="68" r="5" fill="#fff" opacity=".7"/><path d="M62 90 L86 66" stroke="#b07f4f" stroke-width="5" stroke-linecap="round"/></svg>';
 BUTTONS.bubbles = { icon: 'bubble', label: 'Bubbles' };
-NEW_THINGS.push({ key: 'bubbles', order: 25.5, requires: 'trips', icon: 'bubble', word: 'bubbles' });
+NEW_THINGS.push({ key: 'bubbles', order: 18.4, requires: 'trips', icon: 'bubble', word: 'bubbles' });
 BOOK_LINES.bubbles = { line: 'had a bubble party in the park.', icon: 'bubble', rank: 96.7 };
 const BUBBLE_NEED = 10;                                  // pops each girl needs before the giant bubble
 const BUBBLE_SCALE = [0, 2, 4, 7, 9, 12, 14, 16];

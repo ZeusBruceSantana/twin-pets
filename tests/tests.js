@@ -989,6 +989,26 @@ test('In the woods, the stars join up into a named picture, then a different one
   expectEqual(G('TEST_ERRORS'), [], 'no problems');
 });
 
+test('Five more puzzle kinds (adding, more, number order, words, small to big) can be solved, and the fair and playground have Puzzle', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  expect(G('PLACES.fair.acts.includes("puzzle") && PLACES.playground.acts.includes("puzzle") && !!PLACE_PUZZLE.fair && !!PLACE_PUZZLE.playground'), 'the fair and playground have puzzles');
+  await goTo('school');
+  for (const kind of ['add', 'more', 'order', 'word', 'size']) {
+    G(`startPuzzle('${kind}', 'fair')`);
+    await until(() => G('scene') === 'puzzle', 3000, 'the ' + kind + ' puzzle');
+    for (let round = 0; round < 2; round++) {
+      for (const side of ['l', 'r']) {
+        if (kind === 'size') for (const o of $$g(`#puzzle .pz-half.${side} .pz-opt`).sort((a, b) => a.dataset.r - b.dataset.r)) { tap(o); await sleep(30); }
+        else for (const opt of $$g(`#puzzle .pz-half.${side} .pz-opt`)) { tap(opt); if (opt.classList.contains('good')) break; await sleep(30); }
+      }
+      await sleep(1300);
+    }
+    await until(() => G('pz === null'), 8000, `the ${kind} puzzle to finish`);
+  }
+  expectEqual(G('TEST_ERRORS'), [], 'the new puzzles worked');
+});
+
 test('The new puzzle kinds (shadow, count, pairs) can each be solved by both girls', async () => {
   for (const kind of ['shadow', 'count', 'match']) {
     await openGame(allPlaces());
@@ -1223,7 +1243,7 @@ test('The Fun Fair: the claw machine (roles swap and it always wins), pop-ups wi
   await startPlaying();
   G(`startActivity('trip', 'left', { place: 'fair' })`);
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the fair trip');
-  expectEqual(buttons('left').join(','), 'claw,popup,wheel,meetfriend,tripcar', 'the fair buttons');
+  expectEqual(buttons('left').join(','), 'claw,popup,wheel,puzzle,meetfriend,tripcar', 'the fair buttons');
   // the claw: Leah slides, Avery drops (then they swap)
   tap($g('#col-left .btn-claw'));
   await until(() => G('act.data.claw && act.data.claw.on'), 3000, 'the claw machine');
@@ -1239,7 +1259,7 @@ test('The Fun Fair: the claw machine (roles swap and it always wins), pop-ups wi
   expectEqual(G('S.puzzleOwed'), 1, 'the first win is a prize');
   tap($g('#col-left .btn-clawquit'));
   await sleep(500);
-  expectEqual(buttons('left').join(','), 'claw,popup,wheel,meetfriend,tripcar', 'back to the fair');
+  expectEqual(buttons('left').join(','), 'claw,popup,wheel,puzzle,meetfriend,tripcar', 'back to the fair');
   // pop-ups
   tap($g('#col-left .btn-popup'));
   await until(() => G('act.data.pop'), 2000, 'the pop-ups');
@@ -1314,7 +1334,7 @@ test('The playground: four activities, and the super swing lets each girl jump i
   expect(!G('PLACES.park.acts').includes('swing'), 'the park is calm again');
   G(`startActivity('trip', 'left', { place: 'playground' })`);
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the playground trip');
-  expectEqual(buttons('left').join(','), 'superswing,twisty,merry,dig,tripcar', 'the playground buttons');
+  expectEqual(buttons('left').join(','), 'superswing,twisty,merry,dig,puzzle,tripcar', 'the playground buttons');
   tap($g('#col-left .btn-dig')); tap($g('#col-right .btn-merry'));
   await sleep(1500);
   expect(G('act.data.merry.v') > 0, 'the merry-go-round spins');

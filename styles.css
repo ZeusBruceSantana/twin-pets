@@ -1348,3 +1348,17 @@ body[data-scene="act"] .wxchart, body[data-scene="act"] .wxlayer { display: none
 @keyframes flap { from { transform: rotate(-30deg); } to { transform: rotate(25deg); } }
 @keyframes flapr { from { transform: scaleX(-1) rotate(-30deg); } to { transform: scaleX(-1) rotate(25deg); } }
 .fbook.gold { left: 50%; top: 40%; transform: translateX(-50%); animation: pulse 1s ease-in-out infinite; width: 15vmin; height: 15vmin; filter: drop-shadow(0 0 1.5vmin #ffd23f); }
+.pz-sum { display: flex; flex-direction: column; align-items: center; gap: .6vmin; }
+.pz-plus { font: 900 7vmin/1 var(--font); color: #6a3fc7; }
+.pz-count.sm { width: 34vmin; min-height: 0; gap: .8vmin; }
+.pz-thing.sm { width: 8vmin; height: 8vmin; }
+.pz-opt.grp .pz-thing.sm { width: 6vmin; height: 6vmin; }
+.pz-word.w { font-size: 6.4vmin; }
+.pz-more { display: flex; gap: 3vmin; }
+.pz-opt.grp { width: 21vmin; height: 19vmin; padding: 1vmin; display: flex; align-items: center; justify-content: center; }
+.pz-opt.grp .pz-count.sm { width: 100%; }
+.pz-cell.num { font: 900 4vmin/1 var(--font); color: #6a3fc7; }
+.pz-cell.num.q { font-size: 5vmin; }
+.pz-sizes { display: flex; align-items: flex-end; justify-content: center; gap: 2.4vmin; }
+.pz-opt.sz { position: relative; padding: 1vmin; }
+.pz-badge { position: absolute; right: -1vmin; top: -1vmin; width: 5vmin; height: 5vmin; border-radius: 50%; background: #6cc551; color: #fff; font: 900 3.4vmin/5vmin var(--font); text-align: center; }

@@ -67,7 +67,7 @@ function closePuzzle(done, fromCleanup) {
   } else if (scene === 'puzzle') setScene('play');
   if (done) {
     S.puzzles = (S.puzzles || 0) + 1;
-    S.puzzleOwed = (S.puzzleOwed || 0) + 1;       // the prize is handed out as soon as the pets are free
+    owePrize();       // the prize is handed out as soon as the pets are free
     save();
     togetherMoment('puzzle');
   }
@@ -303,6 +303,7 @@ setInterval(() => {
   if (!(S.puzzleOwed > 0) || scene !== 'play' || act || S.bedtime || $('#map').classList.contains('show')) return;
   claimPrize();
 }, 1500);
+function owePrize() { S.puzzleOwed = (S.puzzleOwed || 0) + 1; }      // a puzzle, claw, dig... prize is owed (the gift box hands it out when the pets are free)
 let prizeWaiting = false;
 function claimPrize() {
   if (prizeWaiting) return;

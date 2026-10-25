@@ -51,11 +51,13 @@ const garden = roomThing('garden', 'backyard', 'garden',
   { left: '50%', bottom: '1.5%', width: '36vmin', height: '17vmin' });
 const shownStage = [];
 function renderGarden(force) {
+  let changed = false;
   garden.querySelectorAll('.gspot').forEach(sp => {
     const i = +sp.dataset.i, spot = S.garden[i], st = plantStage(spot);
     if (!force && shownStage[i] === st) return;
     const grew = shownStage[i] != null && st > shownStage[i] && st > 0;
     shownStage[i] = st;
+    changed = true;
     sp.querySelector('.plant').innerHTML = st < 0 ? '' : plantSvg(spot.kind, st);
     sp.classList.toggle('thirst', st === 0);
     sp.classList.toggle('ripe', st === 4);
@@ -64,7 +66,7 @@ function renderGarden(force) {
       if (st === 4) Sound.play('ding');
     }
   });
-  if (sideMode.left === 'garden' || sideMode.right === 'garden') renderColumns();
+  if (changed && (sideMode.left === 'garden' || sideMode.right === 'garden')) renderColumns();
 }
 setInterval(() => { if (S.room === 'backyard' && has('garden')) renderGarden(); }, 2000);
 const spotPoint = i => {

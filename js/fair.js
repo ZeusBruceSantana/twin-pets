@@ -98,7 +98,7 @@ TRIP_PLAY.clawdrop = async function (a, side, p) {
   celebrate(W() / 2, H() * 0.4, 12);
   SIDES.forEach(s => { mood(pets[s], 'happy', 1800); floatHearts(pets[s], 2); });
   showHint('friend-' + kind, BUDDIES[kind].name, true);
-  if (!a.data.clawWon) { a.data.clawWon = true; S.puzzleOwed = (S.puzzleOwed || 0) + 1; save(); logDay('claw'); }   // the first win each visit is a prize
+  if (!a.data.clawWon) { a.data.clawWon = true; owePrize(); save(); logDay('claw'); }   // the first win each visit is a prize
   clawRender(a);
   c.busy = false;
   renderColumns();

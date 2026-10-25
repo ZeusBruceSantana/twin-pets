@@ -190,15 +190,15 @@ ACTIVITIES.trip = {
     await Promise.all([movePet('left', 45, 12, 500), movePet('right', 55, 12, 500)]);
     await fadePets(false);
     Sound.play('vroom');
-    await tween(1100, t => { car.style.left = W() / 2 + t * t * W() * 0.8 + 'px'; });
+    await tween(700, t => { car.style.left = W() / 2 + t * t * W() * 0.8 + 'px'; });
     // the place's scenery goes behind everything (like a room), so names and the jar still show
     const bg = el('div', 'trip trip-' + place, placeMarkup(place));
     $('#rooms').append(bg);
     document.body.classList.add('on-trip');
     a.cleanup.push(() => { bg.remove(); document.body.classList.remove('on-trip'); });
     a.data.bg = bg;
-    await animate(bg, [{ opacity: 0 }, { opacity: 1 }], { duration: 500, fill: 'forwards' });
-    await tween(1100, t => { car.style.left = -W() * 0.3 + (1 - (1 - t) * (1 - t)) * W() * 0.8 + 'px'; });
+    await animate(bg, [{ opacity: 0 }, { opacity: 1 }], { duration: 300, fill: 'forwards' });
+    await tween(700, t => { car.style.left = -W() * 0.3 + (1 - (1 - t) * (1 - t)) * W() * 0.8 + 'px'; });
     SIDES.forEach(s => setPos(pets[s], s === 'left' ? 45 : 55, 12));
     await fadePets(true);
     await animate(car, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
@@ -220,7 +220,7 @@ ACTIVITIES.trip = {
       Sound.play('honk');
       renderColumn(side);
       if (a.data.home.left && a.data.home.right) await driveHome(a);
-      else invite(other(side), 'tripcar', 5000);
+      else invite(other(side), 'tripcar', 30000);
       return;
     }
     if (TRIP_PLAY[key]) TRIP_PLAY[key](a, side, p);

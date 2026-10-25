@@ -1165,3 +1165,51 @@ body.on-stage #rooms { filter: brightness(.55) saturate(.8); }
 .pbasket svg { width: 100%; height: 100%; }
 .pbasket .pcount { position: absolute; right: -1vmin; top: -1vmin; min-width: 5vmin; height: 5vmin; padding: 0 .8vmin; border-radius: 3vmin; background: #ff8a3d; color: #fff; font: 900 3.4vmin/5vmin var(--font); text-align: center; border: .5vmin solid #fff; }
 .pbasket .pcount:empty { display: none; }
+
+/* ---------- the treehouse ---------- */
+.room-treehouse .sky { background: linear-gradient(#a9dcff, #e6f6ff 62%); }
+.room-treehouse.wx-dark .sky { background: linear-gradient(#8fa2bd, #c9d4e3 62%); }
+.room-treehouse .canopy { position: absolute; left: -6%; right: -6%; top: -8%; height: 46%; background: radial-gradient(circle at 12% 60%, #58b043 0 14%, transparent 15%), radial-gradient(circle at 30% 40%, #6cc551 0 17%, transparent 18%), radial-gradient(circle at 50% 55%, #58b043 0 18%, transparent 19%), radial-gradient(circle at 70% 38%, #6cc551 0 17%, transparent 18%), radial-gradient(circle at 90% 58%, #58b043 0 15%, transparent 16%), radial-gradient(circle at 20% 20%, #7fd35a 0 12%, transparent 13%), radial-gradient(circle at 80% 18%, #7fd35a 0 12%, transparent 13%); }
+.room-treehouse .canopy::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle, #ff5d5d 0 1.1vmin, transparent 1.2vmin) 6vmin 8vmin / 17vmin 13vmin; opacity: .9; }
+.room-treehouse .deck { position: absolute; left: 0; right: 0; bottom: 0; height: 26%; background: repeating-linear-gradient(90deg, #d9a874 0 8vmin, #c99560 8vmin 8.7vmin); border-top: 1.2vmin solid #b9814f; }
+.room-treehouse .deckrail { position: absolute; left: 0; right: 0; bottom: 26%; height: 9%; background: repeating-linear-gradient(90deg, #b9814f 0 1.6vmin, transparent 1.6vmin 7vmin) 0 0 / 100% 100%, linear-gradient(#b9814f, #b9814f) 0 0 / 100% 1.4vmin no-repeat; }
+.wxlayer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.wxlayer > * { position: absolute; opacity: 0; transition: opacity .6s ease; }
+.wxsun { right: 12%; top: calc(10vmin + var(--safe-top)); width: 15vmin; height: 15vmin; }
+.wxsun svg { width: 100%; height: 100%; animation: wheelturn 30s linear infinite; }
+.wx-sun .wxsun { opacity: 1; }
+.wxcloud { height: 6vmin; width: 18vmin; border-radius: 4vmin; background: #fff; box-shadow: 4vmin -2.6vmin 0 -.4vmin #fff, 9vmin -1.4vmin 0 -1vmin #fff; animation: mapdrift 18s ease-in-out infinite alternate; }
+.wxcloud.c1 { left: 18%; top: 22%; } .wxcloud.c2 { left: 58%; top: 30%; animation-delay: -9s; }
+.wx-cloud .wxcloud, .wx-rain .wxcloud, .wx-snow .wxcloud { opacity: .95; }
+.wx-rain .wxcloud, .wx-snow .wxcloud { background: #cfd8e6; box-shadow: 4vmin -2.6vmin 0 -.4vmin #cfd8e6, 9vmin -1.4vmin 0 -1vmin #cfd8e6; }
+.wxrain, .wxsnow { inset: 0; }
+.wxrain i { position: absolute; top: -8%; width: .5vmin; height: 5vmin; background: #5aa9ff; border-radius: 1vmin; animation: raindrop 1.1s linear infinite; }
+.wxsnow i { position: absolute; top: -4%; width: 1.8vmin; height: 1.8vmin; background: #fff; border-radius: 50%; animation: snowfall 7s linear infinite; }
+@keyframes raindrop { to { transform: translateY(110vh); } }
+.wx-rain .wxrain, .wx-snow .wxsnow { opacity: 1; }
+.wxwind { inset: 0; }
+.wxwind i { position: absolute; left: -30%; width: 30%; height: .7vmin; border-radius: 1vmin; background: rgba(255,255,255,.85); animation: windblow 2.2s linear infinite; }
+@keyframes windblow { to { transform: translateX(480%); } }
+.wx-wind .wxwind { opacity: 1; }
+.wx-wind .canopy { animation: sty-swirl 1s ease-in-out infinite; }
+.wxrainbow { left: 12%; right: 12%; bottom: 24%; height: 38%; }
+.wxrainbow svg { width: 100%; height: 100%; }
+.wxc-rainbow .wxrainbow { opacity: .95; }
+.wxkite { width: 12vmin; height: 12vmin; top: 22%; }
+.wxkite.k1 { left: 20%; animation: kitefly 5s ease-in-out infinite alternate; } .wxkite.k2 { right: 22%; top: 30%; animation: kitefly 4s ease-in-out infinite alternate-reverse; }
+.wxkite svg { width: 100%; height: 100%; }
+@keyframes kitefly { from { transform: translate(0, 0) rotate(-12deg); } to { transform: translate(8vmin, -6vmin) rotate(12deg); } }
+.wxc-kite .wxkite { opacity: 1; }
+.wxsnowman { left: 50%; bottom: 20%; width: 14vmin; height: 14vmin; transform: translateX(-50%); }
+.wxsnowman svg { width: 100%; height: 100%; }
+.wxc-snowman .wxsnowman { opacity: 1; }
+.wxflowers { left: 8%; right: 8%; bottom: 25.5%; height: 8vmin; display: flex; justify-content: space-around; align-items: flex-end; }
+.wxflowers svg { width: 7vmin; height: 7vmin; }
+.wxc-flower .wxflowers { opacity: 1; }
+.wxchart { position: absolute; left: 15%; top: calc(14vmin + var(--safe-top)); display: flex; gap: 1.2vmin; padding: 1vmin 1.4vmin; background: rgba(255,255,255,.8); border-radius: 3vmin; box-shadow: 0 .8vmin 0 rgba(0,0,0,.12); }
+.wxchart .slot { width: 7vmin; height: 7vmin; filter: grayscale(1) opacity(.4); transition: filter .5s ease; }
+.wxchart .slot.found { filter: none; }
+.wxchart .slot svg { width: 100%; height: 100%; }
+.pet .catchbasket { position: absolute; left: 50%; top: -9%; width: 44%; transform: translateX(-50%); z-index: 6; pointer-events: none; }
+.pet .catchbasket svg { width: 100%; display: block; }
+.column .btn.on { box-shadow: 0 0 0 1vmin #ffd23f, 0 0 3vmin #ffd23f, 0 .9vmin 0 var(--c-dark); transform: translateY(-.4vmin); }

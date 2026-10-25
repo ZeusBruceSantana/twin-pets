@@ -1225,3 +1225,58 @@ test('The Fun Fair: the claw machine (roles swap and it always wins), pop-ups wi
   expect($$g('.fairwheel .rider').length === 2, 'both pets ride the wheel');
   expectEqual(G('TEST_ERRORS'), [], 'the fair worked');
 });
+
+test('The treehouse: a new room with Fruit Catch and the Weather Machine', async () => {
+  await openGame(allPlaces({ treehouse: true }));
+  await startPlaying();
+  await goTo('treehouse');
+  expectEqual(buttons('left').join(','), 'catch,weather', 'the treehouse buttons');
+  expect($g('#map') && true, 'the map exists');
+  // the weather machine
+  tap($g('#col-left .btn-weather'));
+  await sleep(200);
+  expectEqual(buttons('left').join(','), 'wxsun,wxcloud,wxrain,wxsnow,wxwind,back', 'five kinds of weather and a back button');
+  tap($g('#col-left .btn-wxsun'));
+  tap($g('#col-right .btn-weather'));
+  await sleep(100);
+  tap($g('#col-right .btn-wxrain'));
+  await sleep(300);
+  expect($g('#rooms .room-treehouse').classList.contains('wxc-rainbow'), 'sun and rain make a rainbow');
+  expectEqual(G('S.wxFound'), { rainbow: true }, 'the chart remembers it');
+  tap($g('#col-left .btn-wxwind'));
+  await sleep(100);
+  expect($g('#rooms .room-treehouse').classList.contains('wxc-kite'), 'sun and wind make kites');
+  tap($g('#col-left .btn-wxsun'));
+  tap($g('#col-left .btn-wxcloud'));
+  await sleep(100);       // (rain is still on from the rainbow)
+  expect($g('#rooms .room-treehouse').classList.contains('wxc-flower'), 'cloud and rain make flowers');
+  tap($g('#col-left .btn-wxrain'));
+  tap($g('#col-left .btn-wxsnow'));
+  await sleep(100);
+  expect($g('#rooms .room-treehouse').classList.contains('wxc-snowman'), 'cloud and snow make a snowman');
+  expectEqual(G('S.wxAll'), true, 'finding all four earns a prize');
+  expectEqual(G('S.puzzleOwed'), 1, 'the prize is waiting');
+  // leaving clears the weather
+  await goTo('playroom');
+  expectEqual(G('Object.values(wx).some(Boolean)'), false, 'the weather is clear again');
+  // fruit catch
+  await goTo('treehouse');
+  tap($g('#col-left .btn-catch'));
+  await sleep(200);
+  expectEqual(G('scene'), 'play', 'one girl alone does not start it');
+  tap($g('#col-right .btn-catch'));
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'fruit catch');
+  expectEqual(buttons('left').join(','), 'catchl,catchr', 'big left and right buttons');
+  const start = G('pets.left.x');
+  tap($g('#col-left .btn-catchl'));
+  await sleep(600);
+  expect(G('pets.left.x') < start, 'the pet slides left');
+  // play until both have caught enough (the pets follow the falling fruit)
+  for (let i = 0; i < 400 && G('scene') === 'act'; i++) {
+    G(`(() => { const a = act; if (a.kind !== 'fruitcatch' || a.ending) return; SIDES.forEach(s => { const f = a.data.fruits.filter(x => x.side === s && !x.caught).sort((p, q) => q.y - p.y)[0]; if (f) a.data.target[s] = clampCatch(s, f.x / W() * 100); }); })()`);
+    await sleep(100);
+  }
+  expectEqual(G('scene'), 'play', 'the game finished');
+  expect(G('Object.values(S.book).some(d => d.includes("fruitcatch"))'), 'it is in the memory book');
+  expectEqual(G('TEST_ERRORS'), [], 'the treehouse worked');
+});

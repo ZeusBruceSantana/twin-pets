@@ -386,7 +386,7 @@ const isTyping = e => e.target && e.target.closest && e.target.closest('input, t
   document.addEventListener(ev, e => { if (!isTyping(e)) e.preventDefault(); }));
 document.addEventListener('touchmove', e => { if (!isTyping(e)) e.preventDefault(); }, { passive: false });
 ['touchend', 'pointerup', 'click'].forEach(ev => document.addEventListener(ev, () => Sound.unlock(), { passive: true }));
-document.addEventListener('visibilitychange', () => { if (document.hidden) saveNow(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { saveNow(); Sound.suspend(); } });
 addEventListener('pagehide', () => saveNow());
 
 /* =====================================================================

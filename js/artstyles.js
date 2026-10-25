@@ -85,7 +85,7 @@ function showArtStyle(a, side, st) {
   if (first) logDay('artstyle');
   if (ART_STYLES.every(x => S.artSeen[x.key]) && !S.artAll) {          // she has seen every style: an art expert gets a prize
     S.artAll = true;
-    S.puzzleOwed = (S.puzzleOwed || 0) + 1;
+    owePrize();
     save();
     setTimeout(() => { showHint('gframe', 'art stars', true); celebrate(W() / 2, H() * 0.46, 14); SIDES.forEach(s => floatHearts(pets[s], 3)); }, 1400);
   }

@@ -57,6 +57,10 @@ function freshSave() {
     roomPictures: {},       // pictures chosen on this device for a room: { backyard: { img, at } }
     homeCore: {},           // the family's Home Core game link and which child goes with each pet (homecore.js)
     band: { left: 'guitar', right: 'keys' },   // the instrument each pet plays in the garage (garage.js)
+    puzzleOwed: 0,          // prizes waiting to be handed out (puzzles, claw, dig, weather, art)
+    prizeN: 0,              // prizes handed out so far (every third brings a special friend)
+    decorN: 0,              // house presents given so far
+    digPrizeDay: null,      // the day the playground's golden star last earned a prize
     friends: { have: [], pick: { left: null, right: null } },   // animal friends made, and the one beside each pet (friends.js)
   };
 }
@@ -113,6 +117,10 @@ const other = side => (side === 'left' ? 'right' : 'left');
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const rand = (a, b) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+function shuffle(list) {
+  for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+  return list;
+}
 const now = () => performance.now();
 function el(tag, cls, html) {
   const e = document.createElement(tag);
@@ -434,6 +442,7 @@ const Sound = (() => {
       if (c.state !== 'running') { try { c.resume(); } catch (e) { /* ignore */ } }
       try { lib[name](...args); } catch (e) { /* never let a sound break the game */ }
     },
+    suspend() { if (ctx && ctx.state === 'running') ctx.suspend().catch(() => {}); },      // the app was hidden: go quiet (the next tap wakes it)
     stopMusic() {
       if (!ctx || !music) return;
       const old = music;

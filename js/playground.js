@@ -294,7 +294,7 @@ async function goldenStar(a, d) {
   sparkles(x, y - H() * 0.3, 18);
   celebrate(x, y - H() * 0.3, 20);
   SIDES.forEach(s => { floatHearts(pets[s], 3); mood(pets[s], 'happy', 2200); });
-  if (S.digPrizeDay !== todayKey()) { S.digPrizeDay = todayKey(); S.puzzleOwed = (S.puzzleOwed || 0) + 1; save(); }     // the first golden star each day is a prize
+  if (S.digPrizeDay !== todayKey()) { S.digPrizeDay = todayKey(); owePrize(); save(); }     // the first golden star each day is a prize
   if (!a.data.digHeart) { a.data.digHeart = true; togetherMoment('dig'); }
   await wait(1500);
   star.remove();

@@ -19,20 +19,17 @@ TRIP_PLAY.bubbles = function (a, side, p) {
   blowBubbles(a, side);
 };
 function startBubbles(a) {
-  const field = actProp(a, '<div class="bubmeter l"></div><div class="bubmeter r"></div>', { inset: 0 }, 29);
+  const field = actProp(a, '<div class="bubmeter c"></div>', { inset: 0 }, 29);
   field.classList.add('bubfield');
   const b = a.data.bub = { field, pops: { left: 0, right: 0 }, alive: [], giant: null, taps: { left: false, right: false } };
   a.cleanup.push(() => { b.alive.forEach(e => e.remove()); });
   renderBubMeters(a);
   showHint('bubble', 'bubbles');
 }
-function renderBubMeters(a) {
-  const b = a.data.bub;
-  SIDES.forEach(s => {
-    const m = b.field.querySelector('.bubmeter.' + (s === 'left' ? 'l' : 'r'));
-    m.innerHTML = Array.from({ length: BUBBLE_NEED }, (_, i) => `<i class="${i < b.pops[s] ? 'on' : ''}"></i>`).join('');
-    m.style.setProperty('--c', (colorById(S.colors[s]) || COLORS[0]).main);
-  });
+function renderBubMeters(a) {                       // one shared meter: both girls fill it together
+  const b = a.data.bub, m = b.field.querySelector('.bubmeter');
+  const on = SIDES.reduce((n, s) => n + Math.min(BUBBLE_NEED, b.pops[s]), 0);
+  m.innerHTML = Array.from({ length: BUBBLE_NEED * 2 }, (_, i) => `<i class="${i < on ? 'on' : ''}"></i>`).join('');
 }
 function blowBubbles(a, side) {
   const b = a.data.bub, p = pets[side];

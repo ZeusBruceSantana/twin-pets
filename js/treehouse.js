@@ -74,7 +74,7 @@ function applyWx() {
     SIDES.forEach(s => floatHearts(pets[s], 2));
     if (Object.keys(WX_ITEMS).every(x => S.wxFound[x]) && !S.wxAll) {                 // found everything: a prize
       S.wxAll = true;
-      S.puzzleOwed = (S.puzzleOwed || 0) + 1;
+      owePrize();
       save();
     }
   });
@@ -124,7 +124,7 @@ ACTIVITIES.fruitcatch = {
     d.fruits = [];
     d.ptr = {};
     d.spawnAt = { left: now() + 800, right: now() + 1300 };
-    d.field = actProp(a, '<div class="bubmeter l"></div><div class="bubmeter r"></div>', { inset: 0 }, 29);
+    d.field = actProp(a, '<div class="bubmeter c"></div>', { inset: 0 }, 29);
     d.field.classList.add('bubfield');
     SIDES.forEach(s => {
       const b = el('div', 'catchbasket', '<svg viewBox="0 0 100 60"><path d="M6 8 H94 L84 56 H16Z" fill="#e8b071" stroke="#c98a3c" stroke-width="4" stroke-linejoin="round"/><path d="M6 8 H94" stroke="#c98a3c" stroke-width="7" stroke-linecap="round"/><path d="M28 8 L34 56 M50 8 V56 M72 8 L66 56" stroke="#c98a3c" stroke-width="3"/></svg>');
@@ -150,13 +150,10 @@ ACTIVITIES.fruitcatch = {
   press(a, side, key) { const d = a.data; d.target[side] = clampCatch(side, d.target[side] + (key === 'catchl' ? -9 : 9)); },
 };
 const clampCatch = (side, x) => Math.max(CATCH_RANGE[side][0], Math.min(CATCH_RANGE[side][1], x));
-function renderCatchMeters(a) {
-  const d = a.data;
-  SIDES.forEach(s => {
-    const m = d.field.querySelector('.bubmeter.' + (s === 'left' ? 'l' : 'r'));
-    m.innerHTML = Array.from({ length: CATCH_NEED }, (_, i) => `<i class="${i < d.n[s] ? 'on' : ''}"></i>`).join('');
-    m.style.setProperty('--c', (colorById(S.colors[s]) || COLORS[0]).main);
-  });
+function renderCatchMeters(a) {                     // one shared meter: both girls fill it together
+  const d = a.data, m = d.field.querySelector('.bubmeter');
+  const on = SIDES.reduce((n, s) => n + Math.min(CATCH_NEED, d.n[s]), 0);
+  m.innerHTML = Array.from({ length: CATCH_NEED * 2 }, (_, i) => `<i class="${i < on ? 'on' : ''}"></i>`).join('');
 }
 function catchStep(a) {
   const d = a.data, t = now(), dt = Math.min(0.05, (t - d.last) / 1000);

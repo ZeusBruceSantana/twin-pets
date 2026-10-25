@@ -22,6 +22,7 @@ const PIECES = {
   farm:      { seed: 127, key: 65, bpm: 108, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, extra: 'birds' },
   library:   { seed: 131, key: 64, bpm: 76,  beats: 3, chords: [0, 5, 3, 4], lead: 'sine', soft: true },
   snowhill:  { seed: 137, key: 69, bpm: 90,  beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true, shaker: true },
+  garage:    { seed: 149, key: 64, bpm: 118, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, shaker: true },
   icecream:  { seed: 113, key: 64, bpm: 116, beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true },
 };
 
@@ -153,7 +154,7 @@ const Music = (() => {
     if (!now || now.name !== name) { stop(e); if (name) start(name, e); }
     if (!now) return;
     // special moments with their own tunes (chase, parties): the music steps aside
-    const quiet = ['chase', 'surprise', 'goodnight'].includes(scene);
+    const quiet = ['chase', 'surprise', 'goodnight'].includes(scene) || (scene === 'act' && act && act.kind === 'band');
     if (quiet !== ducked) {
       ducked = quiet;
       now.gain.gain.setTargetAtTime(quiet ? 0.0001 : (now.p.soft ? 0.32 : 0.45), e.ctx.currentTime, 0.5);

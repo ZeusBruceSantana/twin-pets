@@ -33,6 +33,7 @@ onPress(pzBox.querySelector('.map-x'), () => closePuzzle(false));
 const pzHalf = side => pzBox.querySelector('.pz-half.' + (side === 'left' ? 'l' : 'r'));
 let pz = null;
 const PZ_ROUNDS = 2;
+const pzNeed = () => (pz.type === 'match' ? 1 : PZ_ROUNDS);   // rounds each girl solves
 
 /* type: pattern, odd or jigsaw.  theme: a key of PZ_THEMES.  ctx.act: the trip it is part of (if any). */
 function startPuzzle(type, theme, ctx = {}) {
@@ -74,8 +75,7 @@ function closePuzzle(done, fromCleanup) {
 setInterval(() => { if (pz && now() - pz.last > 60000) closePuzzle(false); }, 2000);
 
 function pzRound(side) {
-  if (pz.type === 'pattern') patternRound(side);
-  else oddRound(side);
+  ({ pattern: patternRound, odd: oddRound, shadow: shadowRound, count: countRound, match: matchRound, tune: tuneRound })[pz.type](side);
 }
 /* A wrong try wobbles; after two, the right answer glows. A right one sparkles. */
 function pzAnswer(side, ok, node, answerNode) {
@@ -88,12 +88,17 @@ function pzAnswer(side, ok, node, answerNode) {
   }
   pz.tries[side] = 0;
   node.classList.add('good');
+  pzRoundDone(side, node);
+}
+/* One round is solved: sparkle, and either the next round or her half is done. */
+function pzRoundDone(side, node) {
+  if (!pz || pz.solved[side]) return;
   Sound.play('pick');
   const r = node.getBoundingClientRect();
   sparkles(r.left + r.width / 2, r.top + r.height / 2, 8);
   mood(pets[side], 'happy', 1200);
   hopPet(side);
-  if (++pz.rounds[side] >= PZ_ROUNDS) {
+  if (++pz.rounds[side] >= pzNeed()) {
     pz.solved[side] = true;
     setTimeout(() => pzSolvedHalf(side), 700);
   } else {
@@ -146,6 +151,96 @@ function oddRound(side) {
   pz.tries[side] = 0;
   const answerNode = box.querySelector(`.pz-opt[data-k="${B}"]`);
   box.querySelectorAll('.pz-opt').forEach(o => onPress(o, () => pzAnswer(side, o.dataset.k === B, o, answerNode)));
+}
+/* ---- whose shadow is this? ---- */
+function shadowRound(side) {
+  const icons = shuffle(pz.th.icons.slice()), ans = icons[0];
+  const box = pzHalf(side);
+  box.innerHTML = `<div class="pz-shadow">${ICONS[ans]}</div><div class="pz-opts">${shuffle(icons.slice()).map(k => `<div class="pz-opt" data-k="${k}">${ICONS[k]}</div>`).join('')}</div>`;
+  pz.tries[side] = 0;
+  const answerNode = box.querySelector(`.pz-opt[data-k="${ans}"]`);
+  box.querySelectorAll('.pz-opt').forEach(o => onPress(o, () => {
+    const ok = o.dataset.k === ans;
+    if (ok && !pz.solved[side]) box.querySelector('.pz-shadow').classList.add('lit');
+    pzAnswer(side, ok, o, answerNode);
+  }));
+}
+/* ---- how many? ---- */
+function countRound(side) {
+  const n = 1 + Math.floor(Math.random() * 5), icon = pick(pz.th.icons);
+  const nums = shuffle([n, ...shuffle([1, 2, 3, 4, 5, 6].filter(x => x !== n)).slice(0, 2)]);
+  const box = pzHalf(side);
+  box.innerHTML = `<div class="pz-count">${Array.from({ length: n }, () => `<div class="pz-thing">${ICONS[icon]}</div>`).join('')}</div>
+    <div class="pz-opts">${nums.map(k => `<div class="pz-opt num" data-k="${k}">${k}</div>`).join('')}</div>`;
+  pz.tries[side] = 0;
+  const answerNode = box.querySelector(`.pz-opt[data-k="${n}"]`);
+  box.querySelectorAll('.pz-opt').forEach(o => onPress(o, () => { Speech.say(o.dataset.k); pzAnswer(side, +o.dataset.k === n, o, answerNode); }));
+}
+/* ---- find the pairs (a wrong pair just turns back over) ---- */
+function matchRound(side) {
+  const cards = shuffle([...pz.th.icons, ...pz.th.icons]);
+  const box = pzHalf(side);
+  box.innerHTML = `<div class="pz-cards">${cards.map((k, i) => `<div class="pz-card" data-k="${k}" data-i="${i}"><div class="pz-front">${ICONS[k]}</div><div class="pz-back">?</div></div>`).join('')}</div>`;
+  const st = { open: [], matched: 0, misses: 0, lock: false };
+  box.querySelectorAll('.pz-card').forEach(c => onPress(c, () => {
+    if (!pz || pz.solved[side] || st.lock || c.classList.contains('up')) return;
+    pz.last = now();
+    c.classList.add('up');
+    Sound.play('click');
+    st.open.push(c);
+    if (st.open.length < 2) return;
+    const [a, b] = st.open;
+    st.open = [];
+    if (a.dataset.k === b.dataset.k) {
+      a.classList.add('good'); b.classList.add('good');
+      Sound.play('pick');
+      if (++st.matched >= pz.th.icons.length) pzRoundDone(side, b);
+      return;
+    }
+    st.lock = true;                                                // not a pair: gently turn them back
+    st.misses++;
+    setTimeout(() => {
+      a.classList.remove('up'); b.classList.remove('up');
+      st.lock = false;
+      if (st.misses >= 3) {                                        // a little help: one card of a pair that is still hiding wobbles
+        const hid = [...box.querySelectorAll('.pz-card:not(.up)')][0];
+        if (hid) hid.classList.add('help');
+      }
+    }, 900);
+  }));
+}
+/* ---- copy the tune ---- */
+const PAD_COLORS = ['#ff7a7a', '#ffd23f', '#6cc551', '#5aa9ff'];
+const PAD_NOTES = [72, 76, 79, 84];
+Sound.add('padnote', (s, i) => { s.tone(s.NOTE(PAD_NOTES[i]), 0, 0.5, { vol: 0.08, echo: 1 }); });
+function tuneRound(side) {
+  const len = 2 + pz.rounds[side] + 1;                             // three notes, then four
+  const seq = Array.from({ length: len }, () => Math.floor(Math.random() * 4));
+  const box = pzHalf(side);
+  box.innerHTML = `<div class="pz-ear">${ICONS.note}</div><div class="pz-pads">${PAD_COLORS.map((c, i) => `<div class="pz-pad" data-i="${i}" style="background:${c}"></div>`).join('')}</div>`;
+  const pads = [...box.querySelectorAll('.pz-pad')];
+  const st = { seq, pos: 0, listening: true };
+  const flash = i => { pads[i].classList.add('lit'); Sound.play('padnote', i); setTimeout(() => pads[i].classList.remove('lit'), 380); };
+  const play = async () => {                                       // listen...
+    st.listening = true; st.pos = 0;
+    box.classList.add('listen');
+    await wait(700);
+    for (const i of seq) { if (!pz || pzHalf(side) !== box) return; flash(i); await wait(650); }
+    box.classList.remove('listen');
+    st.listening = false;                                          // ...now you
+  };
+  pads.forEach((pad, i) => onPress(pad, () => {
+    if (!pz || pz.solved[side] || st.listening) return;
+    pz.last = now();
+    flash(i);
+    if (i === seq[st.pos]) {
+      if (++st.pos >= seq.length) { st.listening = true; pzRoundDone(side, pad); }
+    } else {
+      nudge(box.querySelector('.pz-pads'));
+      play();                                                      // not quite: hear it again
+    }
+  }));
+  play();
 }
 /* ---- jigsaw: each girl has the two pieces for her side of the picture ---- */
 function setupJigsaw() {
@@ -213,9 +308,10 @@ function claimPrize() {
   save();
   // every third prize also brings a very special friend, if any are left
   const special = S.prizeN % 3 === 0 && PUZZLE_FRIENDS.find(k => !S.friends.have.includes(k));
+  const petPrize = S.prizeN % 2 === 0;                 // every other prize is a gift for each pet instead of a house present
   if (special && meetFriend(special)) friendMade(special);
   const give = (tries = 0) => {
-    if (scene === 'play' && !act) startActivity('gift', 'left', { count: 2 });
+    if (scene === 'play' && !act) startActivity('gift', 'left', petPrize ? { items: [choosePresent('left'), choosePresent('right')] } : { count: 2 });
     else if (tries < 40) setTimeout(() => give(tries + 1), 500);
   };
   setTimeout(give, special ? 4200 : 600);
@@ -225,13 +321,13 @@ function claimPrize() {
 BUTTONS.puzzle = { icon: 'puzzleBtn', label: 'Puzzle' };
 ROOMS.school.acts.push('puzzle');
 FEATURE_OF.puzzle = 'puzzles';
-const PUZZLE_TYPES = ['pattern', 'odd', 'jigsaw'];
+const PUZZLE_TYPES = ['pattern', 'odd', 'shadow', 'jigsaw', 'count', 'match', 'tune'];
 ACT_HANDLERS.puzzle = side => {
   const n = S.puzzles || 0;
   startPuzzle(PUZZLE_TYPES[n % PUZZLE_TYPES.length], PZ_SCHOOL_THEMES[n % PZ_SCHOOL_THEMES.length]);
 };
-// in town: each place has its own kind of puzzle
-const PLACE_PUZZLE = { river: 'pattern', woods: 'odd', museum: 'jigsaw', restaurant: 'pattern' };
-TRIP_PLAY.puzzle = (a, side) => startPuzzle(PLACE_PUZZLE[a.opts.place] || 'pattern', a.opts.place, { act: a });
+// in town: each place has its own kinds of puzzle, one after another
+const PLACE_PUZZLE = { river: ['pattern', 'count', 'shadow', 'tune'], woods: ['odd', 'match', 'count', 'shadow'], museum: ['jigsaw', 'shadow', 'match', 'pattern'], restaurant: ['pattern', 'match', 'count', 'tune'] };
+TRIP_PLAY.puzzle = (a, side) => { const kinds = PLACE_PUZZLE[a.opts.place] || ['pattern']; startPuzzle(kinds[(S.puzzles || 0) % kinds.length], a.opts.place, { act: a }); };
 NEW_THINGS.push({ key: 'puzzles', order: 23.5, requires: 'decor', room: 'school', acts: ['puzzle'], icon: 'puzzleBtn', word: 'puzzles' });
 BOOK_LINES.puzzle = { line: 'solved a puzzle together.', icon: 'puzzleBtn', rank: 97.5 };

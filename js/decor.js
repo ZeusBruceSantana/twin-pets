@@ -140,8 +140,9 @@ PARTY_HOOKS.push(() => { if (has('decor')) setTimeout(() => startActivity('gift'
 ACTIVITIES.gift = {
   async start(a) {
     a.data.opened = { left: false, right: false };
-    // one present from the jar; a puzzle prize is two, one for each girl
-    a.data.keys = Array.from({ length: a.opts.count || 1 }, (_, i) => DECOR_ORDER[((S.decorN || 0) + i) % DECOR_ORDER.length]);
+    // one present from the jar; a puzzle prize is two, one for each girl (house presents, or a gift for each pet)
+    a.data.pet = !!a.opts.items;
+    a.data.keys = a.data.pet ? a.opts.items.slice() : Array.from({ length: a.opts.count || 1 }, (_, i) => DECOR_ORDER[((S.decorN || 0) + i) % DECOR_ORDER.length]);
     const L = colorById(S.colors.left) || COLORS[0], R = colorById(S.colors.right) || COLORS[2];
     a.data.box = actProp(a, `<svg viewBox="0 0 100 100"><g class="pbox"><rect x="10" y="40" width="40" height="54" rx="6" fill="${L.main}"/><rect x="50" y="40" width="40" height="54" rx="6" fill="${R.main}"/><rect x="44" y="40" width="12" height="54" fill="#fff"/></g>
       <g class="plid"><rect x="4" y="28" width="46" height="16" rx="5" fill="${L.main}" stroke="#fff" stroke-width="3"/><rect x="50" y="28" width="46" height="16" rx="5" fill="${R.main}" stroke="#fff" stroke-width="3"/><rect x="44" y="28" width="12" height="16" fill="#fff"/><path d="M50 28 C 36 10, 22 18, 34 28 M50 28 C 64 10, 78 18, 66 28" stroke="#fff" stroke-width="5" fill="none"/></g></svg>`,
@@ -161,25 +162,27 @@ ACTIVITIES.gift = {
     if (!(a.data.opened.left && a.data.opened.right)) return;
     a.busy = true;
     const keys = a.data.keys;
-    S.decorN = (S.decorN || 0) + keys.length;
+    if (!a.data.pet) S.decorN = (S.decorN || 0) + keys.length;
     save();
     animate(a.data.box.querySelector('.plid'), [{ transform: 'translateY(0) rotate(0)', opacity: 1 }, { transform: 'translateY(-60%) rotate(-20deg)', opacity: 0 }], { duration: 600, fill: 'forwards' });
     Sound.play('open');
     const r = a.data.box.getBoundingClientRect();
     sparkles(r.left + r.width / 2, r.top + r.height * 0.3, 16);
     const colors = [(colorById(S.colors.left) || COLORS[0]).main, (colorById(S.colors.right) || COLORS[2]).main];
+    const artOf = (key, i) => a.data.pet ? ITEM_ART[key](itemColor(SIDES[i], key)) : DECOR[key].svg;
+    const wordOf = key => a.data.pet ? (ITEM_WORD[key] || key) : DECOR[key].word;
     const shown = keys.map((key, i) => {
       const x = keys.length === 1 ? 50 : 36 + i * 28;
-      const g = actProp(a, `<div class="giftitem" style="--ring:${colors[i % 2]}"><div class="gpic">${DECOR[key].svg}</div><div class="gword"></div></div>`,
+      const g = actProp(a, `<div class="giftitem" style="--ring:${colors[i % 2]}"><div class="gpic">${artOf(key, i)}</div><div class="gword"></div></div>`,
         { left: x + '%', bottom: '40%', width: '22vmin', height: '24vmin', transform: 'translateX(-50%)' }, 33);
-      sayableInto(g.querySelector('.gword'), DECOR[key].word);
+      sayableInto(g.querySelector('.gword'), wordOf(key));
       return g;
     });
     await Promise.all(shown.map((g, i) => animate(g, [{ transform: 'translateX(-50%) translateY(10vmin) scale(.3)' }, { transform: 'translateX(-50%) translateY(0) scale(1.15)' }, { transform: 'translateX(-50%) scale(1)' }], { duration: 700, delay: i * 250, easing: 'ease-out', fill: 'backwards' })));
-    if (keys.length === 1) { showHint(null, DECOR[keys[0]].word); $('#hint .hint-ico').innerHTML = DECOR[keys[0]].svg; }
+    if (keys.length === 1 && !a.data.pet) { showHint(null, DECOR[keys[0]].word); $('#hint .hint-ico').innerHTML = DECOR[keys[0]].svg; }
     await wait(keys.length === 1 ? 1800 : 2600);
     await endActivity(false);
-    chooseDecorRooms(keys);
+    if (a.data.pet) { SIDES.forEach((side, i) => giftToPet(keys[i], side)); logDay('puzzleprize'); } else chooseDecorRooms(keys);
   },
 };
 /* Each present is placed in turn: both girls choose a room on the map. */

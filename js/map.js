@@ -10,7 +10,8 @@
    ===================================================================== */
 // where each room sits on the map: [column, row, columns wide, rows tall]
 const MAP_SPOTS = {
-  frontyard: [1, 2, 1, 2],
+  garage:    [1, 2, 1, 1],
+  frontyard: [1, 3, 1, 1],
   bedroom:   [2, 2, 1, 1],
   bathroom:  [3, 2, 1, 1],
   school:    [4, 2, 1, 1],

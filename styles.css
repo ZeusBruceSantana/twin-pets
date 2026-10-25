@@ -717,7 +717,8 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 /* playroom pretend play */
 .art .vetsticker { position: absolute; left: 56%; top: 62%; width: 14%; height: 14%; pointer-events: none; transform: rotate(-12deg); }
 .art .vetsticker svg { width: 100%; height: 100%; }
-.tea-in { position: absolute; left: 30%; top: 44%; width: 40%; height: 10%; border-radius: 50%; background: #e8c39e; opacity: 0; transition: opacity .4s ease; }
+.tea-in { position: absolute; left: 12%; top: 34%; width: 34%; height: 16%; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #e0a574, #b87442); box-shadow: 0 0 0 .5vmin #fff inset; opacity: 0; transition: opacity .4s ease; }
+.teastream { position: absolute; width: 1.1vmin; border-radius: 1vmin; background: linear-gradient(#d9a574, #b87442); transform-origin: 50% 0; z-index: 32; pointer-events: none; }
 .full .tea-in { opacity: 1; }
 .friend svg { width: 100%; height: 100%; }
 .pstage .pstage-top { position: absolute; left: -2%; right: -2%; top: 0; height: 12%; border-radius: 2vmin 2vmin 0 0; background: repeating-linear-gradient(90deg, #ff6b7a 0 6vmin, #ff8a96 6vmin 12vmin); box-shadow: 0 .8vmin 0 #d94f5c; }

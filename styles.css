@@ -1219,3 +1219,24 @@ body.on-stage #rooms { filter: brightness(.55) saturate(.8); }
 @keyframes discoflash { from { opacity: .35; filter: hue-rotate(0); } to { opacity: .9; filter: hue-rotate(120deg); } }
 .dpaw > div { filter: drop-shadow(0 .5vmin 0 rgba(0,0,0,.18)); }
 body[data-scene="act"] .wxchart, body[data-scene="act"] .wxlayer { display: none; }
+
+/* ---------- the playground ---------- */
+.trip .tsky.playground { background: linear-gradient(#a6dcff, #f0fbff 62%); }
+.trip .pgpit { left: 50%; bottom: 3%; width: 32vmin; height: 12vmin; transform: translateX(-50%); }
+.pgpit .pgsand { position: absolute; inset: 0; border-radius: 50%; background: #f2d28a; border: 1vmin solid #b07f4f; box-shadow: inset 0 .8vmin 0 rgba(0,0,0,.08); }
+.swrig { position: absolute; inset: 0; pointer-events: none; }
+.swrig .rope { position: absolute; left: 50%; top: -70%; width: .8vmin; height: 171%; background: #8a6a4a; transform-origin: 50% 0; }
+.swrig .rope.l { transform: rotate(12deg); } .swrig .rope.r { transform: rotate(-12deg); }
+.swrig .seat { position: absolute; left: 8%; width: 84%; top: 96%; height: 5%; border-radius: 1vmin; background: #ffd23f; border: .4vmin solid #e0a800; }
+.leafpile { position: absolute; inset: 0; }
+.leafpile i { position: absolute; width: 36%; height: 90%; }
+.leafpile svg { width: 100%; height: 100%; }
+.mgspin { position: absolute; inset: 0; border-radius: 50%; }
+.mgrim { position: absolute; inset: 0; border-radius: 50%; background: #ffe9a6; border: 1.2vmin solid #ff8fb8; box-shadow: 0 1vmin 0 #d96a98; }
+.mghub { position: absolute; left: 44%; top: 44%; width: 12%; height: 12%; border-radius: 50%; background: #a77bff; }
+.mgseat { position: absolute; width: 0; height: 0; }
+.mgrider { position: absolute; left: -4.5vmin; top: -4.5vmin; width: 9vmin; height: 9vmin; border-radius: 50%; background: #fff; border: .6vmin solid #ff8fb8; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.mgrider svg, .mgrider img { width: 88%; height: 88%; }
+.digrow { display: grid; grid-template-columns: repeat(6, 1fr); width: 100%; height: 100%; background: rgba(255,255,255,.55); border-radius: 3.5vmin; }
+.digrow i { display: block; height: 100%; }
+.digrow svg { width: 100%; height: 100%; }

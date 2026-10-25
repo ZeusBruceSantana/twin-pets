@@ -732,9 +732,9 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .thing-car svg { width: 100%; height: 100%; overflow: visible; }
 .prop.drivecar > div { animation: bob .3s ease-in-out infinite; }
 #trips { z-index: 62; background: rgba(46, 64, 120, .5); align-items: center; justify-content: center; }
-#trips .town { position: relative; width: min(78vw, 124vmin); height: 66vmin; padding: 3vmin; border-radius: 5vmin; background: #bfe8a8; border: .8vmin solid #fff; box-shadow: 0 1.4vmin 0 rgba(0,0,0,.18); }
+#trips .town { position: relative; width: min(86vw, 150vmin); height: 66vmin; padding: 3vmin; border-radius: 5vmin; background: #bfe8a8; border: .8vmin solid #fff; box-shadow: 0 1.4vmin 0 rgba(0,0,0,.18); }
 #trips .town-roads { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-#trips .trip-grid { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 6vmin; width: 100%; height: 100%; }
+#trips .trip-grid { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 1fr); gap: 3.2vmin; width: 100%; height: 100%; }
 #trips .map-x { position: absolute; right: calc(var(--col) + 1vmin); top: calc(1vmin + var(--safe-top)); width: 10vmin; height: 10vmin; padding: 2.4vmin; border-radius: 50%; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }
 #trips .map-x svg { width: 100%; height: 100%; }
 .trip { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -789,7 +789,7 @@ body.on-trip #world > .thing, body.on-trip #world > .visitor { display: none; }
 /* ---------- decorating ---------- */
 .room .decor.drug { left: 50%; bottom: 1.5%; width: 66vmin; height: 16vmin; transform: translateX(-50%); }
 .room.has-rug .rug { display: none; }
-.room .decor.ditem { bottom: 25%; width: 12vmin; height: 14.4vmin; transform: translateX(-50%); }
+.room .decor.ditem { bottom: 25%; width: 11vmin; height: 13.2vmin; transform: translateX(-50%); }
 .room.wp-wpStars .wall { background: radial-gradient(circle, #ffe57f 9%, transparent 11%) 0 0 / 9vmin 9vmin, radial-gradient(circle, #fff 6%, transparent 8%) 4.5vmin 4.5vmin / 9vmin 9vmin, #dfe9ff; }
 .room.wp-wpHearts .wall { background: radial-gradient(circle at 40% 40%, #ffb3c8 10%, transparent 12%) 0 0 / 8vmin 8vmin, radial-gradient(circle at 60% 40%, #ffb3c8 10%, transparent 12%) 0 0 / 8vmin 8vmin, #ffeef4; }
 .room.wp-wpStripes .wall { background: repeating-linear-gradient(90deg, #fff 0 4vmin, #d9f3e2 4vmin 8vmin); }
@@ -926,3 +926,83 @@ body.w-rain .room.has-picture .room-picture { filter: saturate(.8) brightness(.9
 .pet.asleep .buddy .bbody { animation: none; transform: scaleY(.92); opacity: .85; }
 body:not([data-scene="play"]):not([data-scene="title"]) .pet .buddy { display: none; }
 .scard.taken { opacity: .45; }
+
+/* ---------- more decorating: electronics and prize gifts ---------- */
+.room .decor.ditem.tappable { pointer-events: auto; cursor: pointer; }
+.ditem .glow { transition: opacity .3s ease; }
+.ditem.lit .glow { opacity: .75; }
+.ditem.lit svg { filter: drop-shadow(0 0 1.6vmin #ffe57f); }
+.ditem .tvpic { position: absolute; left: 14%; top: 38%; width: 60%; height: 42%; display: none; align-items: center; justify-content: center; background: #fff6c8; border-radius: 1vmin; overflow: hidden; }
+.ditem .tvpic.on { display: flex; animation: tvon .3s ease-out; }
+.ditem .tvpic svg { width: 86%; height: 86%; }
+@keyframes tvon { from { transform: scaleY(.05); } to { transform: scaleY(1); } }
+.giftitem { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; gap: .6vmin; }
+.giftitem .gpic { width: 17vmin; height: 15vmin; padding: 1vmin; background: #fff; border-radius: 3vmin; border: .9vmin solid var(--ring, #fff); box-shadow: 0 1vmin 0 rgba(0,0,0,.15); }
+.giftitem .gpic svg { width: 100%; height: 100%; }
+.giftitem .gword { font: 900 3.4vmin/1 var(--font); background: #fff; padding: .4vmin 1.6vmin; border-radius: 2vmin; pointer-events: auto; }
+
+/* ---------- more places: river, woods, museum, restaurant ---------- */
+.trip .riverwater { left: 0; right: 0; bottom: 22%; height: 30%; background: linear-gradient(#8fd0ff, #5aa9ff); box-shadow: inset 0 1vmin 0 rgba(255,255,255,.45); }
+.trip .riverwater::before, .trip .riverwater::after { content: ''; position: absolute; left: 0; right: 0; height: .8vmin; background: rgba(255,255,255,.6); border-radius: 1vmin; animation: wave 3s ease-in-out infinite alternate; }
+.trip .riverwater::before { top: 30%; } .trip .riverwater::after { top: 62%; animation-delay: -1.5s; }
+.trip .bank { left: 0; right: 0; bottom: 0; height: 24%; background: #a6dd86; border-top: 1.2vmin solid #8fd16a; }
+.trip .tsky.woods { background: linear-gradient(#2c3a78, #6a5aa0 55%, #f0a070 100%); }
+.trip .moonw { right: 18%; top: calc(10vmin + var(--safe-top)); width: 11vmin; height: 11vmin; border-radius: 50%; background: #fff6c8; box-shadow: 0 0 5vmin #fff6c8; }
+.trip .wtree { bottom: 26%; width: 22vmin; height: 40vmin; background: #1f5c43; clip-path: polygon(50% 0, 78% 30%, 64% 30%, 90% 62%, 10% 62%, 36% 30%, 22% 30%); }
+.trip .woodground { left: 0; right: 0; bottom: 0; height: 30%; background: #2e7a54; border-top: 1.2vmin solid #3b8f64; }
+.campfire svg .flame { transform-box: fill-box; transform-origin: 50% 100%; animation: flicker .5s ease-in-out infinite alternate; }
+@keyframes flicker { from { transform: scale(1, 1); } to { transform: scale(.92, 1.1); } }
+.trip .mwall { inset: 0; background: repeating-linear-gradient(90deg, #fbf1de 0 10vmin, #f5e7cc 10vmin 20vmin); }
+.trip .mrail { left: 0; right: 0; bottom: 28%; height: 3vmin; background: #c9a56a; }
+.trip .mfloor { left: 0; right: 0; bottom: 0; height: 28%; background: repeating-conic-gradient(#f4f6fa 0 25%, #cfd6e2 0 50%) 0 0 / 12vmin 12vmin; }
+.trip .mframe { top: calc(24vmin + var(--safe-top)); width: 21vmin; height: 24vmin; border-radius: 1.2vmin; border: 1.2vmin solid #e0b84a; background: #fffaf0; box-shadow: 0 1vmin 0 rgba(0,0,0,.12); display: flex; align-items: center; justify-content: center; padding: 1vmin; }
+.trip .mframe.f0 { left: 14%; } .trip .mframe.f1 { left: 50%; margin-left: -10.5vmin; } .trip .mframe.f2 { right: 14%; }
+.trip .mframe .mpic { width: 100%; height: 100%; opacity: 0; }
+.trip .mframe.hung .mpic { opacity: 1; }
+.trip .mframe .mpic svg { width: 100%; height: 100%; }
+.statue .art { filter: sepia(1) saturate(3.2) hue-rotate(-8deg) brightness(1.2) drop-shadow(0 0 1.4vmin rgba(255,226,120,.9)); }
+.trip .rwall { inset: 0; background: repeating-linear-gradient(90deg, #8a2f4a 0 9vmin, #7a2641 9vmin 18vmin); border-bottom: 2vmin solid #d9a93a; }
+.trip .rfloor { left: 0; right: 0; bottom: 0; height: 30%; background: repeating-conic-gradient(#fff 0 25%, #2d2a3a 0 50%) 0 0 / 10vmin 10vmin; }
+.trip .rtable { left: 50%; bottom: 14%; width: 56vmin; height: 12vmin; transform: translateX(-50%); background: #fff; border-radius: 1.5vmin; box-shadow: 0 1vmin 0 rgba(0,0,0,.15); }
+.trip .candle { position: absolute; left: 50%; top: -5vmin; width: 1.6vmin; height: 5vmin; background: #fff4e0; border-radius: .6vmin; transform: translateX(-50%); }
+.trip .candle::before { content: ''; position: absolute; left: 50%; top: -2.4vmin; width: 1.6vmin; height: 2.4vmin; background: #ffd23f; border-radius: 50% 50% 40% 40%; transform: translateX(-50%); box-shadow: 0 0 2vmin #ffd23f; animation: flicker .6s ease-in-out infinite alternate; }
+.trip .chandelier { left: 50%; top: calc(1vmin + var(--safe-top)); width: 30vmin; height: 8vmin; transform: translateX(-50%); border-top: .8vmin solid #d9a93a; border-radius: 0 0 15vmin 15vmin / 0 0 8vmin 8vmin; display: flex; justify-content: space-around; align-items: flex-end; }
+.trip .chandelier i { width: 3.4vmin; height: 3.4vmin; border-radius: 50%; background: #ffe57f; box-shadow: 0 0 3vmin #ffe57f; margin-bottom: -1.5vmin; }
+
+/* ---------- puzzles ---------- */
+#puzzle { z-index: 62; background: rgba(46, 64, 120, .5); align-items: center; justify-content: center; }
+#puzzle .map-x { position: absolute; right: calc(var(--col) + 1vmin); top: calc(1vmin + var(--safe-top)); width: 10vmin; height: 10vmin; padding: 2.4vmin; border-radius: 50%; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); z-index: 3; }
+#puzzle .map-x svg { width: 100%; height: 100%; }
+.pz-board { position: absolute; left: calc(var(--col) + 2vmin); right: calc(var(--col) + 2vmin); top: calc(12vmin + var(--safe-top)); bottom: 3vmin; display: flex; gap: 2vmin; }
+.pz-half { flex: 1; border-radius: 4vmin; border: .8vmin solid #fff; box-shadow: 0 1.2vmin 0 rgba(0,0,0,.16); display: flex; flex-direction: column; align-items: center; justify-content: space-around; padding: 2vmin; min-width: 0; }
+.pz-half.l { background: var(--L-light, #ffe3ef); } .pz-half.r { background: var(--R-light, #dfeeff); }
+.pz-seq { display: flex; gap: 1vmin; width: 100%; justify-content: center; }
+.pz-cell { flex: 1; max-width: 7.6vmin; min-width: 0; aspect-ratio: 1; background: #fff; border-radius: 1.6vmin; padding: .8vmin; display: flex; align-items: center; justify-content: center; }
+.pz-cell.q { font: 900 5vmin/1 var(--font); color: #a77bff; border: .6vmin dashed #a77bff; background: rgba(255,255,255,.6); }
+.pz-cell svg, .pz-opt svg { width: 100%; height: 100%; }
+.pz-opts, .pz-odd { display: flex; gap: 2vmin; justify-content: center; flex-wrap: wrap; }
+.pz-odd { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4vmin; }
+.pz-opt { width: 13vmin; height: 13vmin; background: #fff; border-radius: 3vmin; padding: 1.6vmin; box-shadow: 0 1vmin 0 rgba(0,0,0,.15); transition: transform .15s ease; }
+.pz-opt.big { width: 17vmin; height: 17vmin; }
+.pz-opt:active { transform: scale(.94); }
+.pz-opt.good { box-shadow: 0 0 0 1vmin #6cc551, 0 0 4vmin #6cc551; transform: scale(1.06); }
+.pz-opt.help, .pz-slot.help { animation: hintpulse 1s ease-in-out infinite; box-shadow: 0 0 0 1vmin #ffd23f, 0 0 4vmin #ffd23f; }
+.pz-done { width: 22vmin; height: 22vmin; color: #ffc93c; animation: pulse 1.2s ease-in-out infinite; margin: auto; }
+.pz-done svg { width: 100%; height: 100%; }
+.pz-jig { display: none; position: absolute; inset: 0; pointer-events: none; }
+#puzzle.jig .pz-jig { display: block; }
+.pz-grid { position: absolute; left: 50%; top: 50%; width: 34vmin; height: 34vmin; transform: translate(-50%, -50%); display: grid; grid-template-columns: 1fr 1fr; background: #fff; border-radius: 2vmin; box-shadow: 0 1vmin 0 rgba(0,0,0,.15); pointer-events: auto; }
+.pz-ghost { position: absolute; inset: 0; opacity: .28; pointer-events: none; border-radius: 2vmin; overflow: hidden; }
+.pz-ghost svg { width: 100%; height: 100%; display: block; }
+.pz-slot { position: relative; border: .5vmin dashed #a77bff; box-sizing: border-box; }
+.pz-slot.filled { border-color: transparent; }
+.pz-tray { position: absolute; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 3vmin; pointer-events: auto; }
+.pz-tray.l { left: 3%; } .pz-tray.r { right: 3%; }
+.pz-piece { width: 17vmin; height: 17vmin; border-radius: 1.4vmin; overflow: hidden; border: .6vmin solid #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.2); box-sizing: border-box; transition: transform .15s ease; }
+.pz-piece svg { width: 100%; height: 100%; display: block; overflow: hidden; }
+.pz-piece.sel { transform: scale(1.12); box-shadow: 0 0 0 1vmin #ffd23f, 0 0 4vmin #ffd23f; }
+.pz-piece.placed { width: 100%; height: 100%; border: 0; box-shadow: none; border-radius: 0; }
+.trip .riverhill { bottom: 45%; width: 44%; height: 24%; border-radius: 50% 50% 0 0; background: #b7e39a; }
+.trip .riverhill.l { left: -8%; } .trip .riverhill.r { right: -8%; background: #a6dd86; }
+#trips .mtile .lbl { font-size: 2.7vmin; text-align: center; }
+.scenery .conname { position: absolute; left: 50%; bottom: -5vmin; transform: translateX(-50%); padding: .4vmin 2vmin; border-radius: 3vmin; background: #fff; font: 900 3.6vmin/1.2 var(--font); white-space: nowrap; pointer-events: auto; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }

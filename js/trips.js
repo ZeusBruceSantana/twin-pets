@@ -69,8 +69,8 @@ const PLACES = {
 const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
 /* The town map: roads between the places. Both girls tap the same place to drive there. */
 const tripBox = el('div', 'overlay', `<div class="town"><svg class="town-roads" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">
-  <g fill="none" stroke="#9aa6bd" stroke-width="13" stroke-linecap="round"><path d="M10 100 H290"/><path d="M100 14 V186"/><path d="M200 14 V186"/></g>
-  <g fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="6 7"><path d="M10 100 H290"/><path d="M100 14 V186"/><path d="M200 14 V186"/></g></svg>
+  <g fill="none" stroke="#9aa6bd" stroke-width="9" stroke-linecap="round"><path d="M8 100 H292"/><path d="M60 12 V188"/><path d="M120 12 V188"/><path d="M180 12 V188"/><path d="M240 12 V188"/></g>
+  <g fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="5 6"><path d="M8 100 H292"/><path d="M60 12 V188"/><path d="M120 12 V188"/><path d="M180 12 V188"/><path d="M240 12 V188"/></g></svg>
   <div class="trip-grid"></div></div><div class="map-x"></div>`);
 tripBox.id = 'trips';
 stage.append(tripBox);
@@ -104,7 +104,9 @@ function closeTrips() {
 setInterval(() => { if (scene === 'trips' && now() - tripsTouched > 25000) closeTrips(); }, 2000);
 
 /* ---------- the trip ---------- */
+const PLACE_MARKUP = {};   // places added by other files draw their scenery here
 function placeMarkup(place) {
+  if (PLACE_MARKUP[place]) return PLACE_MARKUP[place]();
   if (place === 'beach') return `<div class="tsky beach"></div><div class="sun"></div>
     <svg class="sea" viewBox="0 0 1000 200" preserveAspectRatio="none"><path class="wave" d="M0 30 C 80 10, 160 50, 250 30 C 340 10, 420 50, 500 30 C 580 10, 660 50, 750 30 C 840 10, 920 50, 1000 30 V200 H0Z" fill="#5aa9ff"/><path d="M0 80 C 120 60, 240 100, 360 80 C 480 60, 600 100, 720 80 C 840 60, 920 90, 1000 80 V200 H0Z" fill="#7fc4ff" opacity=".7"/></svg>
     <div class="sand"></div><div class="umbrella">${ICONS.beach.replace(/<rect[^>]*\/>/, '')}</div>`;
@@ -169,7 +171,7 @@ ACTIVITIES.trip = {
   },
   plan(a, side) {
     const friend = a.data.friend || nextFriendAt(a.opts.place);
-    const acts = [...PLACES[a.opts.place].acts, ...(friend ? ['meetfriend'] : []), 'tripcar'];
+    const acts = [...PLACES[a.opts.place].acts.filter(x => x !== 'puzzle' || has('puzzles')), ...(friend ? ['meetfriend'] : []), 'tripcar'];
     return { acts, clsOf: { tripcar: a.data.home[side] ? 'done' : '', meetfriend: a.data.hi && a.data.hi[side] ? 'done' : '' } };
   },
   async press(a, side, key) {

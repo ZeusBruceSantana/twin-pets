@@ -673,7 +673,7 @@ test('The town map shows the places that have appeared, and a closed spot for th
   await until(() => G('scene') === 'trips', 3000, 'the town map');
   ['beach', 'park', 'icecream'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the town map`));
   ['farm', 'library', 'snowhill'].forEach(k => expect(!$g(`#trips .mtile[data-key="${k}"]`), `the ${k} has not appeared yet`));
-  expectEqual($$g('#trips .mtile.closed').length, 3, 'three closed spots');
+  expectEqual($$g('#trips .mtile.closed').length, 7, 'closed spots for the places that have not appeared yet');
   G('closeTrips()');
   G(`introduce(NEW_THINGS.find(n => n.key === 'farm'), true); introduce(NEW_THINGS.find(n => n.key === 'library'), true); openTrips()`);
   await until(() => G('scene') === 'trips', 3000, 'the town map');
@@ -703,7 +703,7 @@ test('Both girls going to the farm and saying hello makes a friend, and the next
 });
 
 test('The library and the snowy hill have things to do', async () => {
-  for (const [place, acts] of [['library', 'pickbook,stack,shh,meetfriend,tripcar'], ['snowhill', 'sled,angel,snowball,tripcar']]) {
+  for (const [place, acts] of [['library', 'pickbook,stack,shh,meetfriend,tripcar'], ['snowhill', 'sled,angel,snowball,meetfriend,tripcar']]) {
     await openGame(withTown({ farm: true, library: true, snowhill: true }));
     await startPlaying();
     G(`startActivity('trip', 'left', { place: '${place}' })`);
@@ -758,4 +758,202 @@ test('Saying hello to a visitor together makes them a friend', async () => {
   tap($g('#col-left .btn-hello'));
   tap($g('#col-right .btn-hello'));
   await until(() => G('S.friends.have').includes('owl'), 6000, 'Hoot to become a friend');
+});
+
+/* =====================================================================
+   MORE PLACES, PUZZLES AND A BIGGER DECORATING POOL
+   ===================================================================== */
+const allPlaces = (extra = {}) => withTown(Object.assign({ farm: true, library: true, snowhill: true, river: true, woods: true, museum: true, restaurant: true, decor: true, puzzles: true }, extra));
+
+test('The town map has room for all ten places', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G('openTrips()');
+  await until(() => G('scene') === 'trips', 3000, 'the town map');
+  expectEqual($$g('#trips .mtile[data-key]').length, 10, 'ten places to drive to');
+  ['river', 'woods', 'museum', 'restaurant'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the map`));
+});
+
+test('The river, the woods, the museum and the restaurant each have things to do', async () => {
+  const wanted = {
+    river: 'cast,sail,skip,puzzle,meetfriend,tripcar',
+    woods: 'tent,fire,stars,puzzle,meetfriend,tripcar',
+    museum: 'look,pose,gallery,puzzle,meetfriend,tripcar',
+    restaurant: 'menu,cheers,dessert,puzzle,meetfriend,tripcar',
+  };
+  for (const [place, acts] of Object.entries(wanted)) {
+    await openGame(allPlaces());
+    await startPlaying();
+    G(`startActivity('trip', 'left', { place: '${place}' })`);
+    await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the ' + place + ' trip to start');
+    expectEqual(buttons('left').join(','), acts, `the ${place} buttons`);
+    for (const a of acts.split(',')) {
+      if (['puzzle', 'meetfriend', 'tripcar', 'look', 'menu'].includes(a)) continue;
+      tap($g(`#col-left .btn-${a}`));
+      tap($g(`#col-right .btn-${a}`));
+      await sleep(250);
+    }
+    if (place === 'museum') G(`hangArt(act, 'left', 'rainbow')`);
+    if (place === 'restaurant') G(`serveDish(act, 'right', 'pizza')`);
+    await sleep(2500);
+    expectEqual(G('TEST_ERRORS'), [], `the ${place} things worked`);
+  }
+});
+
+test('Each place has a friend to meet, and the friends picture and name exist', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G(`Object.values(PLACE_FRIENDS).flat().concat(PUZZLE_FRIENDS)`).forEach(k => {
+    expect(G(`!!BUDDIES['${k}'] && !!friendArt('${k}')`), `${k} has a name and a picture`);
+  });
+  expectEqual(G('Object.keys(BUDDIES).length'), 19, 'nineteen friends in all');
+});
+
+test('A pattern puzzle: each girl solves her half, then BOTH get a prize', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  await goTo('school');
+  expect(buttons('left').includes('puzzle'), 'the school has a Puzzle button');
+  G(`startPuzzle('pattern', 'school')`);
+  await until(() => G('scene') === 'puzzle', 3000, 'the puzzle');
+  for (let round = 0; round < 2; round++) {
+    for (const side of ['l', 'r']) {
+      for (const opt of $$g(`#puzzle .pz-half.${side} .pz-opt`)) { tap(opt); if (opt.classList.contains('good')) break; await sleep(30); }
+    }
+    await sleep(1300);
+  }
+  await until(() => G('pz === null'), 8000, 'the puzzle to finish');
+  expectEqual(G('S.puzzles'), 1, 'one puzzle solved');
+  await until(() => G('scene') === 'act' && G('act && act.kind') === 'gift' && G('act.ready'), 8000, 'the prize');
+  expectEqual(G('act.data.keys.length'), 2, 'two presents, one from each box');
+  const before = G('S.decorN || 0');
+  tap($g('#col-left .btn-opengift'));
+  tap($g('#col-right .btn-opengift'));
+  await until(() => G('scene') === 'map', 10000, 'the map to place the first present');
+  tap($g('#map .mtile[data-key="kitchen"] .half.l'));
+  tap($g('#map .mtile[data-key="kitchen"] .half.r'));
+  await until(() => G('scene') === 'play', 4000, 'the first present to be placed');
+  await until(() => G('scene') === 'map', 6000, 'the map again, for the second present');
+  tap($g('#map .mtile[data-key="bedroom"] .half.l'));
+  tap($g('#map .mtile[data-key="bedroom"] .half.r'));
+  await until(() => G('scene') === 'play', 4000, 'the second present to be placed');
+  expectEqual(G('S.decorN') - before, 2, 'two presents were opened');
+  const d = G('S.decor');
+  expect(Object.keys(d.kitchen || {}).length && Object.keys(d.bedroom || {}).length, 'one present in the kitchen and one in the bedroom');
+});
+
+test('An odd-one-out puzzle and a jigsaw can be solved, and a wrong try never ends it', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  await goTo('school');
+  G(`startPuzzle('odd', 'river')`);
+  await until(() => G('scene') === 'puzzle', 3000, 'the puzzle');
+  for (let round = 0; round < 2; round++) {
+    for (const side of ['l', 'r']) {
+      for (const opt of $$g(`#puzzle .pz-half.${side} .pz-opt`)) { tap(opt); if (opt.classList.contains('good')) break; await sleep(30); }
+    }
+    await sleep(1300);
+  }
+  await until(() => G('pz === null'), 8000, 'the odd-one-out puzzle to finish');
+  expectEqual(G('S.puzzles'), 1, 'solved');
+  await until(() => G('scene') === 'act', 8000, 'the prize');        // (the prize is waiting)
+  G('endActivity(false)');
+  await until(() => G('scene') === 'play', 5000, 'play');
+  G(`startPuzzle('jigsaw', 'woods')`);
+  await until(() => G('scene') === 'puzzle', 3000, 'the jigsaw');
+  const wrong = $g('#puzzle .pz-slot[data-i="3"]');
+  tap($g('#puzzle .pz-tray.l .pz-piece'));
+  tap(wrong, { x: G('W()') * 0.3 });
+  await sleep(100);
+  expectEqual(G('pz.placed'), { left: 0, right: 0 }, 'a piece in the wrong place does not stay');
+  for (const i of [0, 1, 2, 3]) {
+    const piece = $g(`#puzzle .pz-piece[data-i="${i}"]`);
+    tap(piece);
+    const slot = $g(`#puzzle .pz-slot[data-i="${i}"]`);
+    const r = slot.getBoundingClientRect();
+    tap(slot, { x: r.left + r.width / 2 });
+    await sleep(80);
+  }
+  await until(() => G('pz === null'), 6000, 'the jigsaw to finish');
+  expectEqual(G('S.puzzles'), 2, 'two puzzles solved');
+});
+
+test('Closing a puzzle early gives no prize and nothing is lost', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  await goTo('school');
+  G(`startPuzzle('pattern', 'school')`);
+  await until(() => G('scene') === 'puzzle', 3000, 'the puzzle');
+  tap($g('#puzzle .map-x'));
+  expectEqual(G('scene'), 'play', 'back to playing');
+  expectEqual(G('S.puzzles || 0'), 0, 'no puzzle counted');
+  expectEqual(G('S.puzzleOwed || 0'), 0, 'no prize owed');
+});
+
+test('Every third puzzle prize also brings a special friend, and the others do not', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G('S.puzzleOwed = 1; S.prizeN = 1; claimPrize()');
+  expectEqual(G('S.friends.have'), [], 'the second prize has no friend');
+  await until(() => G('scene') === 'act' && G('act && act.kind') === 'gift', 5000, 'the gift');
+  G('endActivity(false)');
+  await until(() => G('scene') === 'play', 5000, 'play');
+  G('S.puzzleOwed = 1; S.prizeN = 2; claimPrize()');
+  expectEqual(G('S.friends.have'), ['unicorn'], 'the third prize brings Sparkle the unicorn');
+});
+
+test('Decorating has paint, wallpaper, rugs, furniture and electronics, and covers the wall one way at a time', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  const kinds = G(`DECOR_ORDER.map(k => DECOR[k].kind)`);
+  ['wp', 'paint', 'rug', 'item'].forEach(k => expect(kinds.includes(k), `there is ${k}`));
+  expect(G('DECOR_ORDER.length') >= 39, 'plenty to win');
+  expectEqual(G('new Set(DECOR_ORDER).size'), G('DECOR_ORDER.length'), 'every present is different');
+  G(`placeDecor('wpDots', 'playroom')`);
+  expect(G(`$('#rooms .room-playroom .wall').style.background`).includes('svg'), 'a new wallpaper is on the wall');
+  G(`placeDecor('paintMint', 'playroom')`);
+  expectEqual(G('S.decor.playroom.wp'), undefined, 'paint replaces the wallpaper');
+  expect(G(`$('#rooms .room-playroom .wall').style.background`).includes('rgb'), 'the wall is painted');
+  G(`placeDecor('wpStars', 'playroom')`);
+  expectEqual(G('S.decor.playroom.paint'), undefined, 'wallpaper replaces the paint');
+  ['radio', 'tv', 'robot', 'sofa'].forEach(k => G(`placeDecor('${k}', 'playroom')`));
+  expectEqual(G('S.decor.playroom.items'), ['tv', 'robot', 'sofa'], 'three pieces of furniture fit; the oldest makes room');
+  G(`showRoom('playroom')`);
+  for (const k of ['tv', 'robot']) { tap($g(`#rooms .room-playroom .ditem-${k}`)); await sleep(100); }
+  G(`placeDecor('radio', 'playroom'); placeDecor('nightlight', 'playroom'); renderDecor()`);
+  tap($g('#rooms .room-playroom .ditem-radio'));
+  tap($g('#rooms .room-playroom .ditem-nightlight'));
+  await sleep(200);
+  expect($g('#rooms .room-playroom .ditem-nightlight').classList.contains('lit'), 'the night light switched on');
+  expectEqual(G('TEST_ERRORS'), [], 'the electronics worked');
+});
+
+test('Old decorations from before still show, and the Friends and Puzzle buttons come with their new things', async () => {
+  const s = played(); s.decor = { kitchen: { wp: 'wpStripes', rug: 'rugRound', items: ['plant', 'lamp'] } };
+  Object.assign(s.features, { decor: true });
+  await openGame(s);
+  await startPlaying();
+  expectEqual($$g('#rooms .room-kitchen .decor').length, 3, 'the rug and two pieces of furniture are still there');
+  expect(G(`$('#rooms .room-kitchen').classList.contains('wp-wpStripes')`), 'the wallpaper is still there');
+});
+
+test('In the woods, the stars join up into a named picture, then a different one appears', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'woods' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the woods trip to start');
+  const seen = [];
+  for (let k = 0; k < 2; k++) {
+    tap($g('#col-left .btn-stars'));
+    await sleep(100);
+    const total = G('act.data.con.el.querySelectorAll(".pc").length');
+    for (let i = 1; i < total; i++) { tap($g(`#col-${i % 2 ? 'right' : 'left'} .btn-stars`)); await sleep(60); }
+    seen.push(G('act.data.con.def.name'));
+    await until(() => G('act.data.conSeen') === k + 1, 6000, 'the picture to join up');
+    expect($g('.conname'), 'its name shows');
+    await until(() => G('act.data.con === null && !act.data.starBusy'), 8000, 'a new sky');
+  }
+  expect(G('CONSTELLATIONS.length') >= 6, 'plenty of constellations to find');
+  expect(seen[0] !== seen[1], 'a different one each time');
+  expectEqual(G('TEST_ERRORS'), [], 'no problems');
 });

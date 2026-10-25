@@ -151,6 +151,7 @@
 ### Batch 1 of the mini-games
 - [x] Art styles at the museum (same picture in seven styles, a pet effect for each, a puzzle, a prize for seeing them all)
 - [x] Fancier restaurant: nine fancy dishes served only there, napkins, high tea party
+- [x] Playground (super swing, twisty slide, merry-go-round, dig); the park is calm again (ducks and bubbles)
 - [x] Bubble Party (park), Fun Fair (claw machine, pop-ups, ferris wheel), Treehouse (Fruit Catch, Weather Machine), Dance Paws (garage)
 - [x] The town map now has room for 15 places (5 across, 3 down)
 - [ ] Treehouse friends (Berry the robin, Nutmeg the squirrel) and the Treasure Map Hunt

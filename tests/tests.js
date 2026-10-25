@@ -673,7 +673,7 @@ test('The town map shows the places that have appeared, and a closed spot for th
   await until(() => G('scene') === 'trips', 3000, 'the town map');
   ['beach', 'park', 'icecream'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the town map`));
   ['farm', 'library', 'snowhill'].forEach(k => expect(!$g(`#trips .mtile[data-key="${k}"]`), `the ${k} has not appeared yet`));
-  expectEqual($$g('#trips .mtile.closed').length, 8, 'closed spots for the places that have not appeared yet');
+  expectEqual($$g('#trips .mtile.closed').length, 9, 'closed spots for the places that have not appeared yet');
   G('closeTrips()');
   G(`introduce(NEW_THINGS.find(n => n.key === 'farm'), true); introduce(NEW_THINGS.find(n => n.key === 'library'), true); openTrips()`);
   await until(() => G('scene') === 'trips', 3000, 'the town map');
@@ -1268,5 +1268,25 @@ test('Dance Paws: both tap Dance, paws fall to each pet, a tap on the ring makes
   }
   expect(G('act.data.hits.left') >= 1, 'a tap on time makes her dance');
   expectEqual(G('TEST_ERRORS'), [], 'dancing worked');
+  G('endActivity(false)');
+});
+
+test('The playground: four activities, and the super swing lets each girl jump into the leaves', async () => {
+  await openGame(allPlaces({ playground: true }));
+  await startPlaying();
+  expect(!G('PLACES.park.acts').includes('swing'), 'the park is calm again');
+  G(`startActivity('trip', 'left', { place: 'playground' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the playground trip');
+  expectEqual(buttons('left').join(','), 'superswing,twisty,merry,dig,tripcar', 'the playground buttons');
+  tap($g('#col-left .btn-dig')); tap($g('#col-right .btn-merry'));
+  await sleep(1500);
+  expect(G('act.data.merry.v') > 0, 'the merry-go-round spins');
+  tap($g('#col-left .btn-superswing'));
+  await until(() => G('act.data.sw && act.data.sw.on'), 3000, 'the super swing');
+  for (let i = 0; i < 40 && !G('act.data.sw.left.canJump'); i++) { tap($g('#col-left .btn-pump')); await sleep(250); }
+  expect(buttons('left').includes('jump'), 'a jump button appears once the swing is high');
+  tap($g('#col-left .btn-jump'));
+  await until(() => G('act.data.sw.left.jumps') === 1, 5000, 'the first jump');
+  expectEqual(G('TEST_ERRORS'), [], 'the playground worked');
   G('endActivity(false)');
 });

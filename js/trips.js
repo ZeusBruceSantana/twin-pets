@@ -60,7 +60,7 @@ onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));
 /* ---------- choosing where to go (both tap the same place) ---------- */
 const PLACES = {
   beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell'] },
-  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['swing', 'slide', 'ducks', 'bubbles'] },
+  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['ducks', 'bubbles'] },
   farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo'], need: 'farm' },
   icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle'] },
   library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh'], need: 'library' },
@@ -73,10 +73,10 @@ const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
 const TOWN_POS = {   // where each place is on the map: [% across, % down]. Room for 15 (5 across, 3 down); the empty spots are for places still to come.
   woods: [10, 17], park: [30, 16], library: [50, 19], station: [70, 15], snowhill: [90, 17],
   river: [11, 52], fair: [31, 50], museum: [51, 52], restaurant: [71, 50], trail: [90, 52],
-  beach: [11, 85], farm: [33, 85], bakery: [91, 85], icecream: [72, 86],
+  beach: [11, 85], farm: [33, 85], playground: [52, 85], bakery: [91, 85], icecream: [72, 86],
 };
 const TOWN_ROADS = [['woods', 'park'], ['park', 'library'], ['library', 'station'], ['station', 'snowhill'], ['library', 'snowhill'], ['park', 'river'], ['river', 'beach'], ['river', 'fair'], ['fair', 'museum'],
-  ['library', 'museum'], ['museum', 'restaurant'], ['restaurant', 'trail'], ['fair', 'farm'], ['farm', 'beach'], ['farm', 'icecream'], ['restaurant', 'icecream'], ['icecream', 'bakery']];
+  ['library', 'museum'], ['museum', 'restaurant'], ['restaurant', 'trail'], ['fair', 'farm'], ['farm', 'beach'], ['farm', 'playground'], ['playground', 'icecream'], ['restaurant', 'icecream'], ['icecream', 'bakery']];
 function townRoads() {
   const here = TOWN_ROADS.filter(([a, b]) => TOWN_POS[a] && TOWN_POS[b] && PLACES[a] && PLACES[b]);   // only roads between places that exist
   const d = here.map(([a, b], i) => {

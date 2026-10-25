@@ -24,6 +24,7 @@ const PIECES = {
   snowhill:  { seed: 137, key: 69, bpm: 90,  beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true, shaker: true },
   garage:    { seed: 149, key: 64, bpm: 118, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, shaker: true },
   fair:      { seed: 163, key: 66, bpm: 126, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, shaker: true, box: true },
+  playground: { seed: 173, key: 65, bpm: 120, beats: 4, chords: [0, 4, 3, 0], lead: 'triangle', bounce: true, shaker: true, extra: 'birds' },
   treehouse: { seed: 167, key: 67, bpm: 98, beats: 4, chords: [0, 5, 3, 4], lead: 'sine', extra: 'birds' },
   icecream:  { seed: 113, key: 64, bpm: 116, beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true },
 };

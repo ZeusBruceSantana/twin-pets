@@ -73,9 +73,10 @@ Each room shows **only its own buttons** along each girl's edge.
 
 From the front yard, both girls tap **Car**, then both tap the same place:
 - 🏖️ **the beach**: splash in the waves, build a sandcastle together, find shells
-- 🌳 **the park**: swings, the slide, and ducks on the pond
+- 🌳 **the park**: a calm place with ducks on the pond (and Bubbles, below)
 - 🍦 **the ice cream shop**: scoop flavors onto a cone (fish flavor is Livvie's favorite!), add sprinkles, lick
 
+- 🛝 **the playground** (a new thing that appears on the town map): four things to do. **Super swing**: each girl taps **Pump** to push her own swing higher; when it is high, a big **Jump!** button appears and her pet lets go, flies into the pile of leaves ("Whee!") and goes back to her swing. Each jumps twice, then it ends happily. **Slide**: her pet climbs the ladder and whooshes down the twisty slide into the sandpit. **Spin**: a merry-go-round with the two pets' faces and animal friends; every push speeds it up, more when both girls push, and at top speed there is confetti and a cheer, then it eases down. **Dig**: each press digs up a treasure (bone, ball, star, heart, duck, shell); six treasures bring a golden star, and the first golden star each day earns a prize
 - 🫧 **the park** also has **Bubbles**: each pet blows bubbles, the girls pop them (every pop is a rising note), and then a giant bubble with both pets inside needs both girls to tap it together
 - 🐑 **the farm**: five farm animals live here (a hen, horse, cow, lamb and piggy: tap one to hear it). Toss hay to each in turn, hatch an egg, or call them all
 - 📚 **the library**: pick a book and read its word, stack books together, shh

@@ -64,6 +64,7 @@ Each room shows **only its own buttons** along each girl's edge.
 | 🛁 **Bathroom** | Bath, Teeth, Brush, Dryer, Spa | **Bath** fills a tub. While her pet is in the bath, a girl's buttons become bath toys: a **boat**, a **squirty fish**, and **fizzies** that change the water color. **Teeth** ends in a sparkly smile. **Dryer** makes the fur poof up big and funny, then settle. **Spa** pampers the **sister's** pet with paw polish and a bow (in the giver's color) and sparkle spray, for the rest of the day. Tap a pet's face in the **mirror** to make a funny face. |
 | 🌳 **Backyard** | Bounce, Climb, Ball, Seesaw, Garden | Trampolines, the rainbow climb (never a race), and the ball and seesaw games. **Garden**: Plant seeds, Water them, and they grow over real time (about 20 minutes). **Pick** what's ready and it goes into the fridge. |
 | 🛏️ **Bedroom** | Sleep, Book, Closet, Friends, Sleepover | **Sleep** both pets for the goodnight ending. **Book** is the memory book. **Closet** has everything each pet can wear; tap to put it on or take it off. It is the very next new thing to appear once either pet has been given something to wear, so nobody is left stuck in a scarf. **Sleepover**: the lights go down, the pets snuggle in a blanket fort, and each girl shines a flashlight to show shadow pictures (tap the word to hear it). |
+| 🎸 **Garage** | Jam, Pick, Band | **Pick** an instrument (guitar, keys, drums, mic, tambourine or trumpet); the pet holds it. **Jam** plays a note, and every note is in the same happy scale, so it always sounds good (both jam at once and a chord rings out). **Band**: both tap it and the show begins on a little stage with curtains and spotlights: each girl plays ten notes over a soft backing beat, and her **animal friends are the cheering crowd** (they dance along, then cheer at the big finish). |
 | 🏡 **Front yard** | Mail, Car, Hello | The picture behind it is a **drawing** (see [Room pictures](#room-pictures-the-front-yard-and-backyard)). **Mail** (or tap the mailbox) reads letters written in the grown-up corner. Every word can be tapped to hear it. **Car**: both girls tap the car, then choose together where to go. When a visitor comes, **Hello** greets them. |
 | 🏫 **School** | Words, Art, Blocks, Puzzle | **Words**: the pets practice this week's school words on the chalkboard. Each girl taps to hear the word and her pet says it; when both have, a star and the next word. **Art**: one big canvas, half each. Finger-paint, tap **Done**, then both choose a room on the map to hang it in. **Blocks**: build a doghouse, a cozy den or a blanket fort, taking turns adding blocks in your own color. |
 
@@ -74,13 +75,13 @@ From the front yard, both girls tap **Car**, then both tap the same place:
 - 🌳 **the park**: swings, the slide, and ducks on the pond
 - 🍦 **the ice cream shop**: scoop flavors onto a cone (fish flavor is Livvie's favorite!), add sprinkles, lick
 
-- 🐑 **the farm**: toss hay to a cow, lamb or piggy, hatch an egg, say moo
+- 🐑 **the farm**: five farm animals live here (a hen, horse, cow, lamb and piggy: tap one to hear it). Toss hay to each in turn, hatch an egg, or call them all
 - 📚 **the library**: pick a book and read its word, stack books together, shh
 - ⛷️ **the snowy hill**: sled, make a snow angel, toss a gentle snowball to your sister's pet
 - 🎣 **the river**: fish (and let the fish go), sail a little boat, skip stones
 - ⛺ **the woods**: build a tent together, light a campfire and toast marshmallows, look at the night sky and join the stars into constellations (a kite, heart, spoon, crown, fish, cat, boat or tree; each shows its name, then a new sky appears)
 - 🖼️ **the art museum**: hang a picture on the wall, strike a statue pose on a pedestal, hang each pet's portrait
-- 🍽️ **the fancy restaurant**: order from the menu (the silver lid lifts to show the food), clink glasses together, dessert
+- 🍽️ **the fancy restaurant**: **Pip the penguin waiter** greets you and carries each dish on a tray (the silver lid lifts with a flourish): order from the menu, clink glasses together, dessert
 
 The car opens a **town map**: a little illustrated map with the sea and beach, a river running down to it, woods, snowy mountains, farm fields and roads joining the ten places (places not yet found show as a ? cloud). The farm, library,
 snowy hill, river, woods, museum and restaurant appear one at a time, like other new
@@ -93,7 +94,7 @@ Both tap **Home** to drive back.
 At some places (the farm, the park, the library) and when a visitor comes, both
 girls tap **Hello** and the animal becomes a **friend**: Clover, Hoot, Woolly,
 Daisy, Truffle, Lily, Puddle, Whiskers, Squeak, Ollie, Tilly, Dotty, Bramble, Rusty,
-Bao, Pip and Frost. Two more (Sparkle the unicorn and Ember the dragon) only come as
+Bao, Pip, Frost, Biscuit the horse and Clucky the hen. Two more (Sparkle the unicorn and Ember the dragon) only come as
 puzzle prizes. The **Friends** button in the bedroom
 lets each girl pick **one friend at a time** to sit beside her pet (tap again to
 put it back). Two girls can't have the same friend at once. Tap a friend to hear it.
@@ -114,15 +115,12 @@ put it back). Two girls can't have the same friend at once. Tap a friend to hear
 
 ### Puzzles
 
-Each girl solves **her own half** of a puzzle: *what comes next?*, *which one is
-different?*, or a jigsaw where each girl has the pieces for her side of the picture.
+Each girl solves **her own half** of a puzzle. There are seven kinds: *what comes next?*, *which one is different?*, *whose shadow is this?*, *how many?*, *find the pairs* (a wrong pair just turns back over), *copy the tune* (a wrong pad replays the tune), and a jigsaw where each girl has the pieces for her side of the picture.
 The puzzles are all pictures, with no timer and no losing: a wrong try just wobbles, and
 after two the right answer glows. They are at the school (**Puzzle**) and at the river,
 woods, museum and restaurant.
 
-When both halves are done, **both girls get a prize**: two presents for the house, one
-from each box (each girl's color on her present). They both open them, then choose a room
-for each on the map. Every third puzzle also brings a special new animal friend.
+When both halves are done, **both girls get a prize**. They alternate: two presents for the house (one from each box; both open them, then choose a room for each on the map), or a **gift for each pet** (something to wear, or a toy for the shelf) that flies to her pet. Every third puzzle also brings a special new animal friend.
 
 ### The jar, presents and decorating
 
@@ -133,12 +131,12 @@ present too**: wallpaper, a rug or furniture (a plant, a lamp, a beanbag, a
 fish bowl). Both girls tap **Open**, then both choose a room on the map to put
 it in. Puzzle prizes come the same way.
 
-There are about forty things to win: **wall paint colors**, **wallpapers** (dots, clouds,
+There are about sixty-six things to win: **wall paint colors**, **wallpapers** (dots, clouds,
 rainbow, flowers, waves, moons and more), **rugs**, **furniture** (sofa, chair, bookshelf,
 toy box, table, clock) and **little electronics you can tap**: a radio that plays a tune
 and floats music notes, a TV that shows the animal friends, a music box with a dancer, a
 disco ball, a night light, a robot. Each room holds a rug, a wall (paint or wallpaper) and
-up to three pieces of furniture.
+up to three pieces of furniture. More to win: a piano, a fish tank, a globe, a telescope, a record player, a boombox, a lava lamp, a doll house and a cactus (most do something when tapped), 8 more paint colors, 7 more wallpapers and 3 more rugs. Things for the pets: a party hat, wizard hat, headphones, bandana, rainbow band, shades, bow tie, medal, cape and fairy wings, and toys (kite, train, top, xylophone, duckie). The new things to wear also come as jar presents.
 
 ### Reading
 

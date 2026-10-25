@@ -141,6 +141,13 @@
 - [x] About forty things to win for the house: paint colors, wallpapers, rugs, furniture and tappable electronics (radio, TV, music box, disco ball, night light, robot)
 - [x] Eleven more animal friends (nineteen in all)
 
+### Band, waiter and farm animals
+- [x] Garage band room: pick an instrument, jam, and play a show with the animal friends as the crowd
+- [x] Fancy waiter (Pip the penguin) who carries the dishes at the restaurant
+- [x] Farm animals that live at the farm (hen, horse, cow, lamb, piggy): feed them, call them
+- [x] Four more puzzle kinds (shadow, count, pairs, copy the tune)
+- [x] A bigger prize pool: 27 more things for the house, 10 things to wear, 5 toys, and prizes that alternate between house presents and a gift for each pet
+
 ## Later ideas
 
 
@@ -194,3 +201,31 @@
 - [ ] **Photo Safari** (animals peek out; each girl takes a picture for a safari album). Park, woods, farm
 - [ ] **Weather Machine** (sun + rain = rainbow, rain makes the garden grow). Backyard, beach, snowy hill
 - [ ] **Room Makeover** (paint, move furniture, then "lights down" and every electronic switches on; also answers "move or remove a decoration"). Any room, garage
+
+## Where each mini-game lives (plan from the level-design pass)
+
+There are 23 games above (8 learning, 8 classic, 7 pretend-play). The playroom already has 7 buttons, so nothing new goes there. Learning games become new round kinds in the puzzle engine (`PLACE_PUZZLE`), so most of them add no new button.
+
+**New places:** Treehouse (house room, on the backyard side of the map: Fruit Catch, Weather Machine, Treasure Map), Fun Fair (town: Claw Crane, Pop-Ups, ferris wheel), Train Station (town: Choo-Choo Train, Tickets), Bakery Cafe (town: Bake / Little Shop, Friends' Cafe, Ten-Frame Box), Nature Trail (town: Hop Trail, Photo Safari, Habitat Homes). A lighthouse on the west coast is a spare idea. Each new place has a friend to meet (robin Berry, squirrel Nutmeg, monkey Coco, koala Kip, bear Honey, raccoon Bandit, butterfly Flutter).
+
+| Game | Home |
+|---|---|
+| Pet Band | Garage (built). Also Dance Paws and Room Makeover in the garage |
+| Bubble Party | Park (a Bubbles button), and a bubble wand among the bath toys |
+| Fruit Catch | Treehouse (and Snowflake Catch on the snowy hill) |
+| Weather Machine | Treehouse (and making snow on the snowy hill) |
+| Treasure Map Hunt | Treehouse, plus Dig at the beach |
+| Peekaboo Pop-Ups, Claw Crane | Fun Fair |
+| Coin Jar Ice Cream | Ice cream shop (Pay), also train tickets |
+| Kindness Helpers | Front yard, part of the visitor's Hello |
+| Weather Wardrobe | Front yard (a Weather button before the car) |
+| Little Shop, Friends' Cafe, Ten-Frame Picnic | Bakery Cafe (Ten-Frame also as an egg-carton puzzle at the farm) |
+| Choo-Choo Train | Train Station (a river ferry later) |
+| Hop Trail, Photo Safari, Habitat Homes | Nature Trail (Habitat also as a puzzle at woods, river, farm) |
+| Story Theater | Library (a Story corner) |
+| Sound Soup | Puzzle round at school and the restaurant (needs letter-sound audio: see Recorded voices) |
+| Rhyme Boats | Puzzle round at the river and school |
+| Seed to Flower | Puzzle round at the farm (egg, chick, hen), river (tadpole to frog) and school |
+| Spot the Silly | Puzzle round at the museum, school and restaurant |
+
+**Build batches:** (1) arcade joy and two new places: Bubble Party, Pop-Ups, Claw Crane, Fruit Catch, Weather Machine, Dance Paws, plus Fun Fair and Treehouse; (2) learning rounds: Spot the Silly, Seed to Flower, Rhyme Boats, Ten-Frame, Sound Soup, Weather Wardrobe; (3) shops, money and friends: Coin Jar, Kindness Helpers, Little Shop, Friends' Cafe, Choo-Choo Train, plus Bakery Cafe and Train Station; (4) explore and collect: Hop Trail, Photo Safari, Habitat Homes, Story Theater, Treasure Map, Room Makeover, plus Nature Trail.

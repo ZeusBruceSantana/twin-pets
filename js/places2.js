@@ -407,7 +407,7 @@ async function waiterWalk(a, toX) {
   await tween(Math.max(500, Math.abs(toX - x0) * 3.2), t => { w.style.left = x0 + (toX - x0) * t + 'px'; });
   w.classList.remove('walking');
 }
-function waiterBow(w) { animate(w.firstChild, [{ transform: 'rotate(0)' }, { transform: 'rotate(22deg) translateY(4%)' }, { transform: 'rotate(0)' }], { duration: 700, easing: 'ease-in-out' }); }
+function waiterBow(w) { animate(w.querySelector('.wbody'), [{ transform: 'rotate(0)' }, { transform: 'rotate(22deg) translateY(4%)' }, { transform: 'rotate(0)' }], { duration: 700, easing: 'ease-in-out' }); }
 function waiterSay(a, text, ms = 1800) {
   const w = a.data.waiter;
   if (!w) return;

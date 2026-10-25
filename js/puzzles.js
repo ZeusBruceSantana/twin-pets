@@ -75,8 +75,9 @@ function closePuzzle(done, fromCleanup) {
 setInterval(() => { if (pz && now() - pz.last > 60000) closePuzzle(false); }, 2000);
 
 function pzRound(side) {
-  ({ pattern: patternRound, odd: oddRound, shadow: shadowRound, count: countRound, match: matchRound, tune: tuneRound })[pz.type](side);
+  PUZZLE_KINDS[pz.type](side);
 }
+const PUZZLE_KINDS = { pattern: side => patternRound(side), odd: side => oddRound(side), shadow: side => shadowRound(side), count: side => countRound(side), match: side => matchRound(side), tune: side => tuneRound(side) };   // other files add kinds here
 /* A wrong try wobbles; after two, the right answer glows. A right one sparkles. */
 function pzAnswer(side, ok, node, answerNode) {
   if (!pz || pz.solved[side]) return;
@@ -327,7 +328,7 @@ ACT_HANDLERS.puzzle = side => {
   startPuzzle(PUZZLE_TYPES[n % PUZZLE_TYPES.length], PZ_SCHOOL_THEMES[n % PZ_SCHOOL_THEMES.length]);
 };
 // in town: each place has its own kinds of puzzle, one after another
-const PLACE_PUZZLE = { river: ['pattern', 'count', 'shadow', 'tune'], woods: ['odd', 'match', 'count', 'shadow'], museum: ['jigsaw', 'shadow', 'match', 'pattern'], restaurant: ['pattern', 'match', 'count', 'tune'] };
+const PLACE_PUZZLE = { river: ['pattern', 'count', 'shadow', 'tune'], woods: ['odd', 'match', 'count', 'shadow'], museum: ['style', 'jigsaw', 'style', 'shadow', 'match', 'pattern'], restaurant: ['pattern', 'match', 'count', 'tune'] };
 TRIP_PLAY.puzzle = (a, side) => { const kinds = PLACE_PUZZLE[a.opts.place] || ['pattern']; startPuzzle(kinds[(S.puzzles || 0) % kinds.length], a.opts.place, { act: a }); };
 NEW_THINGS.push({ key: 'puzzles', order: 23.5, requires: 'decor', room: 'school', acts: ['puzzle'], icon: 'puzzleBtn', word: 'puzzles' });
 BOOK_LINES.puzzle = { line: 'solved a puzzle together.', icon: 'puzzleBtn', rank: 97.5 };

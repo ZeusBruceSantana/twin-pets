@@ -17,7 +17,8 @@ const MAP_SPOTS = {
   school:    [4, 2, 1, 1],
   playroom:  [2, 3, 1, 1],
   kitchen:   [3, 3, 2, 1],
-  backyard:  [5, 2, 1, 2],
+  treehouse: [5, 2, 1, 1],
+  backyard:  [5, 3, 1, 1],
 };
 // a room is on the map once its "new thing" has appeared
 const roomOpen = room => !!ROOMS[room] && (!ROOMS[room].feature || has(ROOMS[room].feature));

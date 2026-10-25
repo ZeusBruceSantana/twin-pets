@@ -673,7 +673,7 @@ test('The town map shows the places that have appeared, and a closed spot for th
   await until(() => G('scene') === 'trips', 3000, 'the town map');
   ['beach', 'park', 'icecream'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the town map`));
   ['farm', 'library', 'snowhill'].forEach(k => expect(!$g(`#trips .mtile[data-key="${k}"]`), `the ${k} has not appeared yet`));
-  expectEqual($$g('#trips .mtile.closed').length, 7, 'closed spots for the places that have not appeared yet');
+  expectEqual($$g('#trips .mtile.closed').length, 8, 'closed spots for the places that have not appeared yet');
   G('closeTrips()');
   G(`introduce(NEW_THINGS.find(n => n.key === 'farm'), true); introduce(NEW_THINGS.find(n => n.key === 'library'), true); openTrips()`);
   await until(() => G('scene') === 'trips', 3000, 'the town map');
@@ -779,7 +779,7 @@ test('The river, the woods, the museum and the restaurant each have things to do
     river: 'cast,sail,skip,puzzle,meetfriend,tripcar',
     woods: 'tent,fire,stars,puzzle,meetfriend,tripcar',
     museum: 'look,pose,gallery,puzzle,meetfriend,tripcar',
-    restaurant: 'menu,cheers,dessert,puzzle,meetfriend,tripcar',
+    restaurant: 'menu,hightea,cheers,puzzle,meetfriend,tripcar',
   };
   for (const [place, acts] of Object.entries(wanted)) {
     await openGame(allPlaces());
@@ -788,13 +788,13 @@ test('The river, the woods, the museum and the restaurant each have things to do
     await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the ' + place + ' trip to start');
     expectEqual(buttons('left').join(','), acts, `the ${place} buttons`);
     for (const a of acts.split(',')) {
-      if (['puzzle', 'meetfriend', 'tripcar', 'look', 'menu'].includes(a)) continue;
+      if (['puzzle', 'meetfriend', 'tripcar', 'look', 'menu', 'hightea'].includes(a)) continue;
       tap($g(`#col-left .btn-${a}`));
       tap($g(`#col-right .btn-${a}`));
       await sleep(250);
     }
     if (place === 'museum') G(`hangArt(act, 'left', 'rainbow')`);
-    if (place === 'restaurant') G(`serveDish(act, 'right', 'pizza')`);
+    if (place === 'restaurant') G(`serveDish(act, 'right', 'spaghetti')`);
     await sleep(2500);
     expectEqual(G('TEST_ERRORS'), [], `the ${place} things worked`);
   }
@@ -806,7 +806,7 @@ test('Each place has a friend to meet, and the friends picture and name exist', 
   G(`Object.values(PLACE_FRIENDS).flat().concat(PUZZLE_FRIENDS)`).forEach(k => {
     expect(G(`!!BUDDIES['${k}'] && !!friendArt('${k}')`), `${k} has a name and a picture`);
   });
-  expectEqual(G("Object.keys(BUDDIES).length"), 21, "twenty-one friends in all");
+  expectEqual(G("Object.keys(BUDDIES).length"), 22, "twenty-two friends in all");
 });
 
 test('A pattern puzzle: each girl solves her half, then BOTH get a prize', async () => {
@@ -1005,12 +1005,16 @@ test('The fancy waiter greets, serves from the menu (including cake), and the fa
   expect(G('!!act.data.waiter'), 'Pip the waiter is there');
   tap($g('#col-left .btn-menu'));
   await until(() => $g('.spanel.side-left'), 2000, 'the menu');
-  expectEqual($$g('.spanel.side-left .scard').map(c => c.dataset.key), ['pizza', 'pancakes', 'fish', 'peach', 'icecream', 'cake'], 'six dishes on the menu');
-  tap($g('.spanel.side-left .scard[data-key="cake"]'), { hold: 40 });
+  expectEqual($$g('.spanel.side-left .scard').map(c => c.dataset.key), ['soup', 'salad', 'sushi', 'spaghetti', 'tacos', 'crepes', 'macarons', 'tart', 'sundae'], 'nine fancy dishes on the menu');
+  tap($g('.spanel.side-left .scard[data-key="tart"]'), { hold: 40 });
   await sleep(1800);
   expect(G('act.data.waiter.classList.contains("carry") || true'), 'the waiter brought it');
-  tap($g('#col-right .btn-dessert'));
-  await sleep(3500);
+  tap($g('#col-right .btn-hightea'));
+  await sleep(2500);
+  expect(G('!!act.data.tea'), 'the waiter wheeled in the tea stand');
+  for (let round = 0; round < 3; round++) { tap($g('#col-left .btn-hightea')); tap($g('#col-right .btn-hightea')); await sleep(2300); }
+  expect(G('act.data.tea.cheered'), 'both had tea and clinked cups');
+  await sleep(1500);
   expectEqual(G('TEST_ERRORS'), [], 'the waiter worked');
   G('endActivity(false)');
   await until(() => G('scene') === 'play', 8000, 'play');
@@ -1113,4 +1117,156 @@ test('The prize pool has about sixty things for the house and the electronics al
   for (const k of ['globe', 'aquarium', 'lavalamp']) { tap($g(`#rooms .room-bedroom .ditem-${k}`)); await sleep(100); }
   G(`placeDecor('rugChecker', 'kitchen'); placeDecor('wpNightStars', 'kitchen')`);
   expectEqual(G('TEST_ERRORS'), [], 'the electronics worked');
+});
+
+test('At the museum the girls can see the same picture in seven art styles, and the puzzle asks which is which', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'museum' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the museum trip');
+  tap($g('#col-left .btn-look'));
+  await until(() => $g('.spanel.side-left'), 2000, 'the art panel');
+  expectEqual($$g('.spanel.side-left .scard').map(c => c.dataset.key), ['real', 'dots', 'bold', 'swirls', 'shapes', 'dreamy', 'splash'], 'seven styles');
+  tap($g('.spanel.side-left .scard[data-key="dots"]'), { hold: 40 });
+  await sleep(500);
+  expect($g('.mframe.f1.hung svg'), 'the picture hangs in the middle frame');
+  expectEqual($g('.mcap-name').textContent.trim(), 'Pointillism', 'it says the style name');
+  expect($g('.pet.side-left').classList.contains('sty-dots'), 'the pet joins in');
+  for (const k of ['real', 'bold', 'swirls', 'shapes', 'dreamy']) { G(`showArtStyle(act, 'right', artStyle('${k}'))`); await sleep(120); }
+  expectEqual(G('S.artAll || false'), false, 'not all seen yet');
+  G(`showArtStyle(act, 'right', artStyle('splash'))`);
+  expectEqual(G('S.artAll'), true, 'seeing them all earns a prize');
+  expectEqual(G('S.puzzleOwed'), 1, 'the prize is waiting');
+  expectEqual(G('TEST_ERRORS'), [], 'no problems');
+  G('endActivity(false)');
+  await until(() => G('scene') === 'play', 8000, 'play');
+  await goTo('school');
+  G(`startPuzzle('style', 'museum')`);
+  await until(() => G('scene') === 'puzzle', 3000, 'the style puzzle');
+  for (let round = 0; round < 2; round++) {
+    for (const side of ['l', 'r']) {
+      for (const opt of $$g(`#puzzle .pz-half.${side} .pz-opt`)) { tap(opt); if (opt.classList.contains('good')) break; await sleep(30); }
+    }
+    await sleep(1300);
+  }
+  await until(() => G('pz === null'), 8000, 'the style puzzle to finish');
+  expectEqual(G('S.puzzles'), 1, 'solved');
+});
+
+/* =====================================================================
+   BATCH 1: BUBBLES, THE FUN FAIR
+   ===================================================================== */
+test('Bubble Party: blowing, popping to rising notes, then a giant bubble that needs both girls', async () => {
+  await openGame(allPlaces({ bubbles: true }));
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'park' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the park trip');
+  expect(buttons('left').includes('bubbles'), 'there is a Bubbles button');
+  tap($g('#col-left .btn-bubbles'));
+  tap($g('#col-right .btn-bubbles'));
+  await sleep(400);
+  expect($$g('.bubfield .bub').length >= 8, 'both pets blew bubbles');
+  for (let i = 0; i < 12; i++) {
+    for (const x of [0.3, 0.7]) {
+      const b = $g(`.bubfield .bub:not(.giant):not(.popped)`);
+      if (!b) { tap($g('#col-left .btn-bubbles')); tap($g('#col-right .btn-bubbles')); await sleep(300); continue; }
+      const r = b.getBoundingClientRect();
+      tap(b, { x: x < 0.5 ? G('W()') * 0.3 : G('W()') * 0.7, y: r.top + r.height / 2 });
+    }
+    await sleep(60);
+    if ($g('.bub.giant')) break;
+  }
+  await until(() => $g('.bub.giant'), 20000, 'the giant bubble');
+  tap($g('.bub.giant'), { x: G('W()') * 0.45 });
+  await sleep(200);
+  expect($g('.bub.giant'), 'one girl alone does not pop it');
+  tap($g('.bub.giant'), { x: G('W()') * 0.55 });
+  await until(() => G('act.data.bub === null'), 4000, 'the giant bubble to pop');
+  expectEqual(G('TEST_ERRORS'), [], 'the bubbles worked');
+});
+
+test('The Fun Fair: the claw machine (roles swap and it always wins), pop-ups with a golden twin, and the ferris wheel', async () => {
+  await openGame(allPlaces({ fair: true }));
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'fair' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the fair trip');
+  expectEqual(buttons('left').join(','), 'claw,popup,wheel,meetfriend,tripcar', 'the fair buttons');
+  // the claw: Leah slides, Avery drops (then they swap)
+  tap($g('#col-left .btn-claw'));
+  await until(() => G('act.data.claw && act.data.claw.on'), 3000, 'the claw machine');
+  expectEqual(buttons('left').join(','), 'clawmove,clawquit', 'Leah slides first');
+  expectEqual(buttons('right').join(','), 'clawdrop,clawquit', 'Avery drops first');
+  tap($g('#col-left .btn-clawmove'));
+  await sleep(300);
+  tap($g('#col-right .btn-clawdrop'));
+  await until(() => !G('act.data.claw.busy'), 6000, 'the first drop');
+  if (G('act.data.claw.round') === 0) { tap($g('#col-right .btn-clawdrop')); await until(() => !G('act.data.claw.busy'), 6000, 'the second drop (it always works)'); }
+  expectEqual(G('act.data.claw.round'), 1, 'one prize won');
+  expectEqual(buttons('left').join(','), 'clawdrop,clawquit', 'now the girls have swapped jobs');
+  expectEqual(G('S.puzzleOwed'), 1, 'the first win is a prize');
+  tap($g('#col-left .btn-clawquit'));
+  await sleep(500);
+  expectEqual(buttons('left').join(','), 'claw,popup,wheel,meetfriend,tripcar', 'back to the fair');
+  // pop-ups
+  tap($g('#col-left .btn-popup'));
+  await until(() => G('act.data.pop'), 2000, 'the pop-ups');
+  expectEqual($$g('.phole').length, 6, 'three holes for each girl');
+  for (let i = 0; i < 80 && !G('act.data.pop.twin'); i++) {
+    for (const h of $$g('.phole')) { const up = G('1') && h.querySelector('.critter') && h.up; if (up) tap(h.querySelector('.pclip'), { x: h.getBoundingClientRect().left + 20 }); }
+    await sleep(300);
+  }
+  expect(G('act.data.pop.twin'), 'the golden twin critter appeared once both had booped enough');
+  const mid = $g('.phole.mid .pclip');
+  tap(mid, { x: G('W()') * 0.45 }); await sleep(150); tap(mid, { x: G('W()') * 0.55 });
+  await until(() => G('act.data.pop === null'), 5000, 'the twin spin to finish');
+  // the wheel
+  tap($g('#col-left .btn-wheel'));
+  await sleep(500);
+  expect($$g('.fairwheel .rider').length === 2, 'both pets ride the wheel');
+  expectEqual(G('TEST_ERRORS'), [], 'the fair worked');
+});
+
+test('The treehouse: the weather machine makes rainbows, and Fruit Catch starts when both girls tap it', async () => {
+  await openGame(allPlaces({ treehouse: true }));
+  await startPlaying();
+  await goTo('treehouse');
+  expectEqual(buttons('left').join(','), 'catch,weather', 'the treehouse buttons');
+  tap($g('#col-left .btn-weather'));
+  await sleep(200);
+  expectEqual(buttons('left').join(','), 'wxsun,wxcloud,wxrain,wxsnow,wxwind,back', 'five kinds of weather and a back button');
+  tap($g('#col-left .btn-wxsun'));
+  tap($g('#col-left .btn-wxrain'));
+  await sleep(200);
+  expect($g('#rooms .room-treehouse').classList.contains('wxc-rainbow'), 'sun and rain make a rainbow');
+  expectEqual(G('S.wxFound'), { rainbow: true }, 'the chart remembers it');
+  tap($g('#col-left .btn-back'));
+  tap($g('#col-left .btn-catch'));
+  tap($g('#col-right .btn-catch'));
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'fruit catch');
+  expectEqual(buttons('left').join(','), 'catchl,catchr', 'big left and right buttons');
+  tap($g('#col-left .btn-catchl'));
+  await sleep(1500);
+  expectEqual(G('TEST_ERRORS'), [], 'the treehouse worked');
+  expect(G("Object.values(ICONS).every(v => typeof v === 'string' && v.startsWith('<svg'))"), 'every picture in the game is a real drawing (nothing says undefined)');
+  expect(G('Object.values(PZ_THEMES).every(t => t.icons.every(k => ICONS[k])) && MUSEUM_ART.every(x => ICONS[x[1]]) && LIBRARY_BOOKS.every(x => ICONS[x[2]]) && DISHES.every(k => ICONS[k])'), 'every puzzle, museum, library and menu picture exists');
+});
+
+test('Dance Paws: both tap Dance, paws fall to each pet, a tap on the ring makes her dance, and a miss is only a wiggle', async () => {
+  await openGame(allPlaces({ garage: true, dance: true }));
+  await startPlaying();
+  await goTo('garage');
+  expectEqual(buttons('left').join(','), 'jam,instrument,band,dance', 'the garage has a Dance button');
+  tap($g('#col-left .btn-dance')); tap($g('#col-right .btn-dance'));
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'dance paws');
+  expectEqual(buttons('left').join(','), 'dancepaw', 'one big button');
+  tap($g('#col-left .btn-dancepaw'));                          // too early: just a wiggle
+  await until(() => G('act.data.paws.length') >= 2, 6000, 'the first paws');
+  // wait for a paw to reach her ring, then tap
+  for (let i = 0; i < 60 && G('act.data.hits.left') < 1; i++) {
+    G(`(() => { const t = now(); act.data.paws.filter(p => !p.gone && p.side === 'left' && Math.abs(p.arrive - t) < 200).forEach(() => { actPress('left', 'dancepaw'); }); })()`);
+    await sleep(60);
+  }
+  expect(G('act.data.hits.left') >= 1, 'a tap on time makes her dance');
+  expectEqual(G('TEST_ERRORS'), [], 'dancing worked');
+  G('endActivity(false)');
 });

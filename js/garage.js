@@ -15,7 +15,8 @@ Object.assign(ICONS, {
 });
 
 /* ---------- the garage room ---------- */
-ROOMS.garage = { word: 'garage', icon: 'roomGarage', door: '#ffd0a6', acts: ['jam', 'instrument', 'band'], feature: 'garage' };
+ROOMS.garage = { word: 'garage', icon: 'roomGarage', door: '#ffd0a6', acts: ['jam', 'instrument', 'band', 'dance'], feature: 'garage' };
+FEATURE_OF.dance = 'dance';
 ROOM_ORDER.push('garage');
 ROOM_MARKUP.garage = () => `<div class="wall"></div><div class="floor"></div><div class="tint l"></div><div class="tint r"></div>
   <div class="deco gdoor"></div><div class="deco gamp l"><i></i><i></i></div><div class="deco gamp r"><i></i><i></i></div>
@@ -23,9 +24,9 @@ ROOM_MARKUP.garage = () => `<div class="wall"></div><div class="floor"></div><di
 DECOR_ROOMS.push('garage');
 const INSTRUMENTS = { guitar: 'guitar', keys: 'keys', drumkit: 'drums', mic: 'mic', tambourine: 'tambourine', trumpet: 'trumpet' };
 Object.assign(BUTTONS, {
-  jam: { icon: 'note', label: 'Jam' }, instrument: { icon: 'guitar', label: 'Pick' }, band: { icon: 'bandBtn', label: 'Band' },
+  jam: { icon: 'note', label: 'Jam' }, instrument: { icon: 'guitar', label: 'Pick' }, band: { icon: 'bandBtn', label: 'Band' }, dance: { icon: 'wave', label: 'Dance' },
 });
-NEW_THINGS.push({ key: 'garage', order: 27, requires: 'puzzles', room: 'garage', acts: ['jam', 'instrument', 'band'], icon: 'roomGarage', word: 'garage' });
+NEW_THINGS.push({ key: 'garage', order: 27, requires: 'puzzles', room: 'garage', acts: ['jam', 'instrument', 'band'], icon: 'roomGarage', word: 'garage' });   // (Dance comes a little later)
 BOOK_LINES.band = { line: 'played music in a band.', icon: 'note', rank: 97.6 };
 COOLDOWN.bandjam = 20000;
 const myInstrument = side => (INSTRUMENTS[S.band && S.band[side]] ? S.band[side] : side === 'left' ? 'guitar' : 'keys');
@@ -179,3 +180,109 @@ ACTIVITIES.band = {
   },
 };
 BUTTONS.bandplay = { icon: 'note', label: '' };
+
+/* ---------- Dance Paws: paw prints drift down to each pet; tap when one reaches the ring and she dances.
+   Missing one just makes a little wiggle (the music never stops). A big star needs both girls: a twin spin. ---------- */
+NEW_THINGS.push({ key: 'dance', order: 27.5, requires: 'garage', room: 'garage', acts: ['dance'], icon: 'wave', word: 'dance' });
+BOOK_LINES.dance = { line: 'danced to the music in the garage.', icon: 'wave', rank: 97.4 };
+const danceTaps = { left: -1e9, right: -1e9 };
+ACT_HANDLERS.dance = side => {
+  danceTaps[side] = now();
+  notePlay(side, 2);
+  if (now() - danceTaps[other(side)] < SETTINGS.doorWindowMs) { danceTaps.left = danceTaps.right = -1e9; startActivity('dance', side); }
+  else invite(other(side), 'dance', SETTINGS.doorWindowMs);
+};
+const PAW_TOTAL = 12, PAW_FALL = 1800, PAW_WINDOW = 450;
+const DANCE_MOVES = ['spin', 'sit', 'roll', 'wave', 'dance'];
+ACTIVITIES.dance = {
+  async start(a) {
+    const d = a.data;
+    d.hits = { left: 0, right: 0 };
+    d.spawned = { left: 0, right: 0 };
+    d.paws = [];
+    d.step = 0;
+    d.star = null;
+    const glow = actProp(a, '', { inset: 0 }, 5);
+    glow.classList.add('discoglow');
+    SIDES.forEach(s => {
+      const ring = prop('<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="7" stroke-dasharray="10 9"/></svg>', 11, petPoint(pets[s], 0.5, 0.0).x, petPoint(pets[s], 0.5, 0.0).y);
+      ring.style.color = (colorById(S.colors[s]) || COLORS[0]).main;
+      ring.style.zIndex = 14;
+      a.cleanup.push(() => ring.remove());
+      d.ring = d.ring || {};
+      d.ring[s] = ring;
+    });
+    Sound.play('bandchord');
+    showHint('wave', 'dance');
+    d.beat = setInterval(() => danceTick(a), 600);
+    a.cleanup.push(() => { clearInterval(d.beat); d.paws.forEach(p => p.el.remove()); });
+  },
+  plan(a, side) { return { acts: ['dancepaw'], big: true, defs: { dancepaw: { icon: 'wave', label: '' } }, cls: 'invite' }; },
+  press(a, side) { danceHit(a, side); },
+};
+function danceTick(a) {
+  const d = a.data;
+  if (act !== a || a.ending) return;
+  Sound.play('bandbeat', d.step % 8);
+  d.step++;
+  SIDES.forEach((s, i) => {
+    if (d.step % 2 === i % 2 && d.spawned[s] < PAW_TOTAL) { d.spawned[s]++; spawnPaw(a, s, false); }
+  });
+  if (d.step % 8 === 4 && d.step > 4 && !d.star) spawnPaw(a, 'star', true);
+  const live = d.paws.filter(p => !p.gone);
+  if (d.spawned.left >= PAW_TOTAL && d.spawned.right >= PAW_TOTAL && !live.length && !d.ending) danceFinale(a);
+}
+function spawnPaw(a, side, star) {
+  const d = a.data;
+  const tgt = star ? { x: W() / 2, y: petPoint(pets.left, 0.5, 0.0).y } : petPoint(pets[side], 0.5, 0.0);
+  const y0 = H() * 0.16;
+  const e = prop(star ? ICONS.star : pawSvg(side === 'left' ? 'left' : 'right'), star ? 10 : 8, tgt.x, y0);
+  e.style.zIndex = 15;
+  if (star) e.style.color = '#ffc93c';
+  e.classList.add('dpaw');
+  const o = { el: e, side, star, arrive: now() + PAW_FALL, gone: false, hit: { left: false, right: false } };
+  d.paws.push(o);
+  if (star) d.star = o;
+  animate(e, [{ top: y0 + 'px' }, { top: tgt.y + 'px' }], { duration: PAW_FALL, easing: 'linear', fill: 'forwards' });
+  e.style.pointerEvents = 'auto';
+  onPress(e, ev => danceHit(a, ev.clientX < W() / 2 ? 'left' : 'right'));
+  setTimeout(() => { if (!o.gone) { o.gone = true; if (star) d.star = null; animate(e, [{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' }).then(() => e.remove()); if (!star) { mood(pets[side], 'happy', 500); } } }, PAW_FALL + PAW_WINDOW);
+}
+function danceHit(a, side) {
+  const d = a.data;
+  if (a.ending) return;
+  const t = now();
+  const near = d.paws.filter(p => !p.gone && !p.hit[side] && (p.side === side || p.star) && Math.abs(p.arrive - t) < PAW_WINDOW).sort((x, y) => Math.abs(x.arrive - t) - Math.abs(y.arrive - t))[0];
+  if (!near) { petAnim(pets[side], [{ transform: 'rotate(-3deg)' }, { transform: 'rotate(3deg)' }, { transform: 'rotate(0)' }], { duration: 300 }); return; }   // no paw yet: just a wiggle
+  near.hit[side] = true;
+  const r = near.el.getBoundingClientRect();
+  sparkles(r.left + r.width / 2, r.top + r.height / 2, 6);
+  if (near.star) {
+    Sound.play('inst-keys', 5);
+    if (near.hit.left && near.hit.right) {                                     // both girls: a twin spin
+      near.gone = true; d.star = null;
+      near.el.remove();
+      Sound.play('bandchord');
+      SIDES.forEach(s => { doTrick(s, 'spin', true); floatHearts(pets[s], 3); });
+      celebrate(W() / 2, H() * 0.4, 14);
+    }
+    return;
+  }
+  near.gone = true;
+  near.el.remove();
+  d.hits[side]++;
+  Sound.play('inst-keys', MELODY[d.hits[side] % MELODY.length]);
+  doTrick(side, DANCE_MOVES[d.hits[side] % DANCE_MOVES.length], false);
+  mood(pets[side], 'happy', 900);
+}
+async function danceFinale(a) {
+  const d = a.data;
+  d.ending = true;
+  a.busy = true;
+  clearInterval(d.beat);
+  Sound.play('cheer');
+  SIDES.forEach(s => { doTrick(s, 'dance', true); floatHearts(pets[s], 4); });
+  celebrate(W() / 2, H() * 0.4, 24);
+  await wait(2300);
+  endActivity(true, 'dance');
+}

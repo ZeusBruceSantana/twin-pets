@@ -24,7 +24,8 @@ server.listen(0, async () => {
   const browser = await chromium.launch();
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
   page.on('pageerror', e => console.log('Page error:', e.message));
-  await page.goto(`http://localhost:${port}/tests/index.html?auto`);
+  const only = process.argv[2] ? '&only=' + encodeURIComponent(process.argv[2]) : '';   // node tests/run-in-ci.js treehouse  (runs just those tests)
+  await page.goto(`http://localhost:${port}/tests/index.html?auto${only}`);
   await page.waitForFunction(() => window.TEST_DONE, null, { timeout: 15 * 60 * 1000 });
   const results = await page.evaluate(() => window.TEST_RESULTS);
   for (const r of results) console.log(`${r.ok ? 'PASS' : 'FAIL'}  ${r.name}${r.ok ? '' : '\n      ' + r.error}  (${(r.ms / 1000).toFixed(1)}s)`);

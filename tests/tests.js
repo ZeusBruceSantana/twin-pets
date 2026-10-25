@@ -425,6 +425,19 @@ test('Each room and place has its own tune, and none at bedtime', async () => {
   expectEqual(G(`JSON.stringify(compose(PIECES.kitchen)) === JSON.stringify(compose(PIECES.kitchen))`), true, 'a room always has the same tune');
 });
 
+test('Closet tabs show one kind of thing, and the Colors tab repaints the outfit', async () => {
+  const s = played();
+  s.pets.left.owned = ['crown', 'scarf', 'cape']; s.pets.left.wear = { head: 'crown', neck: null, face: null }; s.pets.left.gifted = { crown: 'teal' };
+  delete s.giftColorFixed;
+  await openGame(s);
+  await startPlaying();
+  expectEqual(G('S.pets.left.gifted.crown'), 'purple', 'old gifts are drawn in her own color');
+  G(`ACT_HANDLERS.closet('left')`);
+  expectEqual(G(`closetCards('left', 'neck').map(c => c.key).join()`), 'scarf', 'the neck tab holds only neck things');
+  G(`paintOutfit('left', 'green')`);
+  expectEqual(G('S.pets.left.gifted.crown'), 'green', 'the Colors tab repaints what she wears');
+});
+
 test('The closet is the next new thing as soon as a pet is given something to wear', async () => {
   const s = played();
   ['closet', 'costumes', 'sleepover', 'cook', 'teeth', 'picnic', 'mirror'].forEach(k => delete s.features[k]);     // lots of new things still waiting (ahead of the closet in the old order)

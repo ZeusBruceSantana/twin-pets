@@ -9,22 +9,44 @@
 const panels = { left: null, right: null };
 /* items: [{ key, icon (svg), word, say?, badge?, cls? }]  onPick(key, card) */
 /* head: show this pet's face at the top (whose pet the choices are for) */
-function openPanel(side, { items, onPick, keepOpen, say = true, cols = 2, head }) {
+/* tabs: [{ key, icon }] adds a row of big picture tabs; tab = the one showing; onTab(key) returns that tab's items. */
+function openPanel(side, { items, onPick, keepOpen, say = true, cols = 2, head, tabs, tab, onTab }) {
   closePanel(side);
   const p = el('div', 'spanel side-' + side + (cols === 3 ? ' three' : ''), `<div class="spanel-x">${ICONS.close}</div><div class="spanel-grid"></div>`);
   if (head) { const f = el('div', 'spanel-head'); fillFace(f, head); p.prepend(f); p.classList.add('has-head'); }
   const grid = p.querySelector('.spanel-grid');
-  items.forEach(it => {
-    const c = el('div', 'scard' + (it.cls ? ' ' + it.cls : ''), `<div class="pic">${it.icon}</div><div class="lbl">${it.word}</div>`);
-    c.dataset.key = it.key;
-    if (it.badge != null) c.append(el('div', 'cnt', String(it.badge)));
-    onRelease(c, () => {
-      if (say) Speech.say(it.say || it.word);
-      if (!keepOpen) closePanel(side);
-      onPick(it.key, c);
+  const fill = list => {
+    grid.innerHTML = '';
+    grid.scrollTop = 0;
+    list.forEach(it => {
+      const c = el('div', 'scard' + (it.cls ? ' ' + it.cls : ''), `<div class="pic">${it.icon}</div><div class="lbl">${it.word}</div>`);
+      c.dataset.key = it.key;
+      if (it.badge != null) c.append(el('div', 'cnt', String(it.badge)));
+      onRelease(c, () => {
+        if (say) Speech.say(it.say || it.word);
+        if (!keepOpen) closePanel(side);
+        onPick(it.key, c);
+      });
+      grid.append(c);
     });
-    grid.append(c);
-  });
+  };
+  if (tabs) {
+    p.classList.add('tabbed');
+    const row = el('div', 'spanel-tabs');
+    tabs.forEach(t => {
+      const b = el('div', 'stab' + (t.key === tab ? ' on' : ''), t.icon);
+      b.dataset.tab = t.key;
+      onRelease(b, () => {
+        Sound.play('pick');
+        p.lastTouch = now();
+        row.querySelectorAll('.stab').forEach(x => x.classList.toggle('on', x === b));
+        fill(onTab(t.key));
+      });
+      row.append(b);
+    });
+    grid.before(row);
+  }
+  fill(items);
   onPress(p.querySelector('.spanel-x'), () => closePanel(side));
   stage.append(p);
   panels[side] = p;

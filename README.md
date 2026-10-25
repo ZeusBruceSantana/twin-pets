@@ -82,7 +82,7 @@ From the front yard, both girls tap **Car**, then both tap the same place:
 - 🖼️ **the art museum**: hang a picture on the wall, strike a statue pose on a pedestal, hang each pet's portrait
 - 🍽️ **the fancy restaurant**: order from the menu (the silver lid lifts to show the food), clink glasses together, dessert
 
-The car opens a **town map** with roads between the ten places. The farm, library,
+The car opens a **town map**: a little illustrated map with the sea and beach, a river running down to it, woods, snowy mountains, farm fields and roads joining the ten places (places not yet found show as a ? cloud). The farm, library,
 snowy hill, river, woods, museum and restaurant appear one at a time, like other new
 things. Places with someone new to meet have a star.
 

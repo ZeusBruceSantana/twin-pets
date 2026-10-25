@@ -67,11 +67,43 @@ const PLACES = {
   snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball'], need: 'snowhill' },
 };
 const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
-/* The town map: roads between the places. Both girls tap the same place to drive there. */
-const tripBox = el('div', 'overlay', `<div class="town"><svg class="town-roads" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">
-  <g fill="none" stroke="#9aa6bd" stroke-width="9" stroke-linecap="round"><path d="M8 100 H292"/><path d="M60 12 V188"/><path d="M120 12 V188"/><path d="M180 12 V188"/><path d="M240 12 V188"/></g>
-  <g fill="none" stroke="#fff" stroke-width="1.2" stroke-dasharray="5 6"><path d="M8 100 H292"/><path d="M60 12 V188"/><path d="M120 12 V188"/><path d="M180 12 V188"/><path d="M240 12 V188"/></g></svg>
-  <div class="trip-grid"></div></div><div class="map-x"></div>`);
+/* The town map: a little illustrated map. Each place sits where it belongs (the beach by the sea,
+   the river running down to it, the snowy hill in the mountains), with roads joining them.
+   Both girls tap the same place to drive there. */
+const TOWN_POS = {   // where each place is on the map: [% across, % down]
+  woods: [11, 20], park: [33, 14], library: [58, 22], snowhill: [87, 16],
+  river: [24, 52], museum: [50, 50], restaurant: [74, 56],
+  beach: [13, 84], farm: [43, 84], icecream: [72, 86],
+};
+const TOWN_ROADS = [['woods', 'park'], ['park', 'library'], ['library', 'snowhill'], ['park', 'river'], ['library', 'museum'], ['museum', 'restaurant'],
+  ['river', 'museum'], ['river', 'beach'], ['museum', 'farm'], ['restaurant', 'icecream'], ['farm', 'icecream'], ['farm', 'beach']];
+function townRoads() {
+  const d = TOWN_ROADS.map(([a, b], i) => {
+    const [x1, y1] = TOWN_POS[a], [x2, y2] = TOWN_POS[b];
+    const X1 = x1 * 2, X2 = x2 * 2, mx = (X1 + X2) / 2, my = (y1 + y2) / 2, dx = X2 - X1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1, off = (i % 2 ? 1 : -1) * 5;
+    return `M${X1} ${y1} Q${mx - dy / len * off} ${my + dx / len * off} ${X2} ${y2}`;
+  });
+  return `<path d="${d.join(' ')}" class="rd"/><path d="${d.join(' ')}" class="rl"/>`;
+}
+const treeAt = (x, y, k = 1) => `<path transform="translate(${x} ${y}) scale(${k})" d="M0 -7 L5 4 H-5Z"/>`;
+const mountainAt = (x, y, k = 1) => `<g transform="translate(${x} ${y}) scale(${k})"><path d="M-15 14 L0 -12 L15 14Z" fill="#9fb4cc"/><path d="M-5.6 -1 L0 -12 L5.6 -1 L2.6 1 L0 -2 L-2.6 1Z" fill="#fff"/></g>`;
+const houseAt = (x, y) => `<g transform="translate(${x} ${y})"><rect x="-3" y="-2" width="6" height="5" fill="#fff4dc" stroke="#e0c9a0" stroke-width=".6"/><path d="M-4 -2 L0 -6 L4 -2Z" fill="#e98b6d"/></g>`;
+const TOWN_TERRAIN = `<svg class="town-terrain" viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+  <rect width="200" height="100" fill="#bfe8a8"/>
+  <ellipse cx="104" cy="34" rx="62" ry="24" fill="#cdefb8"/><ellipse cx="150" cy="78" rx="44" ry="16" fill="#cdefb8"/>
+  <path d="M0 56 C 10 54, 17 64, 18 76 C 19 90, 12 98, 0 100Z" fill="#ffe2a8"/><path d="M0 62 C 7 60, 12 68, 13 78 C 14 88, 9 96, 0 100Z" fill="#8fd0ff"/>
+  <g fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"><path d="M60 -4 C 54 16, 68 30, 52 50 C 40 66, 24 72, 4 86" stroke="#bfe6ff" stroke-width="38" vector-effect="non-scaling-stroke"/><path d="M60 -4 C 54 16, 68 30, 52 50 C 40 66, 24 72, 4 86" stroke="#7fc4ff" stroke-width="26" vector-effect="non-scaling-stroke"/></g>
+  <ellipse cx="86" cy="26" rx="8" ry="4.5" fill="#8fd0ff"/>
+  <g fill="#3f9a5a">${[[6, 8], [14, 34], [4, 26], [30, 36], [36, 6], [22, 4], [44, 20], [8, 44], [24, 44], [40, 40]].map(([x, y]) => treeAt(x, y, .85)).join('')}</g>
+  ${mountainAt(158, 22, .6)}${mountainAt(172, 28, .5)}${mountainAt(186, 24, .65)}${mountainAt(150, 32, .45)}
+  <g><rect x="66" y="74" width="18" height="12" fill="#f5d36a"/><rect x="86" y="88" width="16" height="10" fill="#e8c24a"/><rect x="108" y="72" width="16" height="12" fill="#9fdc7a"/><rect x="122" y="88" width="18" height="10" fill="#f5d36a"/>
+    <path d="M66 77 H84 M66 80 H84 M66 83 H84 M108 75 H124 M108 78 H124 M108 81 H124" stroke="#d9a93a" stroke-width=".7" opacity=".7"/></g>
+  ${[[96, 36], [104, 40], [112, 32], [132, 46], [126, 68], [104, 68], [142, 58], [118, 52]].map(([x, y]) => houseAt(x, y)).join('')}
+  <g fill="#3f9a5a">${[[176, 44], [186, 52], [180, 62], [190, 36]].map(([x, y]) => treeAt(x, y, .9)).join('')}</g>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">${townRoads().replace(/class="rd"/, 'stroke="#9aa6bd" stroke-width="20" vector-effect="non-scaling-stroke"').replace(/class="rl"/, 'stroke="#fff" stroke-width="2.4" stroke-dasharray="9 10" vector-effect="non-scaling-stroke"')}</g>
+</svg>`;
+const COMPASS = '<svg class="town-compass" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#fff" stroke="#c9b48a" stroke-width="5"/><path d="M50 12 L60 50 L50 88 L40 50Z" fill="#ff7a7a"/><path d="M12 50 L50 40 L88 50 L50 60Z" fill="#9fb4cc"/><circle cx="50" cy="50" r="6" fill="#fff"/></svg>';
+const tripBox = el('div', 'overlay', `<div class="town">${TOWN_TERRAIN}<div class="mapcloud c1"></div><div class="mapcloud c2"></div><div class="mapcloud c3"></div>${COMPASS}<div class="trip-grid"></div></div><div class="map-x"></div>`);
 tripBox.id = 'trips';
 stage.append(tripBox);
 tripBox.querySelector('.map-x').innerHTML = ICONS.close;
@@ -84,13 +116,15 @@ function openTrips() {
   const grid = tripBox.querySelector('.trip-grid');
   grid.innerHTML = '';
   Object.entries(PLACES).forEach(([k, pl]) => {
-    if (!placeOpen(k)) { grid.append(el('div', 'mtile closed', `<div class="ico">${ICONS.window}</div>`)); return; }
+    const at = TOWN_POS[k] || [50, 50];
+    const put = t => { t.style.left = at[0] + '%'; t.style.top = at[1] + '%'; grid.append(t); };
+    if (!placeOpen(k)) { put(el('div', 'mtile closed', '<div class="q">?</div>')); return; }   // a place still to find
     const tile = voteTile(k, ICONS[pl.icon], pl.word, pl.color, side => {
       tripsTouched = now();
       castVote(side, k, grid, () => { closeTrips(); setTimeout(() => startActivity('trip', side, { place: k }), 50); });
     });
     if (nextFriendAt(k)) tile.append(el('div', 'badge', ICONS.star));   // someone new to meet there
-    grid.append(tile);
+    put(tile);
   });
   tripBox.classList.add('show');
   tripsTouched = now();

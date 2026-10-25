@@ -138,7 +138,7 @@ function idleTick() {
   // nobody has tapped for a while: go back to normal, gently
   if (scene === 'game' && game && game.ready && !game.busy && now() - game.lastPress > 25000) finishGame(false);
   if (scene === 'climb' && climb && !climb.busy && now() - climb.lastPress > 30000) endClimb();
-  if (scene === 'act' && act && act.ready && !act.busy && now() - act.lastPress > 40000) endActivity(false);
+  if (scene === 'act' && act && act.ready && !act.busy && act.kind !== 'gift' && now() - act.lastPress > 40000) endActivity(false);
   if (scene === 'map' && now() - mapTouched > 25000) closeMap();
   SIDES.forEach(side => { if (panels[side] && now() - panels[side].lastTouch > 40000) closePanel(side); });
   introTick();

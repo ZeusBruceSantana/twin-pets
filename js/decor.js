@@ -140,6 +140,7 @@ PARTY_HOOKS.push(() => { if (has('decor')) setTimeout(() => startActivity('gift'
 ACTIVITIES.gift = {
   async start(a) {
     a.data.opened = { left: false, right: false };
+    if (a.opts.prize) a.cleanup.push(() => { if (!(a.data.opened.left && a.data.opened.right)) { S.puzzleOwed = (S.puzzleOwed || 0) + 1; S.prizeN = Math.max(0, (S.prizeN || 1) - 1); save(); } });   // left early: the prize is still owed
     // one present from the jar; a puzzle prize is two, one for each girl (house presents, or a gift for each pet)
     a.data.pet = !!a.opts.items;
     a.data.keys = a.data.pet ? a.opts.items.slice() : Array.from({ length: a.opts.count || 1 }, (_, i) => DECOR_ORDER[((S.decorN || 0) + i) % DECOR_ORDER.length]);
@@ -273,7 +274,7 @@ ACTIVITIES.sleepover = {
       await wait(2500);
       SIDES.forEach(s => pets[s].root.classList.remove('asleep-eyes'));
       Sound.play('morning');
-      endActivity(true, 'sleepover');
+      endActivity(true, 'sleepover', a);
     }
   },
 };

@@ -397,13 +397,12 @@ const Sound = (() => {
     },
     bubble() { tone(NOTE(72), 0, 0.22, { vol: 0.06, to: NOTE(74) }); tone(NOTE(76), 0.2, 0.3, { vol: 0.06, to: NOTE(79) }); },
     wish() { [84, 88, 91, 96].forEach((m, i) => tone(NOTE(m), i * 0.07, 0.45, { vol: 0.055, echo: 1 })); },
-    page() { noise(0, 0.25, { freq: 2500, to: 1200, q: 0.8, vol: 0.04 }); },
     // ----- the house -----
     knock() { tone(NOTE(67), 0, 0.12, { type: 'triangle', vol: 0.08 }); tone(NOTE(72), 0.11, 0.2, { type: 'triangle', vol: 0.08 }); },
     door() { noise(0, 0.5, { freq: 600, to: 1800, q: 0.8, vol: 0.03 }); [72, 79, 84].forEach((m, i) => tone(NOTE(m), 0.12 + i * 0.1, 0.5, { vol: 0.06, echo: 1 })); },
     water() { noise(0, 1.3, { filter: 'lowpass', freq: 500, to: 1400, vol: 0.06, attack: 0.25 }); for (let i = 0; i < 5; i++) tone(rand(700, 1200), 0.4 + i * 0.16, 0.07, { to: rand(1300, 1800), vol: 0.035 }); },
     pop() { const f = rand(800, 1300); tone(f, 0, 0.07, { to: f * 1.6, vol: 0.035 }); },
-    squeak() { tone(NOTE(88), 0, 0.12, { to: NOTE(93), vol: 0.07, type: 'triangle' }); tone(NOTE(93), 0.12, 0.1, { to: NOTE(86), vol: 0.06, type: 'triangle' }); },
+    ducksqueak() { tone(NOTE(88), 0, 0.12, { to: NOTE(93), vol: 0.07, type: 'triangle' }); tone(NOTE(93), 0.12, 0.1, { to: NOTE(86), vol: 0.06, type: 'triangle' }); },
     scrub() { for (let i = 0; i < 3; i++) noise(i * 0.17, 0.14, { freq: 2600, q: 2, vol: 0.035 }); },
     shake() { for (let i = 0; i < 6; i++) noise(i * 0.07, 0.05, { freq: 3200, vol: 0.03 }); [84, 88].forEach((m, i) => tone(NOTE(m), 0.45 + i * 0.08, 0.35, { vol: 0.05, echo: 1 })); },
     brush() { noise(0, 0.4, { freq: 4200, to: 2200, q: 1, vol: 0.03 }); tone(NOTE(96 - k3()), 0.32, 0.3, { vol: 0.03, echo: 1 }); },
@@ -427,7 +426,7 @@ const Sound = (() => {
     /* For the background music (music.js): the sound engine, once a tap has started it. */
     engine() { return ctx && ctx.state === 'running' ? { ctx, tone, noise, NOTE, bgm } : null; },
     /* Other parts of the game add their own sounds: Sound.add('name', (s, ...args) => s.tone(...)) */
-    add(name, maker) { lib[name] = (...args) => maker({ tone, noise, melody, NOTE, k3 }, ...args); },
+    add(name, maker) { if (TEST_MODE && lib[name]) TEST_ERRORS.push('sound defined twice: ' + name); lib[name] = (...args) => maker({ tone, noise, melody, NOTE, k3 }, ...args); },
     play(name, ...args) {
       if (S.sound.muted || TEST_MODE) return;
       const c = init();

@@ -175,7 +175,7 @@ function stepOn(a, side) {
   renderColumn(side);
   if (a.data.step.left >= TEA_STEPS.length && a.data.step.right >= TEA_STEPS.length) {
     a.busy = true;
-    setTimeout(() => endActivity(true, 'tea'), 900);
+    setTimeout(() => endActivity(true, 'tea', a), 900);
   }
 }
 // where the cups sit on the table (as % of the screen width): the pet's cup, then her friend's

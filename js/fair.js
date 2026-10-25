@@ -168,7 +168,7 @@ async function boop(a, h) {
   if (h.classList.contains('mid')) { twinTap(a, h); return; }
   h.booped = true;
   const s = h.dataset.side;
-  Sound.play('squeak');
+  Sound.play('ducksqueak');
   const r = h.getBoundingClientRect();
   sparkles(r.left + r.width / 2, r.top, 5);
   animate(h.critter, [{ transform: 'translateY(0) rotate(0)' }, { transform: 'translateY(-14%) rotate(-12deg)' }, { transform: 'translateY(105%) rotate(10deg)' }], { duration: 500, fill: 'forwards' });
@@ -204,7 +204,7 @@ async function twinTap(a, h, ev) {
   const s = ev && ev.clientX < W() / 2 ? 'left' : 'right';
   if (st.twin[s]) return;
   st.twin[s] = true;
-  Sound.play('squeak');
+  Sound.play('ducksqueak');
   hopPet(s);
   animate(h.critter, [{ transform: 'scale(1)' }, { transform: 'scale(1.18)' }, { transform: 'scale(1)' }], { duration: 300 });
   if (!(st.twin.left && st.twin.right)) { setTimeout(() => { if (!st.done) st.twin = { left: false, right: false }; }, SETTINGS.doorWindowMs); return; }

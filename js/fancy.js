@@ -36,6 +36,7 @@ async function setUpHighTea(a) {
   a.busy = true;
   const w = a.data.waiter;
   if (w) { w.classList.add('carry'); waiterSay(a, 'Tea time!', 1800); await waiterWalk(a, W() * 0.5); w.classList.remove('carry'); }
+  if (act !== a || a.ending) return;
   const stand = actProp(a, ICONS.teastand, { left: '50%', bottom: '25%', width: '17vmin', height: '17vmin', transform: 'translateX(-50%)' }, 11);
   const pot = actProp(a, ICONS.teapot, { left: '50%', bottom: '44%', width: '10vmin', height: '10vmin', transform: 'translateX(-50%)' }, 12);
   pot.style.color = '#e9a3c8';

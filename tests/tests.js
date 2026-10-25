@@ -673,7 +673,7 @@ test('The town map shows the places that have appeared, and a closed spot for th
   await until(() => G('scene') === 'trips', 3000, 'the town map');
   ['beach', 'park', 'icecream'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the town map`));
   ['farm', 'library', 'snowhill'].forEach(k => expect(!$g(`#trips .mtile[data-key="${k}"]`), `the ${k} has not appeared yet`));
-  expectEqual($$g('#trips .mtile.closed').length, 8, 'closed spots for the places that have not appeared yet');
+  expectEqual($$g('#trips .mtile.closed').length, 9, 'closed spots for the places that have not appeared yet');
   G('closeTrips()');
   G(`introduce(NEW_THINGS.find(n => n.key === 'farm'), true); introduce(NEW_THINGS.find(n => n.key === 'library'), true); openTrips()`);
   await until(() => G('scene') === 'trips', 3000, 'the town map');

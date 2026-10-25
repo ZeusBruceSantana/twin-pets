@@ -1261,12 +1261,12 @@ body[data-scene="act"] .wxchart, body[data-scene="act"] .wxlayer { display: none
 .hpile .hhid { position: absolute; inset: 6% 22% 4%; }
 .hpile .hhid svg { position: relative; }
 .hpile > svg { position: absolute; inset: 0; }
-.ebasket { position: absolute; left: 50%; top: 28%; width: 11vmin; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+.ebasket { position: absolute; left: 50%; top: 32%; width: 11vmin; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; pointer-events: none; }
 .ebasket > svg { width: 100%; }
 .eslots { display: flex; gap: .6vmin; margin-top: .3vmin; }
 .eslots i { width: 2.2vmin; height: 2.8vmin; border-radius: 50%; border: .4vmin solid #d9a93a; background: rgba(255,255,255,.7); }
 .eslots i.on { background: #ffe066; }
-.goldegg { position: absolute; left: 50%; top: 40%; width: 15vmin; height: 15vmin; transform: translateX(-50%); animation: pulse 1s ease-in-out infinite; }
+.goldegg { position: absolute; left: 50%; top: 47%; width: 15vmin; height: 15vmin; transform: translateX(-50%); animation: pulse 1s ease-in-out infinite; }
 .goldegg svg { width: 100%; height: 100%; overflow: visible; }
 .goldegg.shake { animation: tgshake .3s linear infinite; }
 @keyframes tgshake { 0%, 100% { transform: translateX(-50%) rotate(-10deg); } 50% { transform: translateX(-50%) rotate(10deg); } }

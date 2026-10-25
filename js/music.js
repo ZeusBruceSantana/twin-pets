@@ -23,6 +23,8 @@ const PIECES = {
   library:   { seed: 131, key: 64, bpm: 76,  beats: 3, chords: [0, 5, 3, 4], lead: 'sine', soft: true },
   snowhill:  { seed: 137, key: 69, bpm: 90,  beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true, shaker: true },
   garage:    { seed: 149, key: 64, bpm: 118, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, shaker: true },
+  fair:      { seed: 163, key: 66, bpm: 126, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, shaker: true, box: true },
+  treehouse: { seed: 167, key: 67, bpm: 98, beats: 4, chords: [0, 5, 3, 4], lead: 'sine', extra: 'birds' },
   icecream:  { seed: 113, key: 64, bpm: 116, beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true },
 };
 
@@ -154,7 +156,7 @@ const Music = (() => {
     if (!now || now.name !== name) { stop(e); if (name) start(name, e); }
     if (!now) return;
     // special moments with their own tunes (chase, parties): the music steps aside
-    const quiet = ['chase', 'surprise', 'goodnight'].includes(scene) || (scene === 'act' && act && act.kind === 'band');
+    const quiet = ['chase', 'surprise', 'goodnight'].includes(scene) || (scene === 'act' && act && ['band', 'dance'].includes(act.kind));
     if (quiet !== ducked) {
       ducked = quiet;
       now.gain.gain.setTargetAtTime(quiet ? 0.0001 : (now.p.soft ? 0.32 : 0.45), e.ctx.currentTime, 0.5);

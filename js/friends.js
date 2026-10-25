@@ -27,10 +27,12 @@ const BUDDIES = {
   dragon: { name: 'Ember',    sound: 'rawr' },
   horse:  { name: 'Biscuit',  sound: 'whinny' },
   hen:    { name: 'Clucky',   sound: 'cluck' },
+  monkey: { name: 'Coco',     sound: 'squeak' },
 };
 /* The pictures of the newer friends (the first eight come from visitors.js and pictures.js). */
 const eye = (x, y) => `<circle cx="${x}" cy="${y}" r="4.5" fill="#3e3a4f"/><circle cx="${x + 1.4}" cy="${y - 1.4}" r="1.4" fill="#fff"/>`;
 const FRIEND_ART = {
+  monkey: `<svg viewBox="0 0 100 100"><circle cx="14" cy="50" r="13" fill="#b9814f" stroke="#8a5a3c" stroke-width="3"/><circle cx="86" cy="50" r="13" fill="#b9814f" stroke="#8a5a3c" stroke-width="3"/><circle cx="14" cy="50" r="7" fill="#f1d2b0"/><circle cx="86" cy="50" r="7" fill="#f1d2b0"/><circle cx="50" cy="52" r="34" fill="#b9814f" stroke="#8a5a3c" stroke-width="3"/><path d="M26 44 C 26 30, 42 32, 50 44 C 58 32, 74 30, 74 44 C 74 62, 62 70, 50 70 C 38 70, 26 62, 26 44Z" fill="#f1d2b0"/>${eye(40, 46)}${eye(60, 46)}<ellipse cx="50" cy="58" rx="5" ry="3.600" fill="#8a5a3c"/><path d="M42 66 Q50 74 58 66" stroke="#8a5a3c" stroke-width="3" fill="none" stroke-linecap="round"/></svg>`,
   horse: `<svg viewBox="0 0 100 100"><path d="M30 24 L26 6 L42 18Z M70 24 L74 6 L58 18Z" fill="#b97a4a" stroke="#8a5a3c" stroke-width="3" stroke-linejoin="round"/><path d="M38 12 C 28 30, 26 52, 34 74 C 44 44, 52 26, 54 12Z" fill="#5d3a22"/><ellipse cx="54" cy="54" rx="26" ry="34" fill="#b97a4a" stroke="#8a5a3c" stroke-width="3"/><ellipse cx="54" cy="78" rx="18" ry="15" fill="#e3b88a"/><circle cx="48" cy="80" r="2.4" fill="#5d3a22"/><circle cx="60" cy="80" r="2.4" fill="#5d3a22"/>${eye(45, 48)}${eye(63, 48)}<path d="M54 22 V38" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>`,
   hen: `<svg viewBox="0 0 100 100"><path d="M40 22 q4 -14 10 -5 q5 -13 10 -2 q6 -8 8 5Z" fill="#ff5d5d" stroke="#d94f4f" stroke-width="2" stroke-linejoin="round"/><ellipse cx="50" cy="66" rx="36" ry="28" fill="#fff" stroke="#d9cfc0" stroke-width="3"/><circle cx="50" cy="44" r="22" fill="#fff" stroke="#d9cfc0" stroke-width="3"/><path d="M18 64 C 22 52, 40 56, 44 72 C 36 82, 22 80, 18 64Z" fill="#f3e2d3" stroke="#d9cfc0" stroke-width="2"/>${eye(41, 40)}${eye(59, 40)}<path d="M43 48 L57 48 L50 58Z" fill="#ffa24d" stroke="#e07a2a" stroke-width="2" stroke-linejoin="round"/><ellipse cx="50" cy="62" rx="4" ry="5" fill="#ff5d5d"/><path d="M40 92 V98 M60 92 V98" stroke="#ffa24d" stroke-width="4" stroke-linecap="round"/></svg>`,
   mouse: `<svg viewBox="0 0 100 100"><circle cx="22" cy="30" r="16" fill="#cfd6e0" stroke="#9aa6bd" stroke-width="3"/><circle cx="78" cy="30" r="16" fill="#cfd6e0" stroke="#9aa6bd" stroke-width="3"/><circle cx="22" cy="30" r="9" fill="#ffc6d6"/><circle cx="78" cy="30" r="9" fill="#ffc6d6"/><ellipse cx="50" cy="58" rx="30" ry="29" fill="#cfd6e0" stroke="#9aa6bd" stroke-width="3"/>${eye(39, 52)}${eye(61, 52)}<ellipse cx="50" cy="64" rx="5" ry="4" fill="#ff8fab"/><path d="M50 68 V72 M43 73 Q50 79 57 73" stroke="#3e3a4f" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M28 62 H12 M28 68 L14 74 M72 62 H88 M72 68 L86 74" stroke="#9aa6bd" stroke-width="2" stroke-linecap="round"/></svg>`,
@@ -71,7 +73,7 @@ function friendMade(kind) {
 }
 /* The next friend this place has to offer (one that is not yet a friend), or null. */
 const nextFriendAt = place => (PLACE_FRIENDS[place] || []).find(k => !S.friends.have.includes(k)) || null;
-const PLACE_FRIENDS = { farm: ['lamb', 'cow', 'piggy', 'horse', 'hen'], park: ['frog', 'duck'], library: ['kitten', 'mouse'], snowhill: ['polarbear'],
+const PLACE_FRIENDS = { farm: ['lamb', 'cow', 'piggy', 'horse', 'hen'], park: ['frog', 'duck'], library: ['kitten', 'mouse'], snowhill: ['polarbear'], fair: ['monkey'],
   river: ['otter', 'turtle'], woods: ['deer', 'hedgehog', 'fox'], museum: ['panda'], restaurant: ['penguin'] };
 /* Friends that only a puzzle prize can bring (every third puzzle), in this order. */
 const PUZZLE_FRIENDS = ['unicorn', 'dragon'];

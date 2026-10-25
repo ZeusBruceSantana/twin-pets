@@ -30,13 +30,13 @@ Object.assign(PLACES, {
   river:      { word: 'river',      icon: 'river',      color: '#cde9ff', acts: ['cast', 'sail', 'skip', 'puzzle'], need: 'river' },
   woods:      { word: 'woods',      icon: 'woods',      color: '#cfe6c8', acts: ['tent', 'fire', 'stars', 'puzzle'], need: 'woods' },
   museum:     { word: 'museum',     icon: 'museum',     color: '#f6e6c4', acts: ['look', 'pose', 'gallery', 'puzzle'], need: 'museum' },
-  restaurant: { word: 'restaurant', icon: 'restaurant', color: '#f2c9d6', acts: ['menu', 'cheers', 'dessert', 'puzzle'], need: 'restaurant' },
+  restaurant: { word: 'restaurant', icon: 'restaurant', color: '#f2c9d6', acts: ['menu', 'hightea', 'cheers', 'puzzle'], need: 'restaurant' },
 });
 Object.assign(BUTTONS, {
   cast: { icon: 'rod', label: 'Fish' }, sail: { icon: 'sailboat', label: 'Boat' }, skip: { icon: 'stone', label: 'Stones' },
   tent: { icon: 'tent', label: 'Tent' }, fire: { icon: 'campfire', label: 'Fire' }, stars: { icon: 'constellation', label: 'Stars' },
   look: { icon: 'gframe', label: 'Art' }, pose: { icon: 'pedestal', label: 'Pose' }, gallery: { icon: 'portrait', label: 'Faces' },
-  menu: { icon: 'menucard', label: 'Menu' }, cheers: { icon: 'glass', label: 'Cheers' }, dessert: { icon: 'cupcake', label: 'Dessert' },
+  menu: { icon: 'menucard', label: 'Menu' }, hightea: { icon: 'teapot', label: 'High tea' }, cheers: { icon: 'glass', label: 'Cheers' },
   puzzle: { icon: 'puzzleBtn', label: 'Puzzle' },
 });
 NEW_THINGS.push({ key: 'river', order: 23, requires: 'snowhill', icon: 'river', word: 'river' });
@@ -59,8 +59,8 @@ Object.assign(PLACE_MARKUP, {
   museum: () => `<div class="mwall"></div>
     <div class="mframe f0"><div class="mpic"></div></div><div class="mframe f1"><div class="mpic"></div></div><div class="mframe f2"><div class="mpic"></div></div>
     <div class="mrail"></div><div class="mfloor"></div>`,
-  restaurant: () => `<div class="rwall"></div><div class="chandelier"><i></i><i></i><i></i></div>
-    <div class="rfloor"></div><div class="rtable"><div class="candle"></div></div>`,
+  restaurant: () => `<div class="rwall"></div><div class="rcurt l"></div><div class="rcurt r"></div><div class="chandelier"><i></i><i></i><i></i></div>
+    <div class="rfloor"></div><div class="rcarpet"></div><div class="rtable"><div class="candle"></div><div class="rvase"></div></div>`,
 });
 
 
@@ -323,9 +323,6 @@ Object.assign(TRIP_PLAY, {
       if (a.data.glass && a.data.glass[side] && a.data.glass[side].el === g) { a.data.glass[side] = null; g.remove(); }
     }
   },
-  async dessert(a, side, p) {                                  // the waiter brings something sweet
-    await serveDish(a, side, pick(['cake', 'icecream']));
-  },
 });
 const MUSEUM_ART = [['sun', 'sun'], ['rainbow', 'rainbow'], ['moon', 'moonBig'], ['flower', 'flower'], ['fish', 'fish'], ['butterfly', 'butterfly']];
 function hangArt(a, side, word) {
@@ -338,8 +335,10 @@ function hangArt(a, side, word) {
   sayBubble(pets[side], word + '!', 2000);
   mood(pets[side], 'happy', 1400);
 }
-const DISHES = ['pizza', 'pancakes', 'fish', 'peach', 'icecream', 'cake'];
-const DISH_WORD = { pizza: 'pizza', pancakes: 'pancakes', fish: 'fish', peach: 'peach', icecream: 'ice cream', cake: 'cake' };
+// fancy food that is only served here (the pictures are in fancy.js)
+const DISHES = ['soup', 'salad', 'sushi', 'spaghetti', 'tacos', 'crepes', 'macarons', 'tart', 'sundae'];
+const DISH_WORD = { soup: 'soup', salad: 'salad', sushi: 'sushi', spaghetti: 'spaghetti', tacos: 'tacos', crepes: 'crepes', macarons: 'macarons', tart: 'tart', sundae: 'sundae' };
+const FAVORITE_DISH = { left: 'sushi', right: 'tart' };   // Livvie's fish and Avery Peach's peaches, the fancy way
 async function serveDish(a, side, dish) {
   const p = pets[side];
   begin(p, 6000);
@@ -371,13 +370,17 @@ async function serveDish(a, side, dish) {
   if (wt) waiterBow(wt);
   await animate(lid.firstChild, [{ transform: 'translateY(0) rotate(0)', opacity: 1 }, { transform: 'translateY(-90%) rotate(-25deg)', opacity: 0 }], { duration: 500, fill: 'forwards' });
   lid.remove();
-  const fav = (dish === 'fish' && side === 'left') || (dish === 'peach' && side === 'right') || dish === SETTINGS.favorites[side];
+  const fav = dish === FAVORITE_DISH[side];
   if (wt) waiterSay(a, 'Bon appétit!', 1800);
   await wait(400);
+  const napkin = prop(ICONS.napkin, 7, petPoint(p, 0.5, 0.78).x, petPoint(p, 0.5, 0.78).y);   // a napkin, of course
+  napkin.style.zIndex = 33; napkin.dataset.owner = side;
+  animate(napkin.firstChild, [{ transform: 'scale(.3)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 250, fill: 'forwards' });
   p.root.classList.add('chomp');
   Sound.play('chomp');
   await wait(900);
   p.root.classList.remove('chomp');
+  napkin.remove();
   food.remove();
   mood(p, 'happy', 1600);
   floatHearts(p, fav ? 4 : 2);

@@ -60,7 +60,7 @@ onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));
 /* ---------- choosing where to go (both tap the same place) ---------- */
 const PLACES = {
   beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell'] },
-  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['swing', 'slide', 'ducks'] },
+  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['swing', 'slide', 'ducks', 'bubbles'] },
   farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo'], need: 'farm' },
   icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle'] },
   library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh'], need: 'library' },
@@ -140,6 +140,8 @@ setInterval(() => { if (scene === 'trips' && now() - tripsTouched > 25000) close
 
 /* ---------- the trip ---------- */
 const PLACE_MARKUP = {};   // places added by other files draw their scenery here
+const PLACE_PLAN = {};     // a place can change the buttons while one of its games is going: (a, side) => plan or null
+const GATED = { puzzle: 'puzzles', bubbles: 'bubbles' };   // buttons that wait for their "new thing"
 const PLACE_START = {};    // things that are already at a place when the girls arrive: (a) => ...
 function placeMarkup(place) {
   if (PLACE_MARKUP[place]) return PLACE_MARKUP[place]();
@@ -207,8 +209,10 @@ ACTIVITIES.trip = {
     showHint(PLACES[place].icon, PLACES[place].word);
   },
   plan(a, side) {
+    const custom = PLACE_PLAN[a.opts.place] && PLACE_PLAN[a.opts.place](a, side);
+    if (custom) return custom;
     const friend = a.data.friend || nextFriendAt(a.opts.place);
-    const acts = [...PLACES[a.opts.place].acts.filter(x => x !== 'puzzle' || has('puzzles')), ...(friend ? ['meetfriend'] : []), 'tripcar'];
+    const acts = [...PLACES[a.opts.place].acts.filter(x => !GATED[x] || has(GATED[x])), ...(friend ? ['meetfriend'] : []), 'tripcar'];
     return { acts, clsOf: { tripcar: a.data.home[side] ? 'done' : '', meetfriend: a.data.hi && a.data.hi[side] ? 'done' : '' } };
   },
   async press(a, side, key) {

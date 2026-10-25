@@ -73,11 +73,25 @@ function merge(base, extra) {
   }
   return base;
 }
+/* The big pictures (camera, paintings, room pictures) live under their own keys, so an ordinary
+   save does not have to re-write them every time. They are only written again when they change.
+   An older save (or a restored backup) may still have them inside the main save: that is read too. */
+const HEAVY = ['photos', 'paintings', 'roomPictures'];
+const heavyKey = k => SAVE_KEY + '-' + k;
+const heavyPrint = v => JSON.stringify(v, (k, x) => (typeof x === 'string' && x.length > 200 ? x.length : x));   // a cheap fingerprint: long pictures count only by length
+const heavyWritten = {};   // the fingerprint of each big field as last written
 function loadSave() {
   let raw = null;
   try { raw = localStorage.getItem(SAVE_KEY); } catch (e) { /* no saving available: play anyway */ }
   if (!raw) return freshSave();
-  try { return merge(freshSave(), JSON.parse(raw)); } catch (e) {
+  try {
+    const data = JSON.parse(raw);
+    HEAVY.forEach(k => {
+      if (k in data) return;
+      try { const part = localStorage.getItem(heavyKey(k)); if (part) { data[k] = JSON.parse(part); heavyWritten[k] = heavyPrint(data[k]); } } catch (e) { /* that picture box is damaged: start it empty */ }
+    });
+    return merge(freshSave(), data);
+  } catch (e) {
     // a damaged save is set aside (never thrown away), and the game starts fresh
     try { localStorage.setItem(SAVE_KEY + '-damaged', raw); } catch (e2) { /* ignore */ }
     return freshSave();
@@ -93,16 +107,27 @@ function save() {
   saveTimer = setTimeout(saveNow, 250);
 }
 const flushSave = () => { if (saveTimer) saveNow(); };   // write any change that is waiting
+function writeSave() {
+  const rest = Object.assign({}, S);
+  HEAVY.forEach(k => delete rest[k]);
+  localStorage.setItem(SAVE_KEY, JSON.stringify(rest));
+  HEAVY.forEach(k => {
+    const print = heavyPrint(S[k]);
+    if (print === heavyWritten[k]) return;
+    localStorage.setItem(heavyKey(k), JSON.stringify(S[k]));
+    heavyWritten[k] = print;
+  });
+}
 function saveNow() {        // returns true when everything was written
   clearTimeout(saveTimer);
   saveTimer = 0;
   if (erasing) return true;
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return true; } catch (e) {
+  try { writeSave(); return true; } catch (e) {
     // The tablet's space for the game is full: let go of the oldest camera pictures
     // (everything else is kept) until it fits.
     while (S.photos && S.photos.length) {
       S.photos.shift();
-      try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); return true; } catch (e2) { /* still too big */ }
+      try { writeSave(); return true; } catch (e2) { /* still too big */ }
     }
     return false;
   }

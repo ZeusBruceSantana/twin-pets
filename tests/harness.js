@@ -20,7 +20,7 @@ const $$g = sel => [...W.document.querySelectorAll(sel)];
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const clone = o => JSON.parse(JSON.stringify(o));
 // what's saved on the device right now (the game writes changes a moment later, so write them first)
-const saved = () => { try { if (W && W.location.href.includes('test')) G('flushSave()'); } catch (e) { /* not open */ } return JSON.parse(localStorage.getItem(TEST_KEY) || 'null'); };
+const saved = () => { try { if (W && W.location.href.includes('test')) G('flushSave()'); } catch (e) { /* not open */ } const main = JSON.parse(localStorage.getItem(TEST_KEY) || 'null'); if (main) ['photos', 'paintings', 'roomPictures'].forEach(k => { const part = localStorage.getItem(TEST_KEY + '-' + k); if (part && !(k in main)) main[k] = JSON.parse(part); }); return main; };
 
 async function until(check, ms = 8000, what = 'something to happen') {
   const t0 = Date.now();
@@ -34,15 +34,16 @@ function loadFrame(src) {
   return new Promise(resolve => { frame.onload = () => resolve(); frame.src = src; });
 }
 /* Open the game fresh with this save (an object, some text, or nothing for a brand-new game). */
+const wipeSave = () => { localStorage.removeItem(TEST_KEY); ['photos', 'paintings', 'roomPictures'].forEach(k => localStorage.removeItem(TEST_KEY + '-' + k)); };   // the whole saved game, big pictures included
 async function openGame(saveData) {
   await loadFrame('about:blank');              // close the game first (it saves as it closes)
-  if (saveData == null) localStorage.removeItem(TEST_KEY);
-  else localStorage.setItem(TEST_KEY, typeof saveData === 'string' ? saveData : JSON.stringify(saveData));
+  wipeSave();
+  if (saveData != null) localStorage.setItem(TEST_KEY, typeof saveData === 'string' ? saveData : JSON.stringify(saveData));
   await loadFrame('../index.html?test&t=' + Date.now());
   W = frame.contentWindow;
   await until(() => ['title', 'pick'].includes(G('scene')), 10000, 'the game to open');
 }
-async function reopenGame() { saved(); await openGame(localStorage.getItem(TEST_KEY)); }
+async function reopenGame() { await openGame(saved()); }
 async function startPlaying() {
   tap($g('#title'));
   await until(() => G('scene') === 'play', 6000, 'the game to start');
@@ -98,9 +99,9 @@ async function runAll() {
     if (error) { const why = document.createElement('span'); why.className = 'why'; why.textContent = error; li.append(why); }
     results.push({ name: t.name, ok: !error, error, ms: Date.now() - t0 });
   }
-  localStorage.removeItem(TEST_KEY);
+  wipeSave();
   await loadFrame('about:blank');
-  localStorage.removeItem(TEST_KEY);
+  wipeSave();
   const bad = results.filter(r => !r.ok).length;
   sum.textContent = bad ? `${bad} of ${results.length} need a look` : `All ${results.length} passed`;
   sum.className = bad ? 'bad' : 'good';

@@ -65,8 +65,9 @@ function applyRestore() {
   if (!pendingRestore || pendingRestore.bad) return;
   saveNow();
   try {
-    const now = localStorage.getItem(SAVE_KEY);
-    if (now) localStorage.setItem(BEFORE_RESTORE_KEY, now);     // so a restore can be undone
+    localStorage.setItem(BEFORE_RESTORE_KEY, JSON.stringify(S));     // so a restore can be undone (the whole game, pictures too)
+    const fresh = freshSave();
+    HEAVY.forEach(k => { if (!(k in pendingRestore.save)) pendingRestore.save[k] = fresh[k]; });   // a backup without them has none (not the old ones)
     localStorage.setItem(SAVE_KEY, JSON.stringify(pendingRestore.save));
   } catch (e) { pendingRestore = { bad: true, full: true }; renderParent(); return; }
   erasing = true;                 // don't let the game save over the restored game while it reloads

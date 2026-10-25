@@ -71,7 +71,7 @@ const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
    the river running down to it, the snowy hill in the mountains), with roads joining them.
    Both girls tap the same place to drive there. */
 const TOWN_POS = {   // where each place is on the map: [% across, % down]. Room for 15 (5 across, 3 down); the empty spots are for places still to come.
-  woods: [10, 17], park: [30, 13], library: [50, 19], station: [70, 15], snowhill: [90, 17],
+  woods: [10, 17], park: [30, 16], library: [50, 19], station: [70, 15], snowhill: [90, 17],
   river: [11, 52], fair: [31, 50], museum: [51, 52], restaurant: [71, 50], trail: [90, 52],
   beach: [11, 85], farm: [33, 85], bakery: [91, 85], icecream: [72, 86],
 };

@@ -77,7 +77,9 @@ async function runAll() {
   list.innerHTML = '';
   sum.textContent = ''; sum.className = '';
   const results = [];
+  const only = (location.search.match(/[?&]only=([^&]*)/) || [])[1];     // ?only=word runs just the tests with that word in their name
   for (const t of TESTS) {
+    if (only && !t.name.toLowerCase().includes(decodeURIComponent(only).toLowerCase())) continue;
     const li = document.createElement('li');
     li.textContent = t.name;
     li.className = 'running';

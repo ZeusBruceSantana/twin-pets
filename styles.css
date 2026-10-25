@@ -1213,3 +1213,9 @@ body.on-stage #rooms { filter: brightness(.55) saturate(.8); }
 .pet .catchbasket { position: absolute; left: 50%; top: -9%; width: 44%; transform: translateX(-50%); z-index: 6; pointer-events: none; }
 .pet .catchbasket svg { width: 100%; display: block; }
 .column .btn.on { box-shadow: 0 0 0 1vmin #ffd23f, 0 0 3vmin #ffd23f, 0 .9vmin 0 var(--c-dark); transform: translateY(-.4vmin); }
+
+/* ---------- dance paws ---------- */
+.discoglow { background: radial-gradient(circle at 30% 20%, rgba(255,143,184,.35), transparent 40%), radial-gradient(circle at 70% 20%, rgba(127,209,255,.35), transparent 40%); animation: discoflash 1.2s steps(2) infinite alternate; pointer-events: none; }
+@keyframes discoflash { from { opacity: .35; filter: hue-rotate(0); } to { opacity: .9; filter: hue-rotate(120deg); } }
+.dpaw > div { filter: drop-shadow(0 .5vmin 0 rgba(0,0,0,.18)); }
+body[data-scene="act"] .wxchart, body[data-scene="act"] .wxlayer { display: none; }

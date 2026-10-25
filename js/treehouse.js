@@ -3,6 +3,7 @@
    from the apple tree and nothing is ever lost) and the Weather Machine (mix sun, clouds, rain, snow and
    wind; some mixes make something special, and a little chart fills in as they find them). */
 
+ICONS.flower = ITEM_ART.flower({ main: '#ff8fb8', dark: '#c2367a', light: '#ffe3ef' });   // a flower picture (the museum, the weather chart and the puzzles use it)
 Object.assign(ICONS, {
   roomTree: '<svg viewBox="0 0 100 100"><rect x="40" y="52" width="20" height="42" rx="4" fill="#b07f4f"/><circle cx="50" cy="30" r="26" fill="#6cc551"/><circle cx="30" cy="44" r="18" fill="#58b043"/><circle cx="70" cy="44" r="18" fill="#58b043"/><rect x="26" y="50" width="48" height="22" rx="3" fill="#e8b071" stroke="#b07f4f" stroke-width="3"/><path d="M50 50 L26 50 L50 36 L74 50Z" fill="#ff8a7a" stroke="#d9604f" stroke-width="3" stroke-linejoin="round"/><rect x="44" y="56" width="12" height="16" rx="2" fill="#7a4a2a"/><circle cx="36" cy="22" r="4" fill="#ff5d5d"/><circle cx="62" cy="16" r="4" fill="#ff5d5d"/></svg>',
   catchBtn: '<svg viewBox="0 0 100 100"><path d="M10 52 H90 L80 90 H20Z" fill="#e8b071" stroke="#c98a3c" stroke-width="4" stroke-linejoin="round"/><path d="M30 52 L34 90 M50 52 V90 M70 52 L66 90" stroke="#c98a3c" stroke-width="3"/><circle cx="36" cy="44" r="11" fill="#ff5d5d"/><circle cx="58" cy="40" r="11" fill="#ffa24d"/><circle cx="48" cy="26" r="10" fill="#ff5d5d"/><path d="M48 16 l6 -8" stroke="#6cc551" stroke-width="4" stroke-linecap="round"/></svg>',

@@ -49,7 +49,7 @@ test('Saves from every earlier version still load', async () => {
     Object.keys(old.unlocked).forEach(k => expect(S.unlocked[k], `${name}: "${k}" still unlocked`));
     if (old.pets.left.tricks) expectEqual(S.pets.left.tricks, old.pets.left.tricks, `${name}: tricks kept`);
     if (old.pets.left.owned) expectEqual(S.pets.left.owned, old.pets.left.owned, `${name}: presents kept`);
-    ['garden', 'letters', 'photos', 'paintings', 'decor', 'timer', 'fridge', 'roomPictures'].forEach(k => expect(S[k] !== undefined, `${name}: new "${k}" was added`));
+    ['garden', 'letters', 'photos', 'paintings', 'decor', 'timer', 'fridge', 'roomPictures', 'friends'].forEach(k => expect(S[k] !== undefined, `${name}: new "${k}" was added`));
   }
 });
 
@@ -418,7 +418,7 @@ test('Each room and place has its own tune, and none at bedtime', async () => {
   G('S.sound.music = true; S.bedtime = true');
   expectEqual(G('Music.wanted(true)'), null, 'no tune at bedtime (the lullaby plays)');
   G('S.bedtime = false');
-  ['playroom', 'kitchen', 'bathroom', 'backyard', 'bedroom', 'frontyard', 'school', 'beach', 'park', 'icecream', 'title']
+  ['playroom', 'kitchen', 'bathroom', 'backyard', 'bedroom', 'frontyard', 'school', 'beach', 'park', 'icecream', 'farm', 'library', 'snowhill', 'title']
     .forEach(name => expect(G(`!!PIECES['${name}']`), `there is a tune for the ${name}`));
   const names = G(`Object.values(PIECES).map(p => p.seed)`);
   expectEqual(new Set(names).size, names.length, 'every tune is different');
@@ -659,4 +659,103 @@ test('When the device runs out of room, old camera pictures make room and everyt
   expect(s.photos.length > 0 && s.photos.length < 5, 'some of the oldest pictures were let go');
   expectEqual(s.photos[s.photos.length - 1].at, 5, 'the newest picture is kept');
   expectEqual(s.jar, 5, 'the jar was saved');
+});
+
+/* =====================================================================
+   THE TOWN AND ANIMAL FRIENDS
+   ===================================================================== */
+const withTown = (extra = {}) => { const s = played(); Object.assign(s.features, { trips: true, visitors: true }, extra); s.unlocked.jar = true; return s; };
+
+test('The town map shows the places that have appeared, and a closed spot for the rest', async () => {
+  await openGame(withTown());
+  await startPlaying();
+  G('openTrips()');
+  await until(() => G('scene') === 'trips', 3000, 'the town map');
+  ['beach', 'park', 'icecream'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the town map`));
+  ['farm', 'library', 'snowhill'].forEach(k => expect(!$g(`#trips .mtile[data-key="${k}"]`), `the ${k} has not appeared yet`));
+  expectEqual($$g('#trips .mtile.closed').length, 3, 'three closed spots');
+  G('closeTrips()');
+  G(`introduce(NEW_THINGS.find(n => n.key === 'farm'), true); introduce(NEW_THINGS.find(n => n.key === 'library'), true); openTrips()`);
+  await until(() => G('scene') === 'trips', 3000, 'the town map');
+  expect($g('#trips .mtile[data-key="farm"]') && $g('#trips .mtile[data-key="library"]'), 'the farm and library are on the map');
+  expect(!$g('#trips .mtile[data-key="snowhill"]'), 'the snowy hill still waits its turn');
+});
+
+test('Both girls going to the farm and saying hello makes a friend, and the next visit brings a new one', async () => {
+  await openGame(withTown({ farm: true }));
+  await startPlaying();
+  G('openTrips()');
+  await until(() => G('scene') === 'trips', 3000, 'the town map');
+  tap($g('#trips .mtile[data-key="farm"] .half.l'));
+  tap($g('#trips .mtile[data-key="farm"] .half.r'));
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the farm trip to start');
+  expectEqual(buttons('left').join(','), 'hay,eggs,moo,meetfriend,tripcar', 'the farm buttons');
+  tap($g('#col-left .btn-meetfriend'));
+  await sleep(300);
+  expectEqual(G('S.friends.have'), [], 'one hello is not enough');
+  tap($g('#col-right .btn-meetfriend'));
+  await until(() => G('S.friends.have.length') === 1, 5000, 'a friend to be made');
+  expectEqual(G('S.friends.have'), ['lamb'], 'the first farm friend is the lamb');
+  expectEqual(G('nextFriendAt("farm")'), 'cow', 'the cow is next');
+  [['hay', 'left'], ['eggs', 'right'], ['moo', 'left']].forEach(([a, side]) => tap($g(`#col-${side} .btn-${a}`)));
+  await sleep(500);
+  expectEqual(G('TEST_ERRORS'), [], 'the farm things worked');
+});
+
+test('The library and the snowy hill have things to do', async () => {
+  for (const [place, acts] of [['library', 'pickbook,stack,shh,meetfriend,tripcar'], ['snowhill', 'sled,angel,snowball,tripcar']]) {
+    await openGame(withTown({ farm: true, library: true, snowhill: true }));
+    await startPlaying();
+    G(`startActivity('trip', 'left', { place: '${place}' })`);
+    await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the ' + place + ' trip to start');
+    expectEqual(buttons('left').join(','), acts, `the ${place} buttons`);
+    const first = acts.split(',');
+    first.slice(0, 3).filter(a => a !== 'pickbook').forEach(a => tap($g(`#col-right .btn-${a}`)));
+    await sleep(700);
+    expectEqual(G('TEST_ERRORS'), [], `the ${place} things worked`);
+  }
+});
+
+test('A friend from a visitor joins, the Friends button appears, and each girl picks her own', async () => {
+  await openGame(withTown());
+  await startPlaying();
+  G(`meetFriend('bunny'); meetFriend('owl'); meetFriend('bunny')`);
+  expectEqual(G('S.friends.have'), ['bunny', 'owl'], 'each friend is added once');
+  expectEqual(G('S.friends.pick'), { left: null, right: null }, 'nobody is given a friend; they choose');
+  await until(() => G('has("friends")'), 8000, 'the Friends button to appear');
+  await goTo('bedroom');
+  expect(buttons('left').includes('friends') && buttons('right').includes('friends'), 'both girls have a Friends button');
+  tap($g('#col-left .btn-friends'));
+  await until(() => $g('.spanel.side-left'), 2000, 'her friends panel');
+  tap($g('.spanel.side-left .scard[data-key="bunny"]'), { hold: 40 });
+  await sleep(300);
+  expectEqual(G('S.friends.pick.left'), 'bunny', 'Leah picked Clover');
+  expect($g('.pet.side-left .buddy'), 'Clover sits beside Livvie');
+  tap($g('#col-right .btn-friends'));
+  await until(() => $g('.spanel.side-right'), 2000, 'her friends panel');
+  tap($g('.spanel.side-right .scard[data-key="bunny"]'), { hold: 40 });
+  await sleep(300);
+  expectEqual(G('S.friends.pick.right'), null, 'her sister has Clover right now, so Avery cannot take her');
+  tap($g('.spanel.side-right .scard[data-key="owl"]'), { hold: 40 });
+  await sleep(300);
+  expectEqual(G('S.friends.pick'), { left: 'bunny', right: 'owl' }, 'each girl has her own friend');
+  tap($g('.spanel.side-left .scard[data-key="bunny"]'), { hold: 40 });
+  await sleep(300);
+  expectEqual(G('S.friends.pick.left'), null, 'tap again to put a friend back');
+  expect(!$g('.pet.side-left .buddy'), 'Clover is gone from beside Livvie');
+  await reopenGame();
+  expectEqual(G('S.friends.pick.right'), 'owl', 'the pick is kept');
+  await startPlaying();
+  expect($g('.pet.side-right .buddy'), 'Hoot is still beside Avery Peach');
+});
+
+test('Saying hello to a visitor together makes them a friend', async () => {
+  await openGame(withTown());
+  await startPlaying();
+  await goTo('frontyard');
+  G(`visitor = { kind: 'owl', greeted: { left: false, right: false }, until: now() + 60000 }; showVisitor(true);`);
+  await until(() => buttons('left').includes('hello'), 3000, 'the Hello button');
+  tap($g('#col-left .btn-hello'));
+  tap($g('#col-right .btn-hello'));
+  await until(() => G('S.friends.have').includes('owl'), 6000, 'Hoot to become a friend');
 });

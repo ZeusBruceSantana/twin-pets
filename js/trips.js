@@ -18,6 +18,24 @@ Object.assign(ICONS, {
   lick: '<svg viewBox="0 0 100 100"><path d="M36 54 L50 94 L64 54Z" fill="#e8b071" stroke="#c98a3c" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="44" r="18" fill="#a6e0c8" stroke="#6cc5a0" stroke-width="3"/><path d="M70 40 C 80 36, 86 44, 80 50 C 76 54, 70 50, 70 46Z" fill="#ff8fab"/></svg>',
 });
 
+/* the farm, the library and the snowy hill */
+const BARN = '<path d="M18 86 V46 L50 22 L82 46 V86Z" fill="#e0524f" stroke="#a83a38" stroke-width="3" stroke-linejoin="round"/><path d="M18 46 L50 22 L82 46" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/><rect x="38" y="56" width="24" height="30" fill="#fff" stroke="#a83a38" stroke-width="3"/><path d="M38 56 L62 86 M62 56 L38 86" stroke="#a83a38" stroke-width="3"/>';
+Object.assign(ICONS, {
+  barn: `<svg viewBox="0 0 100 100">${BARN}</svg>`,
+  farm: `<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="14" fill="#d6f0ff"/><path d="M0 76 C 30 68, 70 68, 100 76 V100 H0Z" fill="#8fd16a"/>${BARN}</svg>`,
+  library: '<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="14" fill="#efe3ff"/><rect x="12" y="22" width="76" height="68" rx="5" fill="#d9b98a" stroke="#a9835a" stroke-width="3"/><path d="M12 56 H88" stroke="#a9835a" stroke-width="3"/><g stroke="#fff" stroke-width="1.5"><rect x="18" y="28" width="9" height="24" fill="#ff7a9a"/><rect x="28" y="32" width="9" height="20" fill="#5aa9ff"/><rect x="38" y="26" width="9" height="26" fill="#ffd23f"/><rect x="48" y="30" width="9" height="22" fill="#6cc551"/><rect x="58" y="28" width="9" height="24" fill="#a77bff"/><rect x="68" y="32" width="9" height="20" fill="#ff9a4d"/><rect x="18" y="62" width="9" height="24" fill="#5aa9ff"/><rect x="28" y="66" width="9" height="20" fill="#ff7a9a"/><rect x="38" y="60" width="9" height="26" fill="#6cc551"/><rect x="48" y="64" width="9" height="22" fill="#ffd23f"/><rect x="58" y="62" width="9" height="24" fill="#ff9a4d"/><rect x="68" y="66" width="9" height="20" fill="#a77bff"/></g></svg>',
+  snowhill: '<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="14" fill="#cfe9ff"/><path d="M0 62 C 24 40, 56 44, 100 70 V100 H0Z" fill="#fff"/><path d="M0 80 C 30 66, 70 70, 100 84 V100 H0Z" fill="#eaf4ff"/><path d="M70 50 L80 24 L90 50Z M66 62 L80 34 L94 62Z" fill="#4f9a6a" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><rect x="28" y="62" width="26" height="7" rx="3" fill="#ff7a7a"/><path d="M26 74 H58" stroke="#c9d2e0" stroke-width="3" stroke-linecap="round"/></svg>',
+  hay: '<svg viewBox="0 0 100 100"><rect x="12" y="34" width="76" height="46" rx="8" fill="#f5d36a" stroke="#d9a93a" stroke-width="4"/><path d="M12 52 H88 M12 66 H88 M38 34 V80 M62 34 V80" stroke="#d9a93a" stroke-width="3"/></svg>',
+  egg: '<svg viewBox="0 0 100 100"><path d="M50 12 C 72 12, 82 46, 82 62 C 82 82, 68 92, 50 92 C 32 92, 18 82, 18 62 C 18 46, 28 12, 50 12Z" fill="#fff4e0" stroke="#d9b98a" stroke-width="4"/><circle cx="40" cy="56" r="5" fill="#ffd9a8"/><circle cx="60" cy="68" r="4" fill="#ffd9a8"/></svg>',
+  chick: '<svg viewBox="0 0 100 100"><circle cx="50" cy="56" r="32" fill="#ffe066" stroke="#e0b030" stroke-width="4"/><path d="M44 62 L50 70 L56 62Z" fill="#ffa24d" stroke="#e07a2a" stroke-width="2" stroke-linejoin="round"/><circle cx="38" cy="50" r="4.5" fill="#3e3a4f"/><circle cx="62" cy="50" r="4.5" fill="#3e3a4f"/><path d="M50 24 q-4 -10 -10 -8 M50 24 q4 -12 12 -8" stroke="#e0b030" stroke-width="4" fill="none" stroke-linecap="round"/></svg>',
+  openbook: '<svg viewBox="0 0 100 100"><path d="M50 30 C 38 22, 22 22, 10 28 V80 C 22 74, 38 74, 50 82 C 62 74, 78 74, 90 80 V28 C 78 22, 62 22, 50 30Z" fill="#fff" stroke="#a77bff" stroke-width="5" stroke-linejoin="round"/><path d="M50 30 V82" stroke="#a77bff" stroke-width="4"/><path d="M20 40 C 28 38, 36 38, 42 42 M20 52 C 28 50, 36 50, 42 54 M58 42 C 64 38, 72 38, 80 40 M58 54 C 64 50, 72 50, 80 52" stroke="#d6c4ff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>',
+  bookstack: '<svg viewBox="0 0 100 100"><rect x="14" y="66" width="72" height="20" rx="4" fill="#5aa9ff" stroke="#2266b8" stroke-width="3"/><rect x="22" y="44" width="62" height="20" rx="4" fill="#ff7a9a" stroke="#c23b5e" stroke-width="3"/><rect x="18" y="22" width="58" height="20" rx="4" fill="#ffd23f" stroke="#c9a000" stroke-width="3"/><path d="M26 76 H74 M32 54 H76 M28 32 H68" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/></svg>',
+  shh: '<svg viewBox="0 0 100 100"><circle cx="50" cy="52" r="36" fill="#ffe7a8" stroke="#e0b070" stroke-width="4"/><path d="M34 44 q5 -5 10 0 M56 44 q5 -5 10 0" stroke="#3e3a4f" stroke-width="4" fill="none" stroke-linecap="round"/><ellipse cx="50" cy="68" rx="8" ry="3" fill="#e0905a"/><rect x="46" y="48" width="10" height="34" rx="5" fill="#ffc6a8" stroke="#e0905a" stroke-width="3"/></svg>',
+  sled: '<svg viewBox="0 0 100 100"><path d="M10 74 C 10 82, 24 84, 34 82 H78 C 90 82, 94 74, 88 68" fill="none" stroke="#9aa6bd" stroke-width="5" stroke-linecap="round"/><rect x="20" y="52" width="62" height="14" rx="5" fill="#ff7a7a" stroke="#c23b3b" stroke-width="3"/><path d="M30 66 V78 M70 66 V78" stroke="#9aa6bd" stroke-width="4" stroke-linecap="round"/><path d="M22 54 C 8 50, 6 38, 14 34" fill="none" stroke="#c23b3b" stroke-width="3" stroke-linecap="round"/></svg>',
+  snowangel: '<svg viewBox="0 0 100 100"><rect width="100" height="100" rx="14" fill="#eaf4ff"/><g fill="#fff" stroke="#9fc2e8" stroke-width="3" stroke-linejoin="round"><circle cx="50" cy="26" r="10"/><path d="M50 36 C 38 40, 26 52, 14 70 C 26 62, 38 58, 46 58 L44 84 H56 L54 58 C 62 58, 74 62, 86 70 C 74 52, 62 40, 50 36Z"/></g></svg>',
+  snowball: '<svg viewBox="0 0 100 100"><circle cx="50" cy="52" r="34" fill="#fff" stroke="#9fc2e8" stroke-width="4"/><path d="M34 42 q6 -8 16 -8" stroke="#dcebfa" stroke-width="5" fill="none" stroke-linecap="round"/></svg>',
+});
+
 /* ---------- the car in the front yard ---------- */
 ROOMS.frontyard.acts.push('car');
 BUTTONS.car = { icon: 'car', label: 'Car' };
@@ -41,11 +59,19 @@ onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));
 
 /* ---------- choosing where to go (both tap the same place) ---------- */
 const PLACES = {
-  beach:    { word: 'beach',          icon: 'beach', color: '#bfe9fb', acts: ['splash', 'castle', 'shell'] },
-  park:     { word: 'park',           icon: 'park',  color: '#c8e7a6', acts: ['swing', 'slide', 'ducks'] },
-  icecream: { word: 'ice cream shop', icon: 'shop',  color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle'] },
+  beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell'] },
+  park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['swing', 'slide', 'ducks'] },
+  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo'], need: 'farm' },
+  icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle'] },
+  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh'], need: 'library' },
+  snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball'], need: 'snowhill' },
 };
-const tripBox = el('div', 'overlay', '<div class="trip-grid"></div><div class="map-x"></div>');
+const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
+/* The town map: roads between the places. Both girls tap the same place to drive there. */
+const tripBox = el('div', 'overlay', `<div class="town"><svg class="town-roads" viewBox="0 0 300 200" preserveAspectRatio="none" aria-hidden="true">
+  <g fill="none" stroke="#9aa6bd" stroke-width="13" stroke-linecap="round"><path d="M10 100 H290"/><path d="M100 14 V186"/><path d="M200 14 V186"/></g>
+  <g fill="none" stroke="#fff" stroke-width="1.4" stroke-dasharray="6 7"><path d="M10 100 H290"/><path d="M100 14 V186"/><path d="M200 14 V186"/></g></svg>
+  <div class="trip-grid"></div></div><div class="map-x"></div>`);
 tripBox.id = 'trips';
 stage.append(tripBox);
 tripBox.querySelector('.map-x').innerHTML = ICONS.close;
@@ -58,10 +84,13 @@ function openTrips() {
   const grid = tripBox.querySelector('.trip-grid');
   grid.innerHTML = '';
   Object.entries(PLACES).forEach(([k, pl]) => {
-    grid.append(voteTile(k, ICONS[pl.icon], pl.word, pl.color, side => {
+    if (!placeOpen(k)) { grid.append(el('div', 'mtile closed', `<div class="ico">${ICONS.window}</div>`)); return; }
+    const tile = voteTile(k, ICONS[pl.icon], pl.word, pl.color, side => {
       tripsTouched = now();
       castVote(side, k, grid, () => { closeTrips(); setTimeout(() => startActivity('trip', side, { place: k }), 50); });
-    }));
+    });
+    if (nextFriendAt(k)) tile.append(el('div', 'badge', ICONS.star));   // someone new to meet there
+    grid.append(tile);
   });
   tripBox.classList.add('show');
   tripsTouched = now();
@@ -83,6 +112,17 @@ function placeMarkup(place) {
     <div class="cloud" style="top:12%; animation-delay:-30s"></div>
     <div class="ttree l"></div><div class="ttree r"></div>
     <div class="pond"></div><div class="grass"></div>`;
+  if (place === 'farm') return `<div class="tsky farm"></div>
+    <div class="cloud" style="top:10%; animation-delay:-12s"></div>
+    <div class="farmhill"></div><div class="barn">${ICONS.barn}</div><div class="fencef"></div><div class="grass"></div>`;
+  if (place === 'library') return `<div class="libwall"></div>
+    <div class="bookcase l"></div><div class="bookcase r"></div>
+    <div class="libwindow">${ICONS.window}</div>
+    <div class="libfloor"></div><div class="libdesk"></div>`;
+  if (place === 'snowhill') return `<div class="tsky snow"></div>
+    <div class="snowhill-far"></div><div class="snowhill-near"></div>
+    <div class="pine l"></div><div class="pine r"></div>
+    ${Array.from({ length: 16 }, (_, i) => `<i class="flake" style="left:${(i * 37) % 100}%; animation-delay:${-(i * 1.3) % 9}s; animation-duration:${7 + (i % 4)}s"></i>`).join('')}`;
   return `<div class="shopwall"></div><div class="awning"></div>
     <div class="counter"><div class="tubs">${['#ffc0d6', '#7a4a2a', '#fff4e0', '#a6e0c8', '#ffb38a'].map(c => `<i style="background:${c}"></i>`).join('')}</div></div><div class="shopfloor"></div>`;
 }
@@ -91,6 +131,10 @@ Object.assign(BUTTONS, {
   splash: { icon: 'splash', label: 'Splash' }, castle: { icon: 'castle', label: 'Castle' }, shell: { icon: 'shell', label: 'Shells' },
   swing: { icon: 'swing', label: 'Swing' }, slide: { icon: 'slide', label: 'Slide' }, ducks: { icon: 'ducks', label: 'Ducks' },
   scoop: { icon: 'scoop', label: 'Scoop' }, lick: { icon: 'lick', label: 'Lick' }, sprinkle: { icon: 'sprinkles', label: 'Sprinkles' },
+  hay: { icon: 'hay', label: 'Hay' }, eggs: { icon: 'egg', label: 'Eggs' }, moo: { icon: 'moo', label: 'Animals' },
+  pickbook: { icon: 'openbook', label: 'Books' }, stack: { icon: 'bookstack', label: 'Stack' }, shh: { icon: 'shh', label: 'Shh' },
+  sled: { icon: 'sled', label: 'Sled' }, angel: { icon: 'snowangel', label: 'Angel' }, snowball: { icon: 'snowball', label: 'Snowball' },
+  meetfriend: { icon: 'wave', label: 'Hello' },
   tripcar: { icon: 'car', label: 'Home' },
 });
 ACTIVITIES.trip = {
@@ -124,8 +168,9 @@ ACTIVITIES.trip = {
     showHint(PLACES[place].icon, PLACES[place].word);
   },
   plan(a, side) {
-    const acts = [...PLACES[a.opts.place].acts, 'tripcar'];
-    return { acts, clsOf: { tripcar: a.data.home[side] ? 'done' : '' } };
+    const friend = a.data.friend || nextFriendAt(a.opts.place);
+    const acts = [...PLACES[a.opts.place].acts, ...(friend ? ['meetfriend'] : []), 'tripcar'];
+    return { acts, clsOf: { tripcar: a.data.home[side] ? 'done' : '', meetfriend: a.data.hi && a.data.hi[side] ? 'done' : '' } };
   },
   async press(a, side, key) {
     const p = pets[side];
@@ -137,7 +182,7 @@ ACTIVITIES.trip = {
       else invite(other(side), 'tripcar', 5000);
       return;
     }
-    TRIP_PLAY[key](a, side, p);
+    if (TRIP_PLAY[key]) TRIP_PLAY[key](a, side, p);
   },
 };
 async function driveHome(a) {
@@ -148,6 +193,40 @@ async function driveHome(a) {
   await animate(a.data.bg, [{ opacity: 1 }, { opacity: 0 }], { duration: 600, fill: 'forwards' });
   await fadePets(true);
   endActivity(true, a.opts.place);
+}
+
+/* ---------- farm and library helpers ---------- */
+const FARM_ANIMALS = ['cow', 'lamb', 'piggy'];
+const farmAnimal = a => FARM_ANIMALS[(a.data.farmN = (a.data.farmN || 0) + 1) % FARM_ANIMALS.length];
+/* A farm animal pops up beside a pet. Returns the animal and where it is. */
+async function animalVisit(side, kind) {
+  const at = petPoint(pets[side], side === 'left' ? -0.12 : 1.12, 0.78);
+  const an = prop(friendArt(kind), 13, at.x, at.y);
+  an.style.zIndex = 31;
+  an.dataset.owner = side;
+  Sound.play(BUDDIES[kind].sound);
+  await animate(an.firstChild, [{ transform: 'translateY(60%) scale(.3)', opacity: 0 }, { transform: 'translateY(-10%) scale(1.08)', opacity: 1 }, { transform: 'translateY(0) scale(1)', opacity: 1 }], { duration: 450, easing: 'ease-out', fill: 'forwards' });
+  return { an, at };
+}
+async function leaveFarm(an) {
+  await animate(an, [{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' });
+  an.remove();
+}
+const LIBRARY_BOOKS = [['moon', '#a77bff', 'moon'], ['sun', '#ffb020', 'sun'], ['fish', '#5aa9ff', 'fish'], ['star', '#ff7a9a', 'star'], ['apple', '#6cc551', 'apple'], ['heart', '#ff8fb8', 'heart']];
+const bookCover = (c, icon) => `<svg viewBox="0 0 100 100"><rect x="20" y="8" width="62" height="84" rx="7" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M28 8 V92" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="34" y="20" width="40" height="40" rx="6" fill="#fff" opacity=".9"/><g transform="translate(37 23) scale(.34)">${ICONS[icon].replace(/^<svg[^>]*>|<\/svg>$/g, '')}</g></svg>`;
+async function readBook(side, word) {
+  const p = pets[side];
+  begin(p, 2600);
+  const at = petPoint(p, 0.5, 0.78);
+  const bk = prop(ICONS.openbook, 9, at.x, at.y);
+  bk.dataset.owner = side;
+  bk.style.zIndex = 31;
+  Sound.play('page');
+  await animate(bk.firstChild, [{ transform: 'scale(.3) translateY(40%)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 400, fill: 'forwards' });
+  sayBubble(p, word + '!', 2000);
+  mood(p, 'happy', 2000);
+  await wait(2200);
+  bk.remove();
 }
 
 /* ---------- things to do at each place ---------- */
@@ -250,6 +329,170 @@ const TRIP_PLAY = {
     const r = top.getBoundingClientRect();
     sparkles(r.left + r.width / 2, r.top, 8, ['#ff7a7a', '#5aa9ff', '#ffd23f', '#6cc551', '#a77bff']);
   },
+
+  /* ---- the farm ---- */
+  async hay(a, side, p) {
+    begin(p, 2400);
+    const kind = farmAnimal(a);
+    const { an, at } = await animalVisit(side, kind);
+    const from = petPoint(p, 0.5, 0.5);
+    const bale = prop(ICONS.hay, 6, from.x, from.y);
+    bale.style.zIndex = 32;
+    bale.dataset.owner = side;
+    await arc(bale, from, at, 650, 50, 200);
+    bale.remove();
+    Sound.play('chomp');
+    animate(an.firstChild, [{ transform: 'scale(1)' }, { transform: 'scale(1.1,.9)' }, { transform: 'scale(1)' }, { transform: 'scale(1.1,.9)' }, { transform: 'scale(1)' }], { duration: 800 });
+    mood(p, 'happy', 1400);
+    floatHearts(p, 2);
+    await wait(1000);
+    await leaveFarm(an);
+  },
+  async eggs(a, side, p) {
+    begin(p, 3200);
+    const at = petPoint(p, side === 'left' ? 0.9 : 0.1, 0.98);
+    const egg = prop(ICONS.egg, 6, at.x, at.y);
+    egg.dataset.owner = side;
+    egg.style.zIndex = 31;
+    Sound.play('pop');
+    await animate(egg.firstChild, [{ transform: 'translateY(40%) scale(.3)' }, { transform: 'translateY(-40%) scale(1.15)' }, { transform: 'translateY(-30%) scale(1)' }], { duration: 400, fill: 'forwards' });
+    await animate(egg.firstChild, [-12, 12, -10, 10, 0].map(r => ({ transform: `translateY(-30%) rotate(${r}deg)` })), { duration: 700, fill: 'forwards' });
+    Sound.play('crack');
+    egg.firstChild.innerHTML = ICONS.chick;
+    sparkles(at.x, at.y - 40, 7, ['#ffe066', '#fff4e0', '#ffffff']);
+    animate(egg.firstChild, [{ transform: 'translateY(-30%) scale(.5)' }, { transform: 'translateY(-50%) scale(1.2)' }, { transform: 'translateY(-30%) scale(1)' }], { duration: 400, fill: 'forwards' });
+    Sound.play('peep');
+    mood(p, 'happy', 1400);
+    floatHearts(p, 2);
+    await wait(1600);
+    egg.remove();
+  },
+  async moo(a, side, p) {
+    begin(p, 2000);
+    const kind = farmAnimal(a);
+    const { an } = await animalVisit(side, kind);
+    mood(p, 'happy', 1200);
+    floatHearts(p, 1);
+    await wait(900);
+    await leaveFarm(an);
+  },
+
+  /* ---- the library ---- */
+  pickbook(a, side, p) {
+    openPanel(side, {
+      cols: 3,
+      items: LIBRARY_BOOKS.map(([w, c, ic]) => ({ key: w, word: w, icon: bookCover(c, ic) })),
+      onPick: w => { if (act === a) readBook(side, w); },
+    });
+  },
+  async stack(a, side, p) {
+    // one tower of books, built by both girls
+    if (!a.data.stackEl) {
+      a.data.stackEl = actProp(a, `<svg viewBox="0 0 100 100">${['#5aa9ff', '#ff7a9a', '#ffd23f', '#6cc551', '#a77bff'].map((c, i) =>
+        `<g class="pc" style="opacity:0"><rect x="${14 + (i % 2) * 6}" y="${74 - i * 17}" width="${70 - (i % 3) * 6}" height="15" rx="4" fill="${c}" stroke="#fff" stroke-width="2"/></g>`).join('')}</svg>`,
+        { left: '50%', bottom: '6%', width: '22vmin', height: '24vmin', transform: 'translateX(-50%)' }, 9);
+      a.data.stack = 0;
+    }
+    const pcs = a.data.stackEl.querySelectorAll('.pc');
+    if (a.data.stack >= pcs.length) { hopPet(side); return; }
+    const g = pcs[a.data.stack++];
+    g.style.opacity = 1;
+    Sound.play('block');
+    animate(g, [{ transform: 'translateY(-40px)' }, { transform: 'translateY(0)' }], { duration: 300, easing: 'ease-in' });
+    mood(p, 'happy', 900);
+    if (a.data.stack === pcs.length) {
+      Sound.play('yay');
+      const r = a.data.stackEl.getBoundingClientRect();
+      sparkles(r.left + r.width / 2, r.top, 14);
+      SIDES.forEach(s => floatHearts(pets[s], 2));
+    }
+  },
+  async shh(a, side, p) {
+    begin(p, 2200);
+    Sound.play('shh');
+    p.root.classList.add('asleep-eyes');
+    sayBubble(p, 'Shh!', 1800);
+    await wait(1800);
+    p.root.classList.remove('asleep-eyes');
+    mood(p, 'happy', 900);
+  },
+
+  /* ---- the snowy hill ---- */
+  async sled(a, side, p) {
+    begin(p, 2600);
+    const dir = side === 'left' ? 1 : -1;
+    const at = petPoint(p, 0.5, 0.98);
+    const sl = prop(ICONS.sled, 11, at.x, at.y);
+    sl.dataset.owner = side;
+    sl.style.zIndex = 9;
+    const go = p.root.offsetWidth * 0.5 * dir;
+    Sound.play('slidewhee');
+    animate(sl.firstChild, [{ transform: 'translateX(0)' }, { transform: `translateX(${go}px)`, offset: 0.5 }, { transform: 'translateX(0)' }], { duration: 2000, easing: 'ease-in-out' });
+    await petAnim(p, [{ transform: 'translate(0,0)' }, { transform: `translate(${dir * 50}%, -6%) rotate(${dir * 8}deg)`, offset: 0.5 }, { transform: 'translate(0,0)' }], { duration: 2000, easing: 'ease-in-out' });
+    sl.remove();
+    mood(p, 'happy', 1200);
+    floatHearts(p, 2);
+  },
+  async angel(a, side, p) {
+    begin(p, 3000);
+    const dir = side === 'left' ? 1 : -1;
+    await petAnim(p, [{ transform: 'rotate(0)' }, { transform: `translateY(10%) rotate(${-dir * 85}deg)` }, { transform: `translateY(10%) rotate(${-dir * 78}deg)` }, { transform: `translateY(10%) rotate(${-dir * 90}deg)` }, { transform: `translateY(10%) rotate(${-dir * 78}deg)` }, { transform: `translateY(10%) rotate(${-dir * 85}deg)` }, { transform: 'rotate(0)' }], { duration: 2400, easing: 'ease-in-out' });
+    const at = petPoint(p, 0.5, 0.97);
+    const imp = prop(ICONS.snowangel, 9, at.x, at.y);
+    imp.dataset.owner = side;
+    imp.style.zIndex = 7;
+    animate(imp.firstChild, [{ transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 400, easing: 'ease-out', fill: 'forwards' });
+    sparkles(at.x, at.y - 30, 8, ['#ffffff', '#cfe9ff', '#9fc2e8']);
+    Sound.play('poof');
+    mood(p, 'happy', 1400);
+  },
+  async snowball(a, side, p) {
+    begin(p, 1800);
+    const sister = pets[other(side)];
+    const from = petPoint(p, 0.5, 0.4);
+    const ball = prop(ICONS.snowball, 5, from.x, from.y);
+    ball.style.zIndex = 33;
+    Sound.play('swing');
+    await arc(ball, from, () => petPoint(sister, 0.5, 0.45), 750, 90, 360);
+    ball.remove();
+    const hit = petPoint(sister, 0.5, 0.45);
+    sparkles(hit.x, hit.y, 9, ['#ffffff', '#cfe9ff', '#9fc2e8']);
+    Sound.play('poof');
+    mood(sister, 'happy', 1400);
+    petAnim(sister, [{ transform: 'translateY(0)' }, { transform: 'translateY(-10%) scale(1.04,.96)' }, { transform: 'translateY(0)' }], { duration: 500 });
+    floatHearts(sister, 1);
+  },
+
+  /* ---- saying hello to a new friend (meet it, and it comes home with you) ---- */
+  async meetfriend(a, side, p) {
+    const kind = a.data.friend || (a.data.friend = nextFriendAt(a.opts.place));
+    if (!kind) return;
+    a.data.hi = a.data.hi || {};
+    doTrick(side, 'wave', true);
+    if (!a.data.friendEl) {
+      a.data.friendEl = actProp(a, friendArt(kind), { left: '50%', bottom: '22%', width: '14vmin', height: '14vmin', transform: 'translateX(-50%)' }, 12);
+      popIn(a.data.friendEl);
+    }
+    Sound.play(BUDDIES[kind].sound);
+    Speech.say(BUDDIES[kind].name);
+    animate(a.data.friendEl.firstChild, [{ transform: 'translateY(0)' }, { transform: 'translateY(-14%)' }, { transform: 'translateY(0)' }], { duration: 500, easing: 'ease-out' });
+    sayBubble(p, 'Hi, ' + BUDDIES[kind].name + '!', 2200);
+    if (a.data.hi[side]) return;
+    a.data.hi[side] = true;
+    renderColumn(side);
+    if (!(a.data.hi.left && a.data.hi.right)) { invite(other(side), 'meetfriend', 6000); return; }
+    await wait(1200);
+    if (act !== a) return;
+    if (meetFriend(kind)) {
+      togetherMoment('friend-' + kind);
+      friendMade(kind);
+    }
+    a.data.friend = nextFriendAt(a.opts.place);   // the farm has more than one friend: next time
+    a.data.friendEl && a.data.friendEl.remove();
+    a.data.friendEl = null;
+    a.data.hi = {};
+    renderColumns();
+  },
 };
 function coneEl(a, side) {
   if (a.data['coneEl' + side]) return a.data['coneEl' + side];
@@ -277,10 +520,17 @@ function addScoop(a, side, flavor) {
 
 /* ---------- new things, memory book, sounds ---------- */
 NEW_THINGS.push({ key: 'trips', order: 18, room: 'frontyard', acts: ['car'], icon: 'car', word: 'car' });
+// more places in town appear one at a time, after the first trips
+NEW_THINGS.push({ key: 'farm', order: 20, requires: 'trips', icon: 'farm', word: 'farm' });
+NEW_THINGS.push({ key: 'library', order: 21, requires: 'farm', icon: 'library', word: 'library' });
+NEW_THINGS.push({ key: 'snowhill', order: 22, requires: 'library', icon: 'snowhill', word: 'snowy hill' });
 Object.assign(BOOK_LINES, {
   beach:    { line: 'went to the beach.',            icon: 'beach', rank: 98 },
   park:     { line: 'went to the park.',             icon: 'park',  rank: 98 },
   icecream: { line: 'went to the ice cream shop.',   icon: 'shop',  rank: 98 },
+  farm:     { line: 'went to the farm.',             icon: 'farm',  rank: 98 },
+  library:  { line: 'went to the library.',          icon: 'library', rank: 98 },
+  snowhill: { line: 'played on the snowy hill.',     icon: 'snowhill', rank: 98 },
 });
 Sound.add('honk', s => { s.tone(s.NOTE(64), 0, 0.14, { type: 'square', vol: 0.03 }); s.tone(s.NOTE(64), 0.18, 0.2, { type: 'square', vol: 0.03 }); });
 Sound.add('vroom', s => { s.tone(70, 0, 1.2, { type: 'sawtooth', to: 160, vol: 0.025, attack: 0.1 }); s.noise(0, 1.2, { filter: 'lowpass', freq: 400, vol: 0.04, attack: 0.1 }); });
@@ -288,3 +538,7 @@ Sound.add('splash', s => { s.noise(0.5, 0.5, { filter: 'bandpass', freq: 1200, t
 Sound.add('swing', s => { [0, 0.7, 1.4].forEach(t => s.tone(s.NOTE(72), t, 0.3, { to: s.NOTE(79), vol: 0.04 })); });
 Sound.add('slidewhee', s => { s.tone(s.NOTE(84), 0.5, 0.9, { to: s.NOTE(67), type: 'triangle', vol: 0.06 }); });
 Sound.add('quack', s => { s.tone(330, 0, 0.12, { type: 'sawtooth', to: 260, vol: 0.03 }); s.tone(330, 0.18, 0.14, { type: 'sawtooth', to: 250, vol: 0.03 }); });
+Sound.add('crack', s => { s.noise(0, 0.05, { filter: 'highpass', freq: 3000, vol: 0.06 }); s.noise(0.08, 0.05, { filter: 'highpass', freq: 3500, vol: 0.05 }); });
+Sound.add('peep', s => { s.tone(s.NOTE(88), 0, 0.1, { to: s.NOTE(93), vol: 0.05 }); s.tone(s.NOTE(91), 0.14, 0.1, { to: s.NOTE(95), vol: 0.05 }); });
+Sound.add('page', s => { s.noise(0, 0.18, { filter: 'bandpass', freq: 2200, to: 900, q: 0.7, vol: 0.05 }); });
+Sound.add('shh', s => { s.noise(0, 0.7, { filter: 'bandpass', freq: 3000, q: 0.6, vol: 0.05, attack: 0.15 }); });

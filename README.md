@@ -63,7 +63,7 @@ Each room shows **only its own buttons** along each girl's edge.
 | 🍲 **Kitchen** | Fridge, Cook, Picnic, Treat | **Fridge** opens a panel of foods with pictures and words (fruit, veggies, pancakes, pizza, ice cream, fish, bone...). Livvie's favorite is **fish** and Avery Peach's is **peaches**: they get a happy dance. **Cook**: pick a smoothie, pizza or birthday cake, then one girl adds an ingredient and her sister stirs, taking turns. **Picnic**: both pets sit at the table and eat together. **Treat** tosses a treat to the sister's pet. The tummy gets rounder as the pet eats and empties over about an hour. |
 | 🛁 **Bathroom** | Bath, Teeth, Brush, Dryer, Spa | **Bath** fills a tub. While her pet is in the bath, a girl's buttons become bath toys: a **boat**, a **squirty fish**, and **fizzies** that change the water color. **Teeth** ends in a sparkly smile. **Dryer** makes the fur poof up big and funny, then settle. **Spa** pampers the **sister's** pet with paw polish and a bow (in the giver's color) and sparkle spray, for the rest of the day. Tap a pet's face in the **mirror** to make a funny face. |
 | 🌳 **Backyard** | Bounce, Climb, Ball, Seesaw, Garden | Trampolines, the rainbow climb (never a race), and the ball and seesaw games. **Garden**: Plant seeds, Water them, and they grow over real time (about 20 minutes). **Pick** what's ready and it goes into the fridge. |
-| 🛏️ **Bedroom** | Sleep, Book, Closet, Sleepover | **Sleep** both pets for the goodnight ending. **Book** is the memory book. **Closet** has everything each pet can wear; tap to put it on or take it off. It is the very next new thing to appear once either pet has been given something to wear, so nobody is left stuck in a scarf. **Sleepover**: the lights go down, the pets snuggle in a blanket fort, and each girl shines a flashlight to show shadow pictures (tap the word to hear it). |
+| 🛏️ **Bedroom** | Sleep, Book, Closet, Friends, Sleepover | **Sleep** both pets for the goodnight ending. **Book** is the memory book. **Closet** has everything each pet can wear; tap to put it on or take it off. It is the very next new thing to appear once either pet has been given something to wear, so nobody is left stuck in a scarf. **Sleepover**: the lights go down, the pets snuggle in a blanket fort, and each girl shines a flashlight to show shadow pictures (tap the word to hear it). |
 | 🏡 **Front yard** | Mail, Car, Hello | The picture behind it is a **drawing** (see [Room pictures](#room-pictures-the-front-yard-and-backyard)). **Mail** (or tap the mailbox) reads letters written in the grown-up corner. Every word can be tapped to hear it. **Car**: both girls tap the car, then choose together where to go. When a visitor comes, **Hello** greets them. |
 | 🏫 **School** | Words, Art, Blocks | **Words**: the pets practice this week's school words on the chalkboard. Each girl taps to hear the word and her pet says it; when both have, a star and the next word. **Art**: one big canvas, half each. Finger-paint, tap **Done**, then both choose a room on the map to hang it in. **Blocks**: build a doghouse, a cozy den or a blanket fort, taking turns adding blocks in your own color. |
 
@@ -74,7 +74,23 @@ From the front yard, both girls tap **Car**, then both tap the same place:
 - 🌳 **the park**: swings, the slide, and ducks on the pond
 - 🍦 **the ice cream shop**: scoop flavors onto a cone (fish flavor is Livvie's favorite!), add sprinkles, lick
 
+- 🐑 **the farm**: toss hay to a cow, lamb or piggy, hatch an egg, say moo
+- 📚 **the library**: pick a book and read its word, stack books together, shh
+- ⛷️ **the snowy hill**: sled, make a snow angel, toss a gentle snowball to your sister's pet
+
+The car opens a **town map** with roads between the places. The farm, library and
+snowy hill appear one at a time, like other new things. Places with someone new to
+meet have a star.
+
 Both tap **Home** to drive back.
+
+### Animal friends
+
+At some places (the farm, the park, the library) and when a visitor comes, both
+girls tap **Hello** and the animal becomes a **friend**: Clover, Hoot, Woolly,
+Daisy, Truffle, Lily, Puddle and Whiskers. The **Friends** button in the bedroom
+lets each girl pick **one friend at a time** to sit beside her pet (tap again to
+put it back). Two girls can't have the same friend at once. Tap a friend to hear it.
 
 ### Little surprises
 

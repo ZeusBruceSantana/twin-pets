@@ -732,7 +732,9 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .thing-car svg { width: 100%; height: 100%; overflow: visible; }
 .prop.drivecar > div { animation: bob .3s ease-in-out infinite; }
 #trips { z-index: 62; background: rgba(46, 64, 120, .5); align-items: center; justify-content: center; }
-#trips .trip-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3vmin; width: min(74vw, 110vmin); height: 46vmin; }
+#trips .town { position: relative; width: min(78vw, 124vmin); height: 66vmin; padding: 3vmin; border-radius: 5vmin; background: #bfe8a8; border: .8vmin solid #fff; box-shadow: 0 1.4vmin 0 rgba(0,0,0,.18); }
+#trips .town-roads { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#trips .trip-grid { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 6vmin; width: 100%; height: 100%; }
 #trips .map-x { position: absolute; right: calc(var(--col) + 1vmin); top: calc(1vmin + var(--safe-top)); width: 10vmin; height: 10vmin; padding: 2.4vmin; border-radius: 50%; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }
 #trips .map-x svg { width: 100%; height: 100%; }
 .trip { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -890,3 +892,37 @@ body.w-rain .room.has-picture .room-picture { filter: saturate(.8) brightness(.9
 .pic-thumb svg { width: 60%; height: 80%; }
 .pic-info { flex: 1; display: flex; flex-direction: column; gap: .6vmin; min-width: 0; font-size: 3.4vmin; }
 .pic-info span { font-size: 2.4vmin; font-weight: 600; color: #857f96; }
+
+/* ---------- the farm, the library and the snowy hill ---------- */
+.trip .tsky.farm { background: linear-gradient(#a9dcff, #f0fbff 60%); }
+.trip .tsky.snow { background: linear-gradient(#b9d6f0, #eef6ff 62%); }
+.trip .farmhill { left: -10%; right: -10%; bottom: 20%; height: 30%; border-radius: 50% 50% 0 0; background: #b7e39a; }
+.trip .barn { left: 6%; bottom: 28%; width: 34vmin; height: 34vmin; }
+.trip .barn svg { width: 100%; height: 100%; overflow: visible; }
+.trip .fencef { left: 0; right: 0; bottom: 24%; height: 7vmin; background: repeating-linear-gradient(90deg, #e8c39e 0 1.6vmin, transparent 1.6vmin 6vmin), linear-gradient(#e8c39e, #e8c39e) 0 40% / 100% 1vmin no-repeat; }
+.trip .libwall { inset: 0; background: repeating-linear-gradient(90deg, #f6efff 0 8vmin, #eee3ff 8vmin 16vmin); }
+.trip .bookcase { top: 14%; bottom: 26%; width: 22%; border-radius: 1.5vmin; border: .8vmin solid #a9835a; background:
+  repeating-linear-gradient(90deg, #ff7a9a 0 2vmin, #5aa9ff 2vmin 3.6vmin, #ffd23f 3.6vmin 6vmin, #6cc551 6vmin 7.6vmin, #a77bff 7.6vmin 10vmin, #ff9a4d 10vmin 12vmin) 0 8% / 100% 28% no-repeat,
+  repeating-linear-gradient(90deg, #5aa9ff 0 2.4vmin, #ff9a4d 2.4vmin 4vmin, #a77bff 4vmin 6.4vmin, #ff7a9a 6.4vmin 8vmin, #ffd23f 8vmin 10vmin, #6cc551 10vmin 12vmin) 0 46% / 100% 28% no-repeat, #d9b98a; }
+.trip .bookcase.l { left: 6%; } .trip .bookcase.r { right: 6%; }
+.trip .libwindow { left: 50%; top: 12%; width: 20vmin; height: 20vmin; transform: translateX(-50%); }
+.trip .libwindow svg { width: 100%; height: 100%; }
+.trip .libfloor { left: 0; right: 0; bottom: 0; height: 26%; background: repeating-linear-gradient(90deg, #d9a874 0 9vmin, #cf9a64 9vmin 9.6vmin); }
+.trip .libdesk { left: 50%; bottom: 20%; width: 26vmin; height: 8vmin; transform: translateX(-50%); border-radius: 2vmin; background: #b9895a; border: .8vmin solid #a9835a; }
+.trip .snowhill-far { left: -10%; right: -10%; bottom: 30%; height: 34%; border-radius: 60% 60% 0 0; background: #f4f9ff; }
+.trip .snowhill-near { left: -10%; right: -10%; bottom: 0; height: 42%; border-radius: 55% 55% 0 0; background: #fff; box-shadow: inset 0 1vmin 0 #dcebfa; }
+.trip .pine { bottom: 36%; width: 20vmin; height: 30vmin; background: linear-gradient(#4f9a6a, #4f9a6a) 50% 100% / 2vmin 14% no-repeat, linear-gradient(#4f9a6a, #4f9a6a); clip-path: polygon(50% 0, 82% 38%, 66% 38%, 92% 74%, 8% 74%, 34% 38%, 18% 38%); }
+.trip .pine.l { left: 12%; } .trip .pine.r { right: 12%; transform: scale(.85); }
+.trip .flake { top: -4vmin; width: 1.8vmin; height: 1.8vmin; border-radius: 50%; background: #fff; box-shadow: 0 0 .8vmin rgba(255,255,255,.9); animation: snowfall 8s linear infinite; }
+@keyframes snowfall { from { transform: translate(0, 0); } 50% { transform: translate(3vmin, 55vh); } to { transform: translate(-2vmin, 112vh); } }
+
+/* ---------- friends: the animal beside each pet ---------- */
+.pet .buddy { position: absolute; bottom: 1%; width: 36%; height: 36%; z-index: 4; pointer-events: none; }
+.pet .buddy.side-left { left: -22%; } .pet .buddy.side-right { right: -22%; }
+.pet .buddy .bbody { position: absolute; inset: 0; pointer-events: auto; transform-origin: 50% 100%; animation: bob 2.6s ease-in-out infinite alternate; }
+.pet .buddy .bbody svg { width: 100%; height: 100%; overflow: visible; }
+.pet .buddy .bname { position: absolute; left: 50%; bottom: -3.6vmin; transform: translateX(-50%); padding: .3vmin 1.4vmin; border-radius: 3vmin; background: #fff; border: .5vmin solid #e6dccb; font: 900 3vmin/1.2 var(--font); white-space: nowrap; opacity: 0; transition: opacity .25s ease; pointer-events: none; }
+.pet .buddy.named .bname { opacity: 1; pointer-events: auto; }
+.pet.asleep .buddy .bbody { animation: none; transform: scaleY(.92); opacity: .85; }
+body:not([data-scene="play"]):not([data-scene="title"]) .pet .buddy { display: none; }
+.scard.taken { opacity: .45; }

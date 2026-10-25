@@ -57,13 +57,13 @@ Sound.add('inst-drumkit', (s, n) => {
   else if (k === 1) s.noise(0, 0.05, { filter: 'highpass', freq: 7000, vol: 0.05 });
   else s.tone(150, 0, 0.3, { to: 85, vol: 0.12 });
 });
-Sound.add('bandbeat', (s, step) => {
-  if (step % 4 === 0) s.tone(100, 0, 0.2, { to: 45, vol: 0.09 });
-  if (step % 4 === 2) s.noise(0, 0.1, { filter: 'bandpass', freq: 1800, q: 0.8, vol: 0.035 });
-  s.noise(0, 0.03, { filter: 'highpass', freq: 7500, vol: 0.015 });
-  if (step % 8 === 0) s.tone(s.NOTE(40), 0, 0.5, { vol: 0.05, type: 'sine' });
-  if (step % 8 === 4) s.tone(s.NOTE(43), 0, 0.5, { vol: 0.05, type: 'sine' });
+Sound.add('bandbeat', (s, step, at = 0) => {                    // at: seconds from now (the band's beat is scheduled a little ahead)
+  if (step % 4 === 0) s.tone(100, at, 0.2, { to: 45, vol: 0.09 });
+  if (step % 4 === 2) s.noise(at, 0.1, { filter: 'bandpass', freq: 1800, q: 0.8, vol: 0.035 });
+  s.noise(at, 0.03, { filter: 'highpass', freq: 7500, vol: 0.015 });
+  if (step % 8 === 0) s.tone(s.NOTE(40), at, 0.5, { vol: 0.05, type: 'sine' });
 });
+
 Sound.add('bandchord', s => { [60, 64, 67, 72].forEach(m => s.tone(s.NOTE(m), 0, 0.9, { vol: 0.06, echo: 1 })); });
 Sound.add('cheer', s => { s.noise(0, 0.9, { filter: 'bandpass', freq: 1500, q: 0.5, vol: 0.07, attack: 0.15 }); [76, 79, 83].forEach((m, i) => s.tone(s.NOTE(m), 0.1 + i * 0.1, 0.4, { vol: 0.05, echo: 1 })); });
 
@@ -118,13 +118,19 @@ ACT_HANDLERS.instrument = side => {
     },
   });
 };
-const bandTaps = { left: -1e9, right: -1e9 };
 ACT_HANDLERS.band = side => {                                   // both tap Band: the show begins
-  bandTaps[side] = now();
   notePlay(side, 4);
-  if (now() - bandTaps[other(side)] < SETTINGS.doorWindowMs) { bandTaps.left = bandTaps.right = -1e9; startActivity('band', side); }
-  else invite(other(side), 'band', SETTINGS.doorWindowMs);
+  bothTap('band', side, () => startActivity('band', side));
 };
+
+/* The band's beat is laid down on the audio clock a little ahead, so it stays steady even when the screen is busy. */
+function bandBeats(a) {
+  const e = Sound.engine();
+  if (!e || act !== a || a.ending) return;
+  const t = e.ctx.currentTime, d = a.data;
+  if (d.nextBeat == null || d.nextBeat < t) d.nextBeat = t + 0.05;
+  while (d.nextBeat < t + 0.5) { Sound.play('bandbeat', d.step++ % 8, d.nextBeat - t); d.nextBeat += 0.33; }
+}
 
 /* ---------- the band plays a show ---------- */
 const BAND_NOTES = 10;                                           // notes each girl plays to finish the song
@@ -148,7 +154,7 @@ ACTIVITIES.band = {
     await Promise.all([movePet('left', 36, 14, 700), movePet('right', 64, 14, 700)]);
     SIDES.forEach(s => { renderInstrument(s); mood(pets[s], 'happy', 1400); });
     Sound.play('bandchord');
-    a.data.beat = setInterval(() => { if (act === a && !a.ending) Sound.play('bandbeat', a.data.step++ % 8); }, 330);
+    a.data.beat = setInterval(() => bandBeats(a), 150);
     a.cleanup.push(() => clearInterval(a.data.beat));
     showHint('bandBtn', 'band');
   },
@@ -185,12 +191,9 @@ BUTTONS.bandplay = { icon: 'note', label: '' };
    Missing one just makes a little wiggle (the music never stops). A big star needs both girls: a twin spin. ---------- */
 NEW_THINGS.push({ key: 'dance', order: 27.5, requires: 'garage', room: 'garage', acts: ['dance'], icon: 'wave', word: 'dance' });
 BOOK_LINES.dance = { line: 'danced to the music in the garage.', icon: 'wave', rank: 97.4 };
-const danceTaps = { left: -1e9, right: -1e9 };
 ACT_HANDLERS.dance = side => {
-  danceTaps[side] = now();
   notePlay(side, 2);
-  if (now() - danceTaps[other(side)] < SETTINGS.doorWindowMs) { danceTaps.left = danceTaps.right = -1e9; startActivity('dance', side); }
-  else invite(other(side), 'dance', SETTINGS.doorWindowMs);
+  bothTap('dance', side, () => startActivity('dance', side));
 };
 const PAW_TOTAL = 12, PAW_FALL = 1800, PAW_WINDOW = 450;
 const DANCE_MOVES = ['spin', 'sit', 'roll', 'wave', 'dance'];

@@ -1303,3 +1303,21 @@ test('The playground: four activities, and the super swing lets each girl jump i
   expectEqual(G('TEST_ERRORS'), [], 'the playground worked');
   G('endActivity(false)');
 });
+
+test('The big pictures are saved under their own keys, and only when they change', async () => {
+  await openGame(played());
+  await startPlaying();
+  G(`S.roomPictures = { backyard: { img: 'data:image/jpeg;base64,${'A'.repeat(500)}', at: 1 } }; saveNow();`);
+  expect(!('roomPictures' in JSON.parse(localStorage.getItem(TEST_KEY))), 'the main save does not hold the picture');
+  expect(localStorage.getItem(TEST_KEY + '-roomPictures').includes('backyard'), 'the picture has its own key');
+  const writes = G(`(() => { const keys = []; const real = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { keys.push(k); return real.call(this, k, v); }; S.jar = 3; saveNow(); Storage.prototype.setItem = real; return keys; })()`);
+  expectEqual(writes, [TEST_KEY], 'an ordinary save writes only the main save');
+  await reopenGame();
+  expect(G('S.roomPictures.backyard.at') === 1, 'the picture comes back when the game opens');
+});
+
+test('Every file the page loads asks for the same version number', async () => {
+  const html = await (await fetch('../index.html')).text();
+  const versions = [...new Set([...html.matchAll(/\?v=(\w+)/g)].map(m => m[1]))];
+  expectEqual(versions.length, 1, 'one version number for every script and the stylesheet (bump them together when files change): ' + versions.join(','));
+});

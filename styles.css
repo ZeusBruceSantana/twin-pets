@@ -732,9 +732,22 @@ body:not([data-scene="play"]) #midbtns { opacity: 0; pointer-events: none; }
 .thing-car svg { width: 100%; height: 100%; overflow: visible; }
 .prop.drivecar > div { animation: bob .3s ease-in-out infinite; }
 #trips { z-index: 62; background: rgba(46, 64, 120, .5); align-items: center; justify-content: center; }
-#trips .town { position: relative; width: min(86vw, 150vmin); height: 66vmin; padding: 3vmin; border-radius: 5vmin; background: #bfe8a8; border: .8vmin solid #fff; box-shadow: 0 1.4vmin 0 rgba(0,0,0,.18); }
-#trips .town-roads { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-#trips .trip-grid { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(2, 1fr); gap: 3.2vmin; width: 100%; height: 100%; }
+#trips .town { position: relative; width: min(90vw, 168vmin); height: 78vmin; border-radius: 5vmin; background: #bfe8a8; border: .9vmin solid #fff; box-shadow: 0 1.4vmin 0 rgba(0,0,0,.18); overflow: hidden; }
+#trips .town-terrain { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+#trips .trip-grid { position: absolute; inset: 0; }
+#trips .trip-grid .mtile { position: absolute; width: 18vmin; height: 21vmin; margin: -10.5vmin 0 0 -9vmin; padding-bottom: 5vmin; box-sizing: border-box; }
+#trips .mtile .ico { width: 9.5vmin; height: 9.5vmin; margin-top: -1vmin; }
+#trips .mtile .lbl { font-size: 2.6vmin; text-align: center; padding: .4vmin 1vmin; white-space: nowrap; }
+#trips .mtile .face { width: 4.8vmin; height: 4.8vmin; }
+#trips .mtile::before { content: ''; position: absolute; left: 50%; bottom: -2.2vmin; width: 3.4vmin; height: 3.4vmin; background: inherit; border-right: .7vmin solid #fff; border-bottom: .7vmin solid #fff; transform: translateX(-50%) rotate(45deg); z-index: -1; }
+#trips .mtile.closed { width: 14vmin; height: 10vmin; margin: -5vmin 0 0 -7vmin; padding: 0; border-radius: 50%; background: rgba(255,255,255,.72); border: .6vmin dashed #fff; opacity: 1; }
+#trips .mtile.closed::before { display: none; }
+#trips .mtile.closed .q { font: 900 6vmin/1 var(--font); color: #a77bff; }
+#trips .town-compass { position: absolute; right: 2vmin; bottom: 2vmin; width: 9vmin; height: 9vmin; opacity: .9; pointer-events: none; }
+#trips .mapcloud { position: absolute; height: 5vmin; width: 14vmin; border-radius: 3vmin; background: rgba(255,255,255,.8); pointer-events: none; animation: mapdrift 26s ease-in-out infinite alternate; }
+#trips .mapcloud::before { content: ''; position: absolute; left: 2.4vmin; top: -2.6vmin; width: 6vmin; height: 6vmin; border-radius: 50%; background: inherit; }
+#trips .mapcloud.c1 { left: 24%; top: 6%; } #trips .mapcloud.c2 { left: 66%; top: 44%; animation-delay: -9s; transform: scale(.8); } #trips .mapcloud.c3 { left: 4%; top: 64%; animation-delay: -17s; }
+@keyframes mapdrift { from { margin-left: 0; } to { margin-left: 9vmin; } }
 #trips .map-x { position: absolute; right: calc(var(--col) + 1vmin); top: calc(1vmin + var(--safe-top)); width: 10vmin; height: 10vmin; padding: 2.4vmin; border-radius: 50%; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }
 #trips .map-x svg { width: 100%; height: 100%; }
 .trip { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
@@ -1004,5 +1017,4 @@ body:not([data-scene="play"]):not([data-scene="title"]) .pet .buddy { display: n
 .pz-piece.placed { width: 100%; height: 100%; border: 0; box-shadow: none; border-radius: 0; }
 .trip .riverhill { bottom: 45%; width: 44%; height: 24%; border-radius: 50% 50% 0 0; background: #b7e39a; }
 .trip .riverhill.l { left: -8%; } .trip .riverhill.r { right: -8%; background: #a6dd86; }
-#trips .mtile .lbl { font-size: 2.7vmin; text-align: center; }
 .scenery .conname { position: absolute; left: 50%; bottom: -5vmin; transform: translateX(-50%); padding: .4vmin 2vmin; border-radius: 3vmin; background: #fff; font: 900 3.6vmin/1.2 var(--font); white-space: nowrap; pointer-events: auto; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); }

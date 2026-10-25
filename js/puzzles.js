@@ -15,7 +15,7 @@ const PZ_THEMES = {
   restaurant: { icons: ['pizza', 'peach', 'cake'], pic: 'cake' },
   school:     { icons: ['star', 'heart', 'apple'], pic: 'sunny' },
   beach:      { icons: ['shell', 'castle', 'splash'], pic: 'boat' },
-  park:       { icons: ['swing', 'slide', 'ducks'], pic: 'sunny' },
+  park:       { icons: ['ducks', 'bubble', 'flower'], pic: 'sunny' },
   farm:       { icons: ['hay', 'egg', 'chick'], pic: 'sunny' },
   icecream:   { icons: ['scoop', 'lick', 'cupcake'], pic: 'cake' },
   library:    { icons: ['openbook', 'bookstack', 'shh'], pic: 'camp' },

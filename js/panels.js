@@ -47,7 +47,7 @@ function closeAllPanels() { SIDES.forEach(closePanel); }
      start(a)                 set things up (pets move, props appear)
      plan(a, side)            which big buttons each girl sees
      press(a, side, key, btn) what a button does
-   The little house button in the middle always leaves early.
+   The little house button in the middle leaves early.
    ===================================================================== */
 const ACTIVITIES = {};
 let act = null;
@@ -59,6 +59,9 @@ async function startActivity(kind, starter, opts = {}) {
   const a = act = { kind, starter, opts, step: 0, lastPress: now(), busy: true, ready: false, cleanup: [], data: {} };
   SIDES.forEach(s => begin(pets[s], 1e9));
   setScene('act');
+  a.cleanup.push(() => stage.removeEventListener('pointerdown', touched, true));
+  const touched = () => { a.lastPress = now(); };      // a finger on the screen (pop-ups, bubbles, dragging) is playing too
+  stage.addEventListener('pointerdown', touched, true);
   await ACTIVITIES[kind].start(a);
   if (act !== a) { a.cleanup.forEach(f => f()); return; }   // stopped while getting ready
   a.busy = false;
@@ -74,9 +77,8 @@ async function actPress(side, key, btn) {
   await ACTIVITIES[a.kind].press(a, side, key, btn);
 }
 /* Finish an activity. done = it was completed together (adds a heart). */
-async function endActivity(done, bookType) {
-  const a = act;
-  if (!a || a.ending) return;
+async function endActivity(done, bookType, a = act) {   // a: the activity that is ending (a slow finale must not end a newer one)
+  if (!a || a !== act || a.ending) return;
   a.ending = true;
   if (done) {
     Sound.play('yay');

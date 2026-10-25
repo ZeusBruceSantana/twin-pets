@@ -175,7 +175,7 @@ ACTIVITIES.band = {
       SIDES.forEach(s => { floatHearts(pets[s], 4); animate(pets[s].bounce, [{ transform: 'rotate(0)' }, { transform: 'rotate(8deg) translateY(8%)' }, { transform: 'rotate(0)' }], { duration: 900 }); });
       celebrate(W() / 2, H() * 0.4, 26);
       await wait(2200);
-      endActivity(true, 'band');
+      endActivity(true, 'band', a);
     }
   },
 };
@@ -284,5 +284,5 @@ async function danceFinale(a) {
   SIDES.forEach(s => { doTrick(s, 'dance', true); floatHearts(pets[s], 4); });
   celebrate(W() / 2, H() * 0.4, 24);
   await wait(2300);
-  endActivity(true, 'dance');
+  endActivity(true, 'dance', a);
 }

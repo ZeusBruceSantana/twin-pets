@@ -10,7 +10,7 @@ BOOK_LINES.bubbles = { line: 'had a bubble party in the park.', icon: 'bubble', 
 const BUBBLE_NEED = 10;                                  // pops each girl needs before the giant bubble
 const BUBBLE_SCALE = [0, 2, 4, 7, 9, 12, 14, 16];
 Sound.add('bubblepop', (s, n) => { const m = 76 + BUBBLE_SCALE[n % BUBBLE_SCALE.length]; s.tone(s.NOTE(m), 0, 0.35, { vol: 0.07, echo: 1 }); s.noise(0, 0.04, { filter: 'highpass', freq: 5000, vol: 0.04 }); });
-Sound.add('blow', s => { s.noise(0, 0.35, { filter: 'bandpass', freq: 2200, q: 0.6, vol: 0.04, attack: 0.1 }); });
+Sound.add('wandblow', s => { s.noise(0, 0.35, { filter: 'bandpass', freq: 2200, q: 0.6, vol: 0.04, attack: 0.1 }); });
 
 TRIP_PLAY.bubbles = function (a, side, p) {
   if (!a.data.bub) startBubbles(a);
@@ -36,7 +36,7 @@ function renderBubMeters(a) {
 }
 function blowBubbles(a, side) {
   const b = a.data.bub, p = pets[side];
-  Sound.play('blow');
+  Sound.play('wandblow');
   begin(p, 900);
   mood(p, 'happy', 900);
   petAnim(p, [{ transform: 'scale(1)' }, { transform: 'scale(1.06,.94)' }, { transform: 'scale(1)' }], { duration: 500 });

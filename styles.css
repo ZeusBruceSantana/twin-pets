@@ -358,7 +358,8 @@ body[data-scene="goodnight"] .win-night, body[data-scene="night"] .win-night { o
 .cushion { left: 50%; bottom: calc(12% - 5vmin); width: 44vmin; height: 10vmin; transform: translateX(-50%); }
 
 @keyframes hintpulse { 0%, 100% { transform: scale(1); } 40% { transform: scale(1.12); } }
-body[data-scene="game"] #gamebar, body[data-scene="climb"] #gamebar { display: flex; }
+body[data-scene="game"] #gamebar, body[data-scene="climb"] #gamebar, body[data-scene="act"] #gamebar { display: flex; }
+body[data-scene="act"] #dots { display: none; }
 body[data-scene="climb"] #dots { display: none; }
 
 /* first visit hint */

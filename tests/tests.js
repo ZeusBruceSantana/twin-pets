@@ -673,7 +673,7 @@ test('The town map shows the places that have appeared, and a closed spot for th
   await until(() => G('scene') === 'trips', 3000, 'the town map');
   ['beach', 'park', 'icecream'].forEach(k => expect($g(`#trips .mtile[data-key="${k}"]`), `the ${k} is on the town map`));
   ['farm', 'library', 'snowhill'].forEach(k => expect(!$g(`#trips .mtile[data-key="${k}"]`), `the ${k} has not appeared yet`));
-  expectEqual($$g('#trips .mtile.closed').length, 9, 'closed spots for the places that have not appeared yet');
+  expectEqual($$g('#trips .mtile.closed').length, G('Object.keys(PLACES).filter(k => !placeOpen(k)).length'), 'closed spots for the places that have not appeared yet');
   G('closeTrips()');
   G(`introduce(NEW_THINGS.find(n => n.key === 'farm'), true); introduce(NEW_THINGS.find(n => n.key === 'library'), true); openTrips()`);
   await until(() => G('scene') === 'trips', 3000, 'the town map');
@@ -1244,6 +1244,10 @@ test('The treehouse: the weather machine makes rainbows, and Fruit Catch starts 
   tap($g('#col-right .btn-catch'));
   await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'fruit catch');
   expectEqual(buttons('left').join(','), 'catchl,catchr', 'big left and right buttons');
+  const x0 = G('act.data.target.left');
+  tap($g('#col-left .btn-catchr'));
+  await sleep(150);
+  expect(Math.abs(G('act.data.target.left') - (x0 + 9)) < 0.5, 'the right arrow moves her basket a little to the right, not to the edge');
   tap($g('#col-left .btn-catchl'));
   await sleep(1500);
   expectEqual(G('TEST_ERRORS'), [], 'the treehouse worked');
@@ -1287,6 +1291,15 @@ test('The playground: four activities, and the super swing lets each girl jump i
   expect(buttons('left').includes('jump'), 'a jump button appears once the swing is high');
   tap($g('#col-left .btn-jump'));
   await until(() => G('act.data.sw.left.jumps') === 1, 5000, 'the first jump');
+  await until(() => !G('act.data.sw.left.flying'), 5000, 'her swing to be ready again');
+  tap($g('#col-left .btn-swquit'));
+  await sleep(300);
+  tap($g('#col-left .btn-twisty'));
+  await sleep(300);
+  tap($g('#col-left .btn-dig'));                              // busy on the slide: nothing happens
+  await until(() => !G('act.data.slide.busy.left'), 9000, 'the slide to finish');
+  for (let i = 0; i < 8; i++) { tap($g('#col-right .btn-dig')); await sleep(1300); }
+  expect(G('act.data.dig.found') <= 6, 'the treasure row never overflows');
   expectEqual(G('TEST_ERRORS'), [], 'the playground worked');
   G('endActivity(false)');
 });

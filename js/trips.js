@@ -11,8 +11,6 @@ Object.assign(ICONS, {
   splash: '<svg viewBox="0 0 100 100"><path d="M10 70 C 26 60, 40 76, 50 66 C 60 56, 74 74, 90 64 V90 H10Z" fill="#5aa9ff"/><g fill="#9fdcff" stroke="#5aa9ff" stroke-width="2"><circle cx="30" cy="40" r="7"/><circle cx="52" cy="26" r="8"/><circle cx="72" cy="42" r="6"/><circle cx="40" cy="56" r="5"/><circle cx="64" cy="56" r="5"/></g></svg>',
   castle: '<svg viewBox="0 0 100 100"><path d="M16 88 V50 H26 V58 H36 V50 H46 V58 H54 V50 H64 V58 H74 V50 H84 V88Z" fill="#ffe2a8" stroke="#d9b06a" stroke-width="3" stroke-linejoin="round"/><path d="M38 88 V72 C 38 64, 62 64, 62 72 V88Z" fill="#d9b06a"/><path d="M50 50 V20 L66 26 L50 32" fill="#ff7a9a" stroke="#d94f5c" stroke-width="2" stroke-linejoin="round"/></svg>',
   shell: '<svg viewBox="0 0 100 100"><path d="M50 86 L16 50 C 14 30, 30 16, 50 16 C 70 16, 86 30, 84 50Z" fill="#ffd1dc" stroke="#f08bb0" stroke-width="4" stroke-linejoin="round"/><path d="M50 86 L30 26 M50 86 L50 18 M50 86 L70 26 M50 86 L20 46 M50 86 L80 46" stroke="#f08bb0" stroke-width="3"/></svg>',
-  swing: '<svg viewBox="0 0 100 100"><path d="M10 90 L24 12 L38 90 M62 90 L76 12 L90 90 M20 14 H80" stroke="#ff8a7a" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 14 V64 M58 14 V64" stroke="#9aa6bd" stroke-width="3"/><rect x="38" y="62" width="24" height="6" rx="3" fill="#ffd23f"/></svg>',
-  slide: '<svg viewBox="0 0 100 100"><path d="M18 90 V24 M34 90 V24 M18 40 H34 M18 58 H34 M18 76 H34" stroke="#7fc4ff" stroke-width="5" stroke-linecap="round"/><path d="M34 26 C 50 26, 60 80, 92 84" stroke="#ff8fb8" stroke-width="12" fill="none" stroke-linecap="round"/></svg>',
   ducks: '<svg viewBox="0 0 100 100"><ellipse cx="50" cy="72" rx="44" ry="16" fill="#7fc4ff"/><path d="M30 64 C 22 64, 20 54, 28 50 C 26 40, 40 38, 42 46 C 46 46, 50 50, 48 58 C 46 64, 38 66, 30 64Z" fill="#ffe066" stroke="#e0b030" stroke-width="2"/><path d="M42 46 L50 44 L44 50Z" fill="#ffa24d"/><circle cx="36" cy="44" r="2" fill="#3e3a4f"/><g fill="#e8c39e"><circle cx="64" cy="60" r="3"/><circle cx="72" cy="66" r="2.5"/><circle cx="60" cy="68" r="2.5"/></g></svg>',
   scoop: '<svg viewBox="0 0 100 100"><path d="M36 54 L50 94 L64 54Z" fill="#e8b071" stroke="#c98a3c" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="44" r="18" fill="#ffc0d6" stroke="#f08bb0" stroke-width="3"/><path d="M70 12 C 82 8, 92 16, 88 28 L72 30Z" fill="#c9d2e0" stroke="#7a869c" stroke-width="3"/><path d="M72 30 L60 40" stroke="#7a869c" stroke-width="5" stroke-linecap="round"/></svg>',
   lick: '<svg viewBox="0 0 100 100"><path d="M36 54 L50 94 L64 54Z" fill="#e8b071" stroke="#c98a3c" stroke-width="3" stroke-linejoin="round"/><circle cx="50" cy="44" r="18" fill="#a6e0c8" stroke="#6cc5a0" stroke-width="3"/><path d="M70 40 C 80 36, 86 44, 80 50 C 76 54, 70 50, 70 46Z" fill="#ff8fab"/></svg>',
@@ -169,7 +167,7 @@ function placeMarkup(place) {
 const FLAVORS = { strawberry: ['strawberry', '#ffc0d6'], chocolate: ['chocolate', '#8a5a3c'], vanilla: ['vanilla', '#fff4e0'], mint: ['mint', '#a6e0c8'], peach: ['peach', '#ffb38a'], fish: ['fish', '#a9c8f0'] };
 Object.assign(BUTTONS, {
   splash: { icon: 'splash', label: 'Splash' }, castle: { icon: 'castle', label: 'Castle' }, shell: { icon: 'shell', label: 'Shells' },
-  swing: { icon: 'swing', label: 'Swing' }, slide: { icon: 'slide', label: 'Slide' }, ducks: { icon: 'ducks', label: 'Ducks' },
+  ducks: { icon: 'ducks', label: 'Ducks' },
   scoop: { icon: 'scoop', label: 'Scoop' }, lick: { icon: 'lick', label: 'Lick' }, sprinkle: { icon: 'sprinkles', label: 'Sprinkles' },
   hay: { icon: 'hay', label: 'Hay' }, eggs: { icon: 'egg', label: 'Eggs' }, moo: { icon: 'moo', label: 'Animals' },
   pickbook: { icon: 'openbook', label: 'Books' }, stack: { icon: 'bookstack', label: 'Stack' }, shh: { icon: 'shh', label: 'Shh' },
@@ -235,7 +233,7 @@ async function driveHome(a) {
   Sound.play('vroom');
   await animate(a.data.bg, [{ opacity: 1 }, { opacity: 0 }], { duration: 600, fill: 'forwards' });
   await fadePets(true);
-  endActivity(true, a.opts.place);
+  endActivity(true, a.opts.place, a);
 }
 
 /* ---------- farm and library helpers ---------- */
@@ -300,20 +298,6 @@ const TRIP_PLAY = {
     floatHearts(p, 1);
     await wait(1000);
     sh.remove();
-  },
-  async swing(a, side, p) {
-    begin(p, 2600);
-    Sound.play('swing');
-    await petAnim(p, [{ transform: 'rotate(0)' }, { transform: 'rotate(18deg) translateX(6%)' }, { transform: 'rotate(-18deg) translateX(-6%)' }, { transform: 'rotate(14deg) translateX(4%)' }, { transform: 'rotate(-10deg) translateX(-3%)' }, { transform: 'rotate(0)' }], { duration: 2200, easing: 'ease-in-out' });
-    mood(p, 'happy', 1200);
-  },
-  async slide(a, side, p) {
-    begin(p, 2200);
-    const dir = side === 'left' ? 1 : -1;
-    Sound.play('slidewhee');
-    await petAnim(p, [{ transform: 'translate(0,0)' }, { transform: `translate(${-dir * 10}%, -30%)`, offset: 0.35 }, { transform: `translate(${dir * 14}%, 0) rotate(${dir * 8}deg)`, offset: 0.8 }, { transform: 'translate(0,0)' }], { duration: 1600, easing: 'ease-in-out' });
-    mood(p, 'happy', 1200);
-    floatHearts(p, 2);
   },
   async ducks(a, side, p) {
     begin(p, 1600);

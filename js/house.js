@@ -223,7 +223,7 @@ async function startBath(side) {
   if (side === 'right') b.duck.firstChild.style.transform = 'scaleX(-1)';
   world.append(b.duck);
   onTap(b.duck, () => {
-    Sound.play('squeak');
+    Sound.play('ducksqueak');
     animate(b.duck.firstChild, [{ transform: b.duck.firstChild.style.transform + ' translateY(0)' }, { transform: b.duck.firstChild.style.transform + ' translateY(-40%)' }, { transform: b.duck.firstChild.style.transform + ' translateY(0)' }], { duration: 400, easing: 'ease-out' });
   });
   b.busy = false;

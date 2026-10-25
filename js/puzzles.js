@@ -303,17 +303,23 @@ setInterval(() => {
   if (!(S.puzzleOwed > 0) || scene !== 'play' || act || S.bedtime || $('#map').classList.contains('show')) return;
   claimPrize();
 }, 1500);
+let prizeWaiting = false;
 function claimPrize() {
-  S.puzzleOwed--;
-  S.prizeN = (S.prizeN || 0) + 1;
-  save();
+  if (prizeWaiting) return;
+  prizeWaiting = true;
+  const n = (S.prizeN || 0) + 1;
   // every third prize also brings a very special friend, if any are left
-  const special = S.prizeN % 3 === 0 && PUZZLE_FRIENDS.find(k => !S.friends.have.includes(k));
-  const petPrize = S.prizeN % 2 === 0;                 // every other prize is a gift for each pet instead of a house present
+  const special = n % 3 === 0 && PUZZLE_FRIENDS.find(k => !S.friends.have.includes(k));
+  const petPrize = n % 2 === 0;                        // every other prize is a gift for each pet instead of a house present
   if (special && meetFriend(special)) friendMade(special);
-  const give = (tries = 0) => {
-    if (scene === 'play' && !act) startActivity('gift', 'left', petPrize ? { items: [choosePresent('left'), choosePresent('right')] } : { count: 2 });
-    else if (tries < 40) setTimeout(() => give(tries + 1), 500);
+  const give = () => {                                 // the prize only counts as handed out once its box really starts
+    if (scene !== 'play' || act) { setTimeout(give, 500); return; }
+    prizeWaiting = false;
+    if (!(S.puzzleOwed > 0)) return;
+    S.puzzleOwed--;
+    S.prizeN = n;
+    save();
+    startActivity('gift', 'left', petPrize ? { prize: true, items: [choosePresent('left'), choosePresent('right')] } : { prize: true, count: 2 });
   };
   setTimeout(give, special ? 4200 : 600);
 }

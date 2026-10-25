@@ -131,7 +131,8 @@ ACTIVITIES.fruitcatch = {
       pets[s].root.append(b);
       a.cleanup.push(() => b.remove());
     });
-    const onDown = e => { if (act !== a) return; const s = e.clientX < W() / 2 ? 'left' : 'right'; d.ptr[e.pointerId] = s; d.target[s] = clampCatch(s, e.clientX / W() * 100); };
+    const onDown = e => { if (act !== a || e.target.closest('#col-left, #col-right')) return;   // the arrow buttons are in the stage too
+      const s = e.clientX < W() / 2 ? 'left' : 'right'; d.ptr[e.pointerId] = s; d.target[s] = clampCatch(s, e.clientX / W() * 100); };
     const onMove = e => { const s = d.ptr[e.pointerId]; if (act === a && s) d.target[s] = clampCatch(s, e.clientX / W() * 100); };
     const onUp = e => { delete d.ptr[e.pointerId]; };
     stage.addEventListener('pointerdown', onDown); stage.addEventListener('pointermove', onMove);
@@ -210,5 +211,5 @@ async function finishCatch(a) {
   celebrate(W() / 2, H() * 0.5, 22);
   SIDES.forEach(side => { floatHearts(pets[side], 4); mood(pets[side], 'happy', 2200); });
   await wait(2200);
-  endActivity(true, 'fruitcatch');
+  endActivity(true, 'fruitcatch', a);
 }

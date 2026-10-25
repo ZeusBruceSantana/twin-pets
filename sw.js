@@ -34,7 +34,7 @@ self.addEventListener('fetch', event => {
   if (url.pathname.includes('/tests/') || url.searchParams.has('test')) return;   // the test page always uses the internet
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
-    const fresh = fetch(req).then(res => {
+    const fresh = fetch(req, { cache: 'no-cache' }).then(res => {
       if (res && res.ok) cache.put(req, res.clone());
       return res;
     });

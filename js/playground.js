@@ -13,7 +13,6 @@ Object.assign(ICONS, {
   pumpBtn: '<svg viewBox="0 0 100 100"><path d="M24 62 C 30 30, 70 30, 76 62" stroke="#5aa9ff" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M62 54 L78 64 L84 46" stroke="#5aa9ff" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M50 20 V8 M30 26 L22 16 M70 26 L78 16" stroke="#ffd23f" stroke-width="6" stroke-linecap="round"/></svg>',
   jumpBtn: '<svg viewBox="0 0 100 100"><path d="M10 80 C 30 10, 70 10, 90 60" stroke="#ff8fb8" stroke-width="7" fill="none" stroke-dasharray="3 12" stroke-linecap="round"/><path d="M50 30 L57 48 L77 49 L62 61 L67 80 L50 69 L33 80 L38 61 L23 49 L43 48Z" fill="#ffd23f"/></svg>',
   leaf1: leafSvg('#ff9a3c'), leaf2: leafSvg('#e8503a'), leaf3: leafSvg('#ffd23f'),
-  pgbucket: '<svg viewBox="0 0 100 100"><path d="M20 40 H80 L72 90 H28Z" fill="#5aa9ff"/><ellipse cx="50" cy="40" rx="30" ry="8" fill="#8fc8ff"/><path d="M26 40 C 26 10, 74 10, 74 40" stroke="#9aa6bd" stroke-width="4" fill="none"/></svg>',
 });
 
 Object.assign(PLACES, { playground: { word: 'playground', icon: 'playground', color: '#cfeeff', acts: ['superswing', 'twisty', 'merry', 'dig'], need: 'playground' } });
@@ -46,6 +45,7 @@ const swAmp = q => Math.hypot(q.th, q.w / Math.sqrt(SW_W0));
 function swApply(p, q) { p.bounce.style.transform = `rotate(${q.th * 57.3}deg)`; }
 TRIP_PLAY.superswing = function (a, side, p) {
   if (a.data.sw && a.data.sw.on) return;
+  if (a.data.slide && (a.data.slide.busy.left || a.data.slide.busy.right)) return;      // wait for the slide
   const sw = a.data.sw = { on: true, last: now(), left: null, right: null };
   SIDES.forEach(s => {
     const pp = pets[s];
@@ -138,11 +138,9 @@ TRIP_PLAY.jump = async function (a, side, p) {
   q.rig.style.visibility = '';
   q.flying = false;
   if (sw.left.jumps >= 2 && sw.right.jumps >= 2) {                // each has jumped twice: a happy ending
-    sw.on = false;
     Sound.play('yay');
     swStop(sw);
     togetherMoment('superswing');
-    sw.pile.remove();
     SIDES.forEach(x => { floatHearts(pets[x], 3); mood(pets[x], 'happy', 2000); });
   }
   renderColumns();
@@ -151,7 +149,6 @@ TRIP_PLAY.swquit = function (a) {
   const sw = a.data.sw;
   if (!sw || !sw.on || SIDES.some(s => sw[s].flying)) return;
   swStop(sw);
-  sw.pile.remove();
   renderColumns();
 };
 
@@ -176,23 +173,29 @@ function slideDraw(side) {
     <path d="${d}" fill="none" stroke="#ffd0e3" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" transform="translate(0 14)"/></svg>`;
 }
 TRIP_PLAY.twisty = async function (a, side, p) {
+  const live = () => act === a;
   const sl = a.data.slide || (a.data.slide = { busy: { left: false, right: false }, drawn: {} });
   if (!sl.drawn[side]) { sl.drawn[side] = actProp(a, slideDraw(side), { inset: 0 }, 5); popIn(sl.drawn[side]); }
   if (sl.busy[side]) return;
   sl.busy[side] = true;
   begin(p, 8000);
+  const stop = () => { sl.busy[side] = false; };
   const m = side === 'left' ? 1 : -1, lad = side === 'left' ? SL_LADDER : 100 - SL_LADDER, p0 = slidePoint(side, 0);
   await movePet(side, lad, 12, 450);
+  if (!live()) return stop();
   p.root.classList.add('walking');                              // climb the ladder
   Sound.play('climb');
   const tick = setInterval(() => Sound.play('click'), 260);
-  await tween(1500, t => setPos(p, lad + Math.sin(t * 18) * 0.5, 12 + (SL_TOP - 12) * t), ease.linear);
+  await tween(1500, t => live() && setPos(p, lad + Math.sin(t * 18) * 0.5, 12 + (SL_TOP - 12) * t), ease.linear);
   clearInterval(tick);
+  if (!live()) return stop();
   p.root.classList.remove('walking');
-  await tween(300, t => setPos(p, lad + (p0.x - lad) * t, SL_TOP));
+  await tween(300, t => live() && setPos(p, lad + (p0.x - lad) * t, SL_TOP));
+  if (!live()) return stop();
   sayBubble(p, 'Wheee!', 1600);
   Sound.play('slidewhee');
-  await tween(1700, t => { const q = slidePoint(side, t); setPos(p, q.x, q.y); p.bounce.style.transform = `rotate(${Math.sin(t * Math.PI * 3) * 18 * m + t * 360 * m * (t > .6 ? 1 : 0)}deg)`; }, ease.out);
+  await tween(1700, t => { if (!live()) return; const q = slidePoint(side, t); setPos(p, q.x, q.y); p.bounce.style.transform = `rotate(${Math.sin(t * Math.PI * 3) * 18 * m + t * 360 * m * (t > .6 ? 1 : 0)}deg)`; }, ease.out);
+  if (!live()) return stop();
   p.bounce.style.transform = '';
   Sound.play('sandplop');
   const pt = petPoint(p, 0.5, 0.97);
@@ -201,6 +204,7 @@ TRIP_PLAY.twisty = async function (a, side, p) {
   mood(p, 'happy', 1500);
   floatHearts(p, 2);
   await wait(700);
+  if (!live()) return stop();
   await movePet(side, HOME[side].x, HOME[side].y, 700);
   p.busyUntil = 0;
   sl.busy[side] = false;
@@ -224,7 +228,7 @@ TRIP_PLAY.merry = function (a, side, p) {
   const both = t - m.pressed[other(side)] < 1500;                // when both keep it going it spins more
   m.pressed[side] = t;
   m.v = Math.min(MG_TOP, m.v + (both ? 95 : 60));
-  hopPet(side);
+  if (!(a.data.slide && a.data.slide.busy[side])) hopPet(side);
   Sound.play('whoosh', Math.min(2, Math.floor(m.v / (MG_TOP / 3))));
   if (!m.running) { m.running = true; m.last = now(); requestAnimationFrame(function loop() { mgFrame(a, m, loop); }); }
 };
@@ -253,6 +257,7 @@ function mgFrame(a, m, loop) {
 const DIG_THINGS = ['bone', 'ball', 'star', 'heart', 'duck', 'shell'];
 TRIP_PLAY.dig = async function (a, side, p) {
   const d = a.data.dig || (a.data.dig = { found: 0, row: actProp(a, '<div class="digrow"></div>', { left: '50%', bottom: '58%', transform: 'translateX(-50%)', width: '40vmin', height: '7vmin' }, 12), busy: { left: false, right: false }, golden: false });
+  if (a.data.slide && a.data.slide.busy[side]) return;           // she is on the slide
   if (d.busy[side] || d.golden) { hopPet(side); return; }
   d.busy[side] = true;
   begin(p, 1600);
@@ -260,6 +265,7 @@ TRIP_PLAY.dig = async function (a, side, p) {
   const pit = a.data.bg.querySelector('.pgsand').getBoundingClientRect(), px = pit.left + pit.width * (side === 'left' ? 0.32 : 0.68), py = pit.top + pit.height * 0.5;
   Sound.play('dig');
   await petAnim(p, [{ transform: 'translateY(0) rotate(0)' }, { transform: `translateY(4%) rotate(${m * 12}deg)` }, { transform: 'translateY(0) rotate(0)' }, { transform: `translateY(4%) rotate(${m * 12}deg)` }, { transform: 'translateY(0) rotate(0)' }], { duration: 800, easing: 'ease-in-out' });
+  if (d.found >= DIG_THINGS.length) { d.busy[side] = false; return; }       // the row is full: the golden star is on its way
   sparkles(px, py, 8, ['#f2d28a', '#e0b564', '#fff4d6']);
   const kind = DIG_THINGS[d.found % DIG_THINGS.length], slot = d.found++;
   const t = prop(ICONS[kind], 9, px, py);

@@ -144,7 +144,9 @@
 ### Band, waiter and farm animals
 - [x] Garage band room: pick an instrument, jam, and play a show with the animal friends as the crowd
 - [x] Fancy waiter (Pip the penguin) who carries the dishes at the restaurant
-- [x] Farm animals that live at the farm (hen, horse, cow, lamb, piggy): feed them, call them
+- [x] Farm animals that live at the farm (hen, horse, cow, lamb, piggy): tap to hear them, and they join the games
+- [x] Farm games: milk the cow (bucket and milking, swap halfway), egg hunt (hay piles, golden egg for both), feed each animal its favorite, tractor ride (steer and honk, swap each lap)
+- [x] Library games: story corner (hero, place, thing), shelve the books, hide and seek (hide and find, swap), the quiet game with the librarian cat
 - [x] Four more puzzle kinds (shadow, count, pairs, copy the tune)
 - [x] A bigger prize pool: 27 more things for the house, 10 things to wear, 5 toys, and prizes that alternate between house presents and a gift for each pet
 
@@ -203,7 +205,7 @@
 
 **Pretend play and teamwork**
 - [ ] **Little Shop** (bakery / pet salon / ice cream truck: one girl builds, one decorates and serves; the animal friends are the customers). Kitchen, ice cream shop, bathroom
-- [ ] **Story Theater** (pick a hero, a place and a problem; the pets act it out). Playroom puppet stage, library, woods
+- [ ] **Story Theater** (pick a hero, a place and a problem; the pets act it out). Playroom puppet stage, woods (the library has a first version: Story corner). Later: sheep shearing at the farm (the wool becomes a scarf), a book fort at the library
 - [ ] **Choo-Choo Train / Boat** (one drives, one is the conductor and switches the track; friends hop on). New station on the town map, river
 - [ ] **Treasure Map Hunt** (uses the "both tap the same room" idea). House, beach, woods
 - [ ] **Photo Safari** (animals peek out; each girl takes a picture for a safari album). Park, woods, farm
@@ -230,7 +232,7 @@ There are 23 games above (8 learning, 8 classic, 7 pretend-play). The playroom a
 | Little Shop, Friends' Cafe, Ten-Frame Picnic | Bakery Cafe (Ten-Frame also as an egg-carton puzzle at the farm) |
 | Choo-Choo Train | Train Station (a river ferry later) |
 | Hop Trail, Photo Safari, Habitat Homes | Nature Trail (Habitat also as a puzzle at woods, river, farm) |
-| Story Theater | Library (a Story corner) |
+| Story Theater | Library (a Story corner is done; a problem step comes later) |
 | Sound Soup | Puzzle round at school and the restaurant (needs letter-sound audio: see Recorded voices) |
 | Rhyme Boats | Puzzle round at the river and school |
 | Seed to Flower | Puzzle round at the farm (egg, chick, hen), river (tadpole to frog) and school |

@@ -957,3 +957,42 @@ test('In the woods, the stars join up into a named picture, then a different one
   expect(seen[0] !== seen[1], 'a different one each time');
   expectEqual(G('TEST_ERRORS'), [], 'no problems');
 });
+
+test('The new puzzle kinds (shadow, count, pairs) can each be solved by both girls', async () => {
+  for (const kind of ['shadow', 'count', 'match']) {
+    await openGame(allPlaces());
+    await startPlaying();
+    await goTo('school');
+    G(`startPuzzle('${kind}', 'museum')`);
+    await until(() => G('scene') === 'puzzle', 3000, 'the ' + kind + ' puzzle');
+    for (let round = 0; round < 2; round++) {
+      for (const side of ['l', 'r']) {
+        if (kind === 'match') {
+          const cards = $$g(`#puzzle .pz-half.${side} .pz-card`);
+          for (const k of [...new Set(cards.map(c => c.dataset.k))]) {
+            for (const c of cards.filter(c => c.dataset.k === k)) { tap(c); await sleep(60); }
+            await sleep(100);
+          }
+        } else {
+          for (const opt of $$g(`#puzzle .pz-half.${side} .pz-opt`)) { tap(opt); if (opt.classList.contains('good')) break; await sleep(30); }
+        }
+      }
+      await sleep(1300);
+      if (kind === 'match') break;
+    }
+    await until(() => G('pz === null'), 8000, `the ${kind} puzzle to finish`);
+    expectEqual(G('S.puzzles'), 1, `${kind}: solved`);
+    expectEqual(G('TEST_ERRORS'), [], `${kind}: no problems`);
+  }
+});
+
+test('The copy-the-tune puzzle: a wrong pad replays the tune, and playing it back right solves the half', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  await goTo('school');
+  G(`startPuzzle('tune', 'school'); window.__seq = []; `);
+  await until(() => G('scene') === 'puzzle', 3000, 'the puzzle');
+  expect($$g('#puzzle .pz-half.l .pz-pad').length === 4 && $$g('#puzzle .pz-half.r .pz-pad').length === 4, 'four pads for each girl');
+  expectEqual(G('S.puzzles || 0'), 0, 'not solved yet');
+  G('closePuzzle(false)');
+});

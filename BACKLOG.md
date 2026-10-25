@@ -163,3 +163,34 @@
 - [ ] A volume slider just for the music
 - [ ] Room pictures for more rooms (the playroom, kitchen, school...), and a way to move or zoom a picture before using it
 - [ ] The girls' own drawings as other places (the start screen, the map button)
+
+## Mini-game ideas (from a brainstorm; each fits more than one place)
+
+**Learning games** (most can be a new round type in `js/puzzles.js`: add a function to `pzRound` and a name to `PLACE_PUZZLE`)
+- [ ] **Sound Soup**: spell a three-letter word by dropping big letter tiles (each says its sound) into a pot; both pots pour into one shared bowl. Restaurant, kitchen, school
+- [ ] **Ten-Frame Picnic**: fill a plate to exactly 10 (later: her sister's plate has 4, she adds 6). Farm, kitchen, garden
+- [ ] **Habitat Homes**: help each animal friend find its home (pond, tree, barn, burrow); a shared nature map fills in. Woods, river, farm, museum
+- [ ] **Rhyme Boats**: catch the boat that rhymes; the boats become a bridge. River, library
+- [ ] **Seed to Flower**: put the steps of growing in order (seed, sprout, bud, flower; egg, chick, hen). Garden, farm, river
+- [ ] **Weather Wardrobe**: dress the pet for the sky. Front yard, closet, snowy hill
+- [ ] **Coin Jar Ice Cream**: pay with big coins for her sister's pet's scoop. Ice cream shop, restaurant
+- [ ] **Kindness Helpers**: a visitor has a feeling; choose a kind thing (every choice works). Front door, playroom, park
+
+**Classic kid favorites**
+- [ ] **Peekaboo Pop-Ups** (whack-a-mole, but critters stay until booped; a golden twin critter needs both girls). Backyard, farm, park
+- [ ] **Bubble Party** (pops play rising notes; a giant bubble with both pets needs both girls). Bathroom, park, beach
+- [ ] **Fruit Catch** (drag a basket under falling fruit; both baskets pour into one smoothie). Backyard, farm, ice cream shop, snowy hill
+- [ ] **Hop Trail** (side-by-side runner; bumping just makes the pet giggle). Park, woods, snowy hill
+- [ ] **Friends' Cafe** (animal friends order from picture bubbles, no rush). Restaurant, ice cream shop, kitchen
+- [ ] **Claw Crane** (one girl slides, one presses down, swap each round; always wins in the end; prizes use `claimPrize`). Playroom, beach boardwalk
+- [ ] **Spot the Silly** (spot-the-difference between two copies of a picture). Museum, school, restaurant
+- [ ] **Dance Paws** (paw prints tap in time to the room's tune; the pets dance their tricks). Playroom, garage, restaurant
+
+**Pretend play and teamwork**
+- [ ] **Little Shop** (bakery / pet salon / ice cream truck: one girl builds, one decorates and serves; the animal friends are the customers). Kitchen, ice cream shop, bathroom
+- [ ] **Story Theater** (pick a hero, a place and a problem; the pets act it out). Playroom puppet stage, library, woods
+- [ ] **Choo-Choo Train / Boat** (one drives, one is the conductor and switches the track; friends hop on). New station on the town map, river
+- [ ] **Treasure Map Hunt** (uses the "both tap the same room" idea). House, beach, woods
+- [ ] **Photo Safari** (animals peek out; each girl takes a picture for a safari album). Park, woods, farm
+- [ ] **Weather Machine** (sun + rain = rainbow, rain makes the garden grow). Backyard, beach, snowy hill
+- [ ] **Room Makeover** (paint, move furniture, then "lights down" and every electronic switches on; also answers "move or remove a decoration"). Any room, garage

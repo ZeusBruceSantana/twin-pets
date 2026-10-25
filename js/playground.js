@@ -32,7 +32,7 @@ PLACE_MARKUP.playground = () => `<div class="tsky playground"></div><div class="
   <div class="pgpit"><div class="pgsand"></div></div>`;
 
 /* ---------- 1. the super swing ---------- */
-const SW_W0 = 7, SW_DAMP = 0.18, SW_MAX = 0.62, SW_HIGH = 0.4;     // pendulum: ω² = 7, slow damping, highest swing, "high enough" to jump
+const SW_W0 = 7, SW_DAMP = 0.18, SW_MAX = 0.45, SW_HIGH = 0.3;     // pendulum: ω² = 7, slow damping, highest swing, "high enough" to jump
 PLACE_PLAN.playground = (a, side) => {
   const sw = a.data.sw;
   if (!sw || !sw.on) return null;
@@ -56,7 +56,7 @@ TRIP_PLAY.superswing = function (a, side, p) {
     sw[s] = { th: s === 'left' ? 0.2 : -0.2, w: 0, jumps: 0, flying: false, canJump: false, rig };
     swApply(pp, sw[s]);
   });
-  ['l', 'r'].forEach(k => actProp(a, '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M3 4 H97 M8 4 L0 100 M92 4 L100 100 M22 4 L14 100" stroke="#ff8a7a" stroke-width="9" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>',
+  sw.frames = ['l', 'r'].map(k => actProp(a, '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M3 4 H97 M8 4 L0 100 M92 4 L100 100 M22 4 L14 100" stroke="#ff8a7a" stroke-width="9" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>',
     { left: k === 'l' ? '10%' : '55%', width: '35%', top: 'calc(88% - 56.1vmin)', height: 'calc(56.1vmin + 4%)' }, 6));
   sw.pile = actProp(a, `<div class="leafpile">${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<i style="left:${8 + i * 11}%; bottom:${(i % 3) * 10}%; transform:rotate(${i * 47}deg)">${ICONS['leaf' + (i % 3 + 1)]}</i>`).join('')}</div>`,
     { left: '50%', bottom: '5%', width: '30vmin', height: '11vmin', transform: 'translateX(-50%)' }, 9);
@@ -85,6 +85,8 @@ TRIP_PLAY.superswing = function (a, side, p) {
 function swStop(sw) {
   sw.on = false;
   cancelAnimationFrame(sw.raf);
+  sw.frames.forEach(f => f.remove());
+  if (sw.pile) sw.pile.remove();
   SIDES.forEach(s => {
     const p = pets[s];
     if (sw[s] && sw[s].rig) sw[s].rig.remove();

@@ -1056,3 +1056,24 @@ body:not([data-scene="play"]):not([data-scene="title"]) .pet .buddy { display: n
 .waiter .wsay, .scenery .wsay { position: absolute; left: 50%; bottom: 108%; padding: .8vmin 2vmin; border-radius: 3vmin; background: #fff; box-shadow: 0 .8vmin 0 rgba(0,0,0,.15); font: 900 3.4vmin/1.2 var(--font); white-space: nowrap; pointer-events: auto; }
 .resident { width: 100%; height: 100%; transform-origin: 50% 100%; animation: bob 2.6s ease-in-out infinite alternate; cursor: pointer; }
 .resident svg { width: 100%; height: 100%; overflow: visible; }
+
+/* ---------- the garage ---------- */
+.room-garage .wall { background: repeating-linear-gradient(90deg, #f1e6d6 0 9vmin, #e8dac6 9vmin 18vmin); }
+.room-garage .floor { background: #c9c4bd; }
+.room .gdoor { left: 50%; top: 18%; width: 40vmin; height: 26vmin; transform: translateX(-50%); background: repeating-linear-gradient(#fff 0 5vmin, #d8cfc2 5vmin 5.6vmin); border: .9vmin solid #b9a58a; border-radius: 1vmin; }
+.room .gamp { bottom: 22%; width: 11vmin; height: 15vmin; background: #3e3a4f; border-radius: 1.2vmin; border: .7vmin solid #2b2838; display: flex; flex-direction: column; align-items: center; justify-content: space-evenly; }
+.room .gamp i { width: 7vmin; height: 7vmin; border-radius: 50%; background: radial-gradient(circle, #6a6678 0 30%, #2b2838 32% 100%); }
+.room .gamp.l { left: 14%; } .room .gamp.r { right: 14%; }
+.room .gposter { top: 12%; width: 13vmin; height: 13vmin; background: #fff; border-radius: 1.4vmin; padding: 1.2vmin; box-shadow: 0 .8vmin 0 rgba(0,0,0,.12); transform: rotate(-3deg); }
+.room .gposter svg { width: 100%; height: 100%; }
+.room .gposter.l { left: 24%; } .room .gposter.r { right: 24%; transform: rotate(3deg); }
+.pet .instr { display: none; position: absolute; bottom: 8%; width: 30%; height: 30%; z-index: 5; pointer-events: none; }
+.pet .instr svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 .5vmin 0 rgba(0,0,0,.15)); }
+.pet .instr.side-left { right: -10%; } .pet .instr.side-right { left: -10%; }
+body[data-room="garage"][data-scene="play"] .pet .instr, body.on-stage .pet .instr { display: block; }
+.stagebg .curtain { position: absolute; top: 0; bottom: 0; width: 14%; background: repeating-linear-gradient(90deg, #c23b5e 0 3vmin, #a82f50 3vmin 6vmin); }
+.stagebg .curtain.l { left: 0; border-radius: 0 0 12vmin 0; } .stagebg .curtain.r { right: 0; border-radius: 0 0 0 12vmin; }
+.stagebg .stagefloor { position: absolute; left: 0; right: 0; bottom: 0; height: 24%; background: #8a5a3c; border-top: 1.4vmin solid #b07f4f; }
+body.on-stage #rooms { filter: brightness(.55) saturate(.8); }
+.scenery.spot { background: linear-gradient(rgba(255,246,200,.5), rgba(255,246,200,0)); clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); opacity: .6; }
+.scenery .fan svg { width: 100%; height: 100%; overflow: visible; }

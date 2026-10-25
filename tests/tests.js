@@ -1022,3 +1022,95 @@ test('The fancy waiter greets, serves from the menu (including cake), and the fa
   await sleep(2500);
   expectEqual(G('TEST_ERRORS'), [], 'the farm animals worked');
 });
+
+/* =====================================================================
+   THE GARAGE BAND, THE PET PRIZES AND THE BIGGER PRIZE POOL
+   ===================================================================== */
+test('The garage is a new room on the map, with its own buttons, tune and instruments', async () => {
+  const s = allPlaces({ garage: true });
+  await openGame(s);
+  await startPlaying();
+  expect(G('has("garage")'), 'the garage has appeared');
+  await goTo('garage');
+  expectEqual(buttons('left').join(','), 'jam,instrument,band', "Leah's garage buttons");
+  expectEqual(buttons('right').join(','), 'jam,instrument,band', "Avery's garage buttons");
+  expectEqual(G('Music.wanted(true)'), 'garage', 'the garage has its own tune');
+  expect($g('.pet.side-left .instr') && $g('.pet.side-right .instr'), 'both pets hold an instrument');
+  tap($g('#col-left .btn-instrument'));
+  await until(() => $g('.spanel.side-left'), 2000, 'the instrument panel');
+  expectEqual($$g('.spanel.side-left .scard').length, 6, 'six instruments');
+  tap($g('.spanel.side-left .scard[data-key="trumpet"]'), { hold: 40 });
+  await sleep(300);
+  expectEqual(G('S.band.left'), 'trumpet', 'Leah picked the trumpet');
+  expectEqual(G('S.band.right'), 'keys', 'Avery still has the keys');
+  expectEqual($g('.pet.side-left .instr').dataset.kind, 'trumpet', 'the trumpet is in her paws');
+  tap($g('#col-left .btn-jam')); tap($g('#col-right .btn-jam'));
+  await sleep(300);
+  expectEqual(G('TEST_ERRORS'), [], 'jamming worked');
+});
+
+test('Both girls tapping Band starts a show; playing ten notes each finishes it with a heart and a cheering crowd of friends', async () => {
+  const s = allPlaces({ garage: true });
+  s.friends = { have: ['bunny', 'owl', 'fox'], pick: { left: null, right: null } };
+  await openGame(s);
+  await startPlaying();
+  await goTo('garage');
+  tap($g('#col-left .btn-band'));
+  await sleep(200);
+  expectEqual(G('scene'), 'play', 'one girl alone does not start the show');
+  tap($g('#col-right .btn-band'));
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'the show to start');
+  expectEqual(G('act.data.crowd.length'), 3, 'the crowd is made of her animal friends');
+  const hearts = G('S.together');
+  for (let i = 0; i < 10; i++) { tap($g('#col-left .btn-bandplay')); tap($g('#col-right .btn-bandplay')); await sleep(40); }
+  await until(() => G('scene') === 'play', 12000, 'the show to end');
+  expect(G('S.together') > hearts, 'the show added a heart');
+  expect(G('Object.values(S.book).some(d => d.includes("band"))'), 'it is in the memory book');
+  expectEqual(G('TEST_ERRORS'), [], 'the band worked');
+});
+
+test('Puzzle prizes alternate between house presents and a gift for each pet, which goes on or on the shelf', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  G('S.puzzleOwed = 1; S.prizeN = 1; claimPrize()');                // the second prize
+  await until(() => G('scene') === 'act' && G('act && act.kind') === 'gift' && G('act.ready'), 8000, 'the gift');
+  expect(G('act.data.pet'), 'this one is a gift for each pet');
+  const items = G('act.data.keys');
+  expectEqual(items.length, 2, 'one for each pet');
+  items.forEach(k => expect(G(`!!ITEM_ART['${k}']`), k + ' has a picture'));
+  tap($g('#col-left .btn-opengift'));
+  tap($g('#col-right .btn-opengift'));
+  await until(() => G('scene') === 'play', 10000, 'the gift to be given');
+  await sleep(3000);
+  expect(G(`S.pets.left.owned.includes('${items[0]}')`), "Livvie got hers");
+  expect(G(`S.pets.right.owned.includes('${items[1]}')`), 'Avery Peach got hers');
+  expectEqual(G('TEST_ERRORS'), [], 'the gifts worked');
+});
+
+test('The new things to wear and play with all have pictures, places and words', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  const wear = G(`['partyhat','wizardhat','headphones','bandana','rainbowband','shades','bowtie','medal','cape','fairywings']`);
+  wear.forEach(k => {
+    expect(G(`!!WEARABLES['${k}'] && !!WEAR_SPOT['${k}'] && !!ITEM_WORD['${k}']`), k + ' is complete');
+    expect(G(`ITEM_ART['${k}'](COLORS[0]).startsWith('<svg')`), k + ' draws');
+  });
+  G(`['kite','train','top','xylophone','duckie']`).forEach(k => expect(G(`TOYS.includes('${k}') && !!ITEM_ART['${k}'](COLORS[0])`), k + ' is a toy'));
+  G(`S.pets.left.owned = ['cape', 'shades', 'bowtie']; S.pets.left.wear = { head: null, neck: 'bowtie', face: 'shades', back: 'cape' }; renderWear('left')`);
+  expect($$g('.pet.side-left .wear').length === 3, 'a cape, shades and a bow tie all show');
+});
+
+test('The prize pool has about sixty things for the house and the electronics all work', async () => {
+  await openGame(allPlaces());
+  await startPlaying();
+  expect(G('DECOR_ORDER.length') >= 66, 'at least sixty-six things to win');
+  expectEqual(G('new Set(DECOR_ORDER).size'), G('DECOR_ORDER.length'), 'all different');
+  G('DECOR_ORDER').forEach(k => expect(G(`!!DECOR['${k}'] && DECOR['${k}'].svg.startsWith('<svg')`), k + ' has a picture'));
+  G(`['piano','aquarium','globe','telescope','recordplayer','boombox','lavalamp','dollhouse']`).forEach(k => expect(G(`!!DECOR_TAP['${k}']`), k + ' does something when tapped'));
+  G(`['piano','boombox','recordplayer'].forEach(k => placeDecor(k, 'playroom')); showRoom('playroom')`);
+  for (const k of ['piano', 'boombox', 'recordplayer']) { tap($g(`#rooms .room-playroom .ditem-${k}`)); await sleep(100); }
+  G(`placeDecor('globe', 'bedroom'); placeDecor('aquarium', 'bedroom'); placeDecor('lavalamp', 'bedroom'); showRoom('bedroom')`);
+  for (const k of ['globe', 'aquarium', 'lavalamp']) { tap($g(`#rooms .room-bedroom .ditem-${k}`)); await sleep(100); }
+  G(`placeDecor('rugChecker', 'kitchen'); placeDecor('wpNightStars', 'kitchen')`);
+  expectEqual(G('TEST_ERRORS'), [], 'the electronics worked');
+});

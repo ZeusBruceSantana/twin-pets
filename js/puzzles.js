@@ -308,9 +308,10 @@ function claimPrize() {
   save();
   // every third prize also brings a very special friend, if any are left
   const special = S.prizeN % 3 === 0 && PUZZLE_FRIENDS.find(k => !S.friends.have.includes(k));
+  const petPrize = S.prizeN % 2 === 0;                 // every other prize is a gift for each pet instead of a house present
   if (special && meetFriend(special)) friendMade(special);
   const give = (tries = 0) => {
-    if (scene === 'play' && !act) startActivity('gift', 'left', { count: 2 });
+    if (scene === 'play' && !act) startActivity('gift', 'left', petPrize ? { items: [choosePresent('left'), choosePresent('right')] } : { count: 2 });
     else if (tries < 40) setTimeout(() => give(tries + 1), 500);
   };
   setTimeout(give, special ? 4200 : 600);

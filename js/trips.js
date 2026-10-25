@@ -54,9 +54,9 @@ onPress(carThing, e => tapCar(e.clientX < W() / 2 ? 'left' : 'right'));
 const PLACES = {
   beach:    { word: 'beach',          icon: 'beach',    color: '#bfe9fb', acts: ['splash', 'castle', 'shell', 'puzzle'] },
   park:     { word: 'park',           icon: 'park',     color: '#c8e7a6', acts: ['ducks', 'bubbles', 'puzzle'] },
-  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['hay', 'eggs', 'moo', 'puzzle'], need: 'farm' },
+  farm:     { word: 'farm',           icon: 'farm',     color: '#ffe3b0', acts: ['milkgame', 'egghunt', 'feedgame', 'tractor', 'puzzle'], need: 'farm' },
   icecream: { word: 'ice cream shop', icon: 'shop',     color: '#ffd9e8', acts: ['scoop', 'lick', 'sprinkle', 'puzzle'] },
-  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['pickbook', 'stack', 'shh', 'puzzle'], need: 'library' },
+  library:  { word: 'library',        icon: 'library',  color: '#e3d6ff', acts: ['storygame', 'catchgame', 'hidegame', 'shhgame', 'puzzle'], need: 'library' },
   snowhill: { word: 'snowy hill',     icon: 'snowhill', color: '#d3ebff', acts: ['sled', 'angel', 'snowball', 'puzzle'], need: 'snowhill' },
 };
 const placeOpen = k => !PLACES[k].need || has(PLACES[k].need);
@@ -164,8 +164,7 @@ Object.assign(BUTTONS, {
   splash: { icon: 'splash', label: 'Splash' }, castle: { icon: 'castle', label: 'Castle' }, shell: { icon: 'shell', label: 'Shells' },
   ducks: { icon: 'ducks', label: 'Ducks' },
   scoop: { icon: 'scoop', label: 'Scoop' }, lick: { icon: 'lick', label: 'Lick' }, sprinkle: { icon: 'sprinkles', label: 'Sprinkles' },
-  hay: { icon: 'hay', label: 'Hay' }, eggs: { icon: 'egg', label: 'Eggs' }, moo: { icon: 'moo', label: 'Animals' },
-  pickbook: { icon: 'openbook', label: 'Books' }, stack: { icon: 'bookstack', label: 'Stack' }, shh: { icon: 'shh', label: 'Shh' },
+  milkgame: { icon: 'milk', label: 'Milk' }, egghunt: { icon: 'egg', label: 'Eggs' }, feedgame: { icon: 'moo', label: 'Feed' }, tractor: { icon: 'tractorBtn', label: 'Tractor' },
   sled: { icon: 'sled', label: 'Sled' }, angel: { icon: 'snowangel', label: 'Angel' }, snowball: { icon: 'snowball', label: 'Snowball' },
   meetfriend: { icon: 'wave', label: 'Hello' },
   tripcar: { icon: 'car', label: 'Home' },
@@ -234,20 +233,6 @@ async function driveHome(a) {
 /* ---------- farm and library helpers ---------- */
 const LIBRARY_BOOKS = [['moon', '#a77bff', 'moon'], ['sun', '#ffb020', 'sun'], ['fish', '#5aa9ff', 'fish'], ['star', '#ff7a9a', 'star'], ['apple', '#6cc551', 'apple'], ['heart', '#ff8fb8', 'heart']];
 const bookCover = (c, icon) => `<svg viewBox="0 0 100 100"><rect x="20" y="8" width="62" height="84" rx="7" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M28 8 V92" stroke="#fff" stroke-width="3" opacity=".5"/><rect x="34" y="20" width="40" height="40" rx="6" fill="#fff" opacity=".9"/><g transform="translate(37 23) scale(.34)">${ICONS[icon].replace(/^<svg[^>]*>|<\/svg>$/g, '')}</g></svg>`;
-async function readBook(side, word) {
-  const p = pets[side];
-  begin(p, 2600);
-  const at = petPoint(p, 0.5, 0.78);
-  const bk = prop(ICONS.openbook, 9, at.x, at.y);
-  bk.dataset.owner = side;
-  bk.style.zIndex = 31;
-  Sound.play('page');
-  await animate(bk.firstChild, [{ transform: 'scale(.3) translateY(40%)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 400, fill: 'forwards' });
-  sayBubble(p, word + '!', 2000);
-  mood(p, 'happy', 2000);
-  await wait(2200);
-  bk.remove();
-}
 
 /* ---------- things to do at each place ---------- */
 const TRIP_PLAY = {
@@ -334,67 +319,6 @@ const TRIP_PLAY = {
     top.classList.add('sprinkled');
     const r = top.getBoundingClientRect();
     sparkles(r.left + r.width / 2, r.top, 8, ['#ff7a7a', '#5aa9ff', '#ffd23f', '#6cc551', '#a77bff']);
-  },
-
-  /* ---- the farm ---- */
-  async eggs(a, side, p) {
-    begin(p, 3200);
-    const at = petPoint(p, side === 'left' ? 0.9 : 0.1, 0.98);
-    const egg = prop(ICONS.egg, 6, at.x, at.y);
-    egg.dataset.owner = side;
-    egg.style.zIndex = 31;
-    Sound.play('pop');
-    await animate(egg.firstChild, [{ transform: 'translateY(40%) scale(.3)' }, { transform: 'translateY(-40%) scale(1.15)' }, { transform: 'translateY(-30%) scale(1)' }], { duration: 400, fill: 'forwards' });
-    await animate(egg.firstChild, [-12, 12, -10, 10, 0].map(r => ({ transform: `translateY(-30%) rotate(${r}deg)` })), { duration: 700, fill: 'forwards' });
-    Sound.play('crack');
-    egg.firstChild.innerHTML = ICONS.chick;
-    sparkles(at.x, at.y - 40, 7, ['#ffe066', '#fff4e0', '#ffffff']);
-    animate(egg.firstChild, [{ transform: 'translateY(-30%) scale(.5)' }, { transform: 'translateY(-50%) scale(1.2)' }, { transform: 'translateY(-30%) scale(1)' }], { duration: 400, fill: 'forwards' });
-    Sound.play('peep');
-    mood(p, 'happy', 1400);
-    floatHearts(p, 2);
-    await wait(1600);
-    egg.remove();
-  },
-
-  /* ---- the library ---- */
-  pickbook(a, side, p) {
-    openPanel(side, {
-      cols: 3,
-      items: LIBRARY_BOOKS.map(([w, c, ic]) => ({ key: w, word: w, icon: bookCover(c, ic) })),
-      onPick: w => { if (act === a) readBook(side, w); },
-    });
-  },
-  async stack(a, side, p) {
-    // one tower of books, built by both girls
-    if (!a.data.stackEl) {
-      a.data.stackEl = actProp(a, `<svg viewBox="0 0 100 100">${['#5aa9ff', '#ff7a9a', '#ffd23f', '#6cc551', '#a77bff'].map((c, i) =>
-        `<g class="pc" style="opacity:0"><rect x="${14 + (i % 2) * 6}" y="${74 - i * 17}" width="${70 - (i % 3) * 6}" height="15" rx="4" fill="${c}" stroke="#fff" stroke-width="2"/></g>`).join('')}</svg>`,
-        { left: '50%', bottom: '6%', width: '22vmin', height: '24vmin', transform: 'translateX(-50%)' }, 9);
-      a.data.stack = 0;
-    }
-    const pcs = a.data.stackEl.querySelectorAll('.pc');
-    if (a.data.stack >= pcs.length) { hopPet(side); return; }
-    const g = pcs[a.data.stack++];
-    g.style.opacity = 1;
-    Sound.play('block');
-    animate(g, [{ transform: 'translateY(-40px)' }, { transform: 'translateY(0)' }], { duration: 300, easing: 'ease-in' });
-    mood(p, 'happy', 900);
-    if (a.data.stack === pcs.length) {
-      Sound.play('yay');
-      const r = a.data.stackEl.getBoundingClientRect();
-      sparkles(r.left + r.width / 2, r.top, 14);
-      SIDES.forEach(s => floatHearts(pets[s], 2));
-    }
-  },
-  async shh(a, side, p) {
-    begin(p, 2200);
-    Sound.play('shh');
-    p.root.classList.add('asleep-eyes');
-    sayBubble(p, 'Shh!', 1800);
-    await wait(1800);
-    p.root.classList.remove('asleep-eyes');
-    mood(p, 'happy', 900);
   },
 
   /* ---- the snowy hill ---- */

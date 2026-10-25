@@ -444,30 +444,3 @@ function residentCalls(e) {
   const r = e.getBoundingClientRect();
   sparkles(r.left + r.width / 2, r.top, 4);
 }
-Object.assign(TRIP_PLAY, {
-  async hay(a, side, p) {                                       // feed the next animal in turn
-    begin(p, 2600);
-    const list = a.data.residents || [];
-    if (!list.length) return;
-    const an = list[(a.data.hayN = (a.data.hayN || 0) + 1) % list.length];
-    const from = petPoint(p, 0.5, 0.5);
-    const r = an.getBoundingClientRect();
-    const to = { x: r.left + r.width / 2, y: r.top + r.height * 0.45 };
-    const bale = prop(ICONS.hay, 5, from.x, from.y);
-    bale.style.zIndex = 32;
-    bale.dataset.owner = side;
-    await arc(bale, from, to, 750, 90, 220);
-    bale.remove();
-    Sound.play('chomp');
-    animate(an.firstChild, [{ transform: 'scale(1)' }, { transform: 'scale(1.12,.9)' }, { transform: 'scale(1)' }, { transform: 'scale(1.12,.9)' }, { transform: 'scale(1)' }], { duration: 800 });
-    Sound.play(BUDDIES[an.dataset.kind].sound);
-    mood(p, 'happy', 1400);
-    floatHearts(p, 2);
-    sparkles(to.x, to.y - 10, 5, ['#ffd23f', '#ffe9a8', '#fff']);
-  },
-  async moo(a, side, p) {                                       // everybody calls out, one after another
-    begin(p, 2800);
-    mood(p, 'happy', 2200);
-    for (const an of (a.data.residents || [])) { residentCalls(an); await wait(380); }
-  },
-});

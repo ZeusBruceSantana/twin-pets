@@ -702,7 +702,7 @@ test('Both girls going to the farm and saying hello makes a friend, and the next
   tap($g('#trips .mtile[data-key="farm"] .half.l'));
   tap($g('#trips .mtile[data-key="farm"] .half.r'));
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the farm trip to start');
-  expectEqual(buttons('left').join(','), 'hay,eggs,moo,meetfriend,tripcar', 'the farm buttons');
+  expectEqual(buttons('left').join(','), 'milkgame,egghunt,feedgame,tractor,meetfriend,tripcar', 'the farm buttons');
   tap($g('#col-left .btn-meetfriend'));
   await sleep(300);
   expectEqual(G('S.friends.have'), [], 'one hello is not enough');
@@ -710,23 +710,41 @@ test('Both girls going to the farm and saying hello makes a friend, and the next
   await until(() => G('S.friends.have.length') === 1, 5000, 'a friend to be made');
   expectEqual(G('S.friends.have'), ['lamb'], 'the first farm friend is the lamb');
   expectEqual(G('nextFriendAt("farm")'), 'cow', 'the cow is next');
-  [['hay', 'left'], ['eggs', 'right'], ['moo', 'left']].forEach(([a, side]) => tap($g(`#col-${side} .btn-${a}`)));
-  await sleep(500);
+  tap($g('#col-left .btn-milkgame'));                      // milk the cow: one holds the bucket, one milks
+  await sleep(400);
+  tap($g('#col-right .btn-bucket'));
+  await sleep(200);
+  tap($g('#col-left .btn-milkdo'));
+  await until(() => G('act.data.game.level') === 1, 3000, 'milk in the bucket');
+  tap($g('#col-left .btn-gquit'));
+  await until(() => !G('act.data.game'), 3000, 'back at the farm');
   expectEqual(G('TEST_ERRORS'), [], 'the farm things worked');
 });
 
-test('The library and the snowy hill have things to do', async () => {
-  for (const [place, acts] of [['library', 'pickbook,stack,shh,meetfriend,tripcar'], ['snowhill', 'sled,angel,snowball,meetfriend,tripcar']]) {
-    await openGame(withTown({ farm: true, library: true, snowhill: true }));
-    await startPlaying();
-    G(`startActivity('trip', 'left', { place: '${place}' })`);
-    await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the ' + place + ' trip to start');
-    expectEqual(buttons('left').join(','), acts, `the ${place} buttons`);
-    const first = acts.split(',');
-    first.slice(0, 3).filter(a => a !== 'pickbook').forEach(a => tap($g(`#col-right .btn-${a}`)));
-    await sleep(700);
-    expectEqual(G('TEST_ERRORS'), [], `the ${place} things worked`);
-  }
+test('The library has four games; telling a story together ends with a heart', async () => {
+  await openGame(withTown({ farm: true, library: true }));
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'library' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the library trip to start');
+  expectEqual(buttons('left').join(','), 'storygame,catchgame,hidegame,shhgame,meetfriend,tripcar', 'the library buttons');
+  const hearts = G('S.together');
+  tap($g('#col-left .btn-storygame'));
+  await sleep(500);
+  for (const k of ['bunny', 'beach', 'fish']) tap($g(`#col-left .btn-sty_${k}`));
+  for (const k of ['owl', 'farm', 'apple']) tap($g(`#col-right .btn-sty_${k}`));
+  await until(() => G('S.together') === hearts + 1, 12000, 'the story to end with a heart');
+  expectEqual(G('TEST_ERRORS'), [], 'the library story worked');
+});
+
+test('The snowy hill has things to do', async () => {
+  await openGame(withTown({ farm: true, library: true, snowhill: true }));
+  await startPlaying();
+  G(`startActivity('trip', 'left', { place: 'snowhill' })`);
+  await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the snowhill trip to start');
+  expectEqual(buttons('left').join(','), 'sled,angel,snowball,meetfriend,tripcar', 'the snowhill buttons');
+  ['sled', 'angel', 'snowball'].forEach(a => tap($g(`#col-right .btn-${a}`)));
+  await sleep(700);
+  expectEqual(G('TEST_ERRORS'), [], 'the snowhill things worked');
 });
 
 test('A friend from a visitor joins, the Friends button appears, and each girl picks her own', async () => {
@@ -1034,7 +1052,9 @@ test('The fancy waiter greets, serves from the menu (including cake), and the fa
   G(`startActivity('trip', 'left', { place: 'farm' })`);
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the farm trip');
   expectEqual(G('act.data.residents.length'), 5, 'five farm animals live here');
-  tap($g('#col-left .btn-hay')); tap($g('#col-right .btn-hay')); tap($g('#col-left .btn-moo'));
+  tap($g('#col-left .btn-feedgame'));
+  await sleep(500);
+  tap($g('#col-left .btn-feed_hay')); tap($g('#col-right .btn-feed_apple'));
   tap($g('#rooms ~ * .resident, .resident'));
   await sleep(2500);
   expectEqual(G('TEST_ERRORS'), [], 'the farm animals worked');

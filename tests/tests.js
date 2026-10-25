@@ -1243,7 +1243,7 @@ test('The Fun Fair: the claw machine (roles swap and it always wins), pop-ups wi
   await startPlaying();
   G(`startActivity('trip', 'left', { place: 'fair' })`);
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the fair trip');
-  expectEqual(buttons('left').join(','), 'claw,popup,wheel,meetfriend,tripcar', 'the fair buttons');
+  expectEqual(buttons('left').join(','), 'claw,popup,wheel,puzzle,meetfriend,tripcar', 'the fair buttons');
   // the claw: Leah slides, Avery drops (then they swap)
   tap($g('#col-left .btn-claw'));
   await until(() => G('act.data.claw && act.data.claw.on'), 3000, 'the claw machine');
@@ -1259,7 +1259,7 @@ test('The Fun Fair: the claw machine (roles swap and it always wins), pop-ups wi
   expectEqual(G('S.puzzleOwed'), 1, 'the first win is a prize');
   tap($g('#col-left .btn-clawquit'));
   await sleep(500);
-  expectEqual(buttons('left').join(','), 'claw,popup,wheel,meetfriend,tripcar', 'back to the fair');
+  expectEqual(buttons('left').join(','), 'claw,popup,wheel,puzzle,meetfriend,tripcar', 'back to the fair');
   // pop-ups
   tap($g('#col-left .btn-popup'));
   await until(() => G('act.data.pop'), 2000, 'the pop-ups');
@@ -1334,7 +1334,7 @@ test('The playground: four activities, and the super swing lets each girl jump i
   expect(!G('PLACES.park.acts').includes('swing'), 'the park is calm again');
   G(`startActivity('trip', 'left', { place: 'playground' })`);
   await until(() => G('scene') === 'act' && G('act && act.ready'), 15000, 'the playground trip');
-  expectEqual(buttons('left').join(','), 'superswing,twisty,merry,dig,tripcar', 'the playground buttons');
+  expectEqual(buttons('left').join(','), 'superswing,twisty,merry,dig,puzzle,tripcar', 'the playground buttons');
   tap($g('#col-left .btn-dig')); tap($g('#col-right .btn-merry'));
   await sleep(1500);
   expect(G('act.data.merry.v') > 0, 'the merry-go-round spins');

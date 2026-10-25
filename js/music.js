@@ -19,6 +19,9 @@ const PIECES = {
   school:    { seed: 83, key: 70, bpm: 92,  beats: 4, chords: [0, 5, 3, 4], lead: 'triangle' },
   beach:     { seed: 97, key: 67, bpm: 108, beats: 4, chords: [0, 3, 4, 0], lead: 'sine', box: true, shaker: true, extra: 'waves' },
   park:      { seed: 101, key: 62, bpm: 100, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', extra: 'birds' },
+  farm:      { seed: 127, key: 65, bpm: 108, beats: 4, chords: [0, 3, 4, 0], lead: 'triangle', bounce: true, extra: 'birds' },
+  library:   { seed: 131, key: 64, bpm: 76,  beats: 3, chords: [0, 5, 3, 4], lead: 'sine', soft: true },
+  snowhill:  { seed: 137, key: 69, bpm: 90,  beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true, shaker: true },
   icecream:  { seed: 113, key: 64, bpm: 116, beats: 4, chords: [0, 5, 3, 4], lead: 'sine', box: true },
 };
 

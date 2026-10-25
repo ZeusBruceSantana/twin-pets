@@ -109,6 +109,7 @@ ACT_HANDLERS.hello = async side => {
     visitor.until = now() + 45000;          // stays a little while, then waves goodbye
     togetherMoment('visit-' + visitor.kind);
     SIDES.forEach(s => floatHearts(pets[s], 2));
+    if (meetFriend(visitor.kind)) friendMade(visitor.kind);
   }
 };
 NEW_THINGS.push({ key: 'visitors', order: 19, icon: 'bunny', word: 'visitors', onIntro: () => { visitAt = now() + 40000; } });

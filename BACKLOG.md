@@ -131,7 +131,12 @@
 - [x] Pet school practices each girl's words of the week from Home Core (else the typed words, else starter words)
 - [x] A pet cheers once a day when her jobs are all done, and once for each reward a parent approves
 
+### Town and friends
+- [x] Town map for the car, with roads; the farm, the library and the snowy hill join the beach, park and ice cream shop one at a time
+- [x] Animal friends (Clover, Hoot, Woolly, Daisy, Truffle, Lily, Puddle, Whiskers) made by saying hello together; each girl picks one to sit beside her pet from the bedroom
+
 ## Later ideas
+
 
 - [ ] **Real pet art from photos or drawings**: swap in the real pictures from Dad's photos or drawings (the `art` folder is ready; see `art/README.md`, and remake the icon with `icons/make-icons.html`)
 - [ ] **Recorded voices**: record Mom, Dad or the girls reading the words, instead of the browser voice
@@ -145,7 +150,7 @@
 - [ ] An optional "both tap to start" step for the two-player games, if one girl starting a game while her sister is busy causes squabbles
 - [ ] Let grown-ups move or remove a decoration or a painting
 - [ ] Use the school words in thought bubbles and the memory book too, not just at pet school
-- [ ] More places to drive to (a farm, a library, the snow) and more visitors
+- [ ] More places to drive to and more visitors
 - [ ] A way to look at the memory book's pictures bigger, or delete one
 - [ ] Let grown-ups choose how often backups are suggested, or remind them on the start screen
 - [ ] A volume slider just for the music

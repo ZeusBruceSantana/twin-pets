@@ -12,7 +12,7 @@ Object.assign(ICONS, {
 });
 
 /* ---------- the place ---------- */
-Object.assign(PLACES, { fair: { word: 'fun fair', icon: 'fair', color: '#fbd9ee', acts: ['claw', 'popup', 'wheel'], need: 'fair' } });
+Object.assign(PLACES, { fair: { word: 'fun fair', icon: 'fair', color: '#fbd9ee', acts: ['claw', 'popup', 'wheel', 'puzzle'], need: 'fair' } });
 Object.assign(BUTTONS, { claw: { icon: 'clawBtn', label: 'Claw' }, popup: { icon: 'moleBtn', label: 'Pop-ups' }, wheel: { icon: 'wheelBtn', label: 'Wheel' } });
 NEW_THINGS.push({ key: 'fair', order: 28, requires: 'puzzles', icon: 'fair', word: 'fun fair' });
 Object.assign(BOOK_LINES, { fair: { line: 'went to the fun fair.', icon: 'fair', rank: 98 }, popups: { line: 'booped the pop-up critters.', icon: 'mole', rank: 96.8 } });

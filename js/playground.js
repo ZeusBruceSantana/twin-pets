@@ -15,7 +15,7 @@ Object.assign(ICONS, {
   leaf1: leafSvg('#ff9a3c'), leaf2: leafSvg('#e8503a'), leaf3: leafSvg('#ffd23f'),
 });
 
-Object.assign(PLACES, { playground: { word: 'playground', icon: 'playground', color: '#cfeeff', acts: ['superswing', 'twisty', 'merry', 'dig'], need: 'playground' } });
+Object.assign(PLACES, { playground: { word: 'playground', icon: 'playground', color: '#cfeeff', acts: ['superswing', 'twisty', 'merry', 'dig', 'puzzle'], need: 'playground' } });
 Object.assign(BUTTONS, { superswing: { icon: 'superswingBtn', label: 'Swing' }, twisty: { icon: 'twistyBtn', label: 'Slide' }, merry: { icon: 'merryBtn', label: 'Spin' }, dig: { icon: 'digBtn', label: 'Dig' } });
 NEW_THINGS.push({ key: 'playground', order: 24.9, requires: 'trips', icon: 'playground', word: 'playground' });
 Object.assign(BOOK_LINES, {

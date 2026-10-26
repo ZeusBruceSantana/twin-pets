@@ -151,13 +151,13 @@ test('Each room shows only its own buttons', async () => {
   await openGame(played());
   await startPlaying();
   const wanted = {
-    playroom: 'play,tricks,fivegame,puppets,tea,vet',
-    kitchen: 'fridge,cook,picnic,treat',
-    bathroom: 'bath,teeth,brush,dryer,spa',
+    playroom: 'play,tricks,fivegame,puppets,tea,vet,decorate',
+    kitchen: 'fridge,cook,picnic,treat,decorate',
+    bathroom: 'bath,teeth,brush,dryer,spa,decorate',
     backyard: 'bounce,climb,ballgame,seesawgame,garden',
-    bedroom: 'sleep,book,closet,sleepover',
+    bedroom: 'sleep,book,closet,sleepover,decorate',
     frontyard: 'mailbox,car',
-    school: 'words,art,blocks',
+    school: 'words,art,blocks,decorate',
   };
   for (const [room, acts] of Object.entries(wanted)) {
     G(`showRoom('${room}'); renderColumns();`);
@@ -1103,8 +1103,8 @@ test('The garage is a new room on the map, with its own buttons, tune and instru
   await startPlaying();
   expect(G('has("garage")'), 'the garage has appeared');
   await goTo('garage');
-  expectEqual(buttons('left').join(','), 'jam,instrument,band', "Leah's garage buttons");
-  expectEqual(buttons('right').join(','), 'jam,instrument,band', "Avery's garage buttons");
+  expectEqual(buttons('left').join(','), 'jam,instrument,band,decorate', "Leah's garage buttons");
+  expectEqual(buttons('right').join(','), 'jam,instrument,band,decorate', "Avery's garage buttons");
   expectEqual(G('Music.wanted(true)'), 'garage', 'the garage has its own tune');
   expect($g('.pet.side-left .instr') && $g('.pet.side-right .instr'), 'both pets hold an instrument');
   tap($g('#col-left .btn-instrument'));
@@ -1326,7 +1326,7 @@ test('Dance Paws: both tap Dance, paws fall to each pet, a tap on the ring makes
   await openGame(allPlaces({ garage: true, dance: true }));
   await startPlaying();
   await goTo('garage');
-  expectEqual(buttons('left').join(','), 'jam,instrument,band,dance', 'the garage has a Dance button');
+  expectEqual(buttons('left').join(','), 'jam,instrument,band,dance,decorate', 'the garage has a Dance button');
   tap($g('#col-left .btn-dance')); tap($g('#col-right .btn-dance'));
   await until(() => G('scene') === 'act' && G('act && act.ready'), 8000, 'dance paws');
   expectEqual(buttons('left').join(','), 'dancepaw', 'one big button');

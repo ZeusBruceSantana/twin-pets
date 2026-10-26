@@ -58,8 +58,7 @@ DECOR_ROOMS.forEach(r => ROOMS[r].acts.push('decorate'));
 if (!S.decorOwned) {
   S.decorOwned = DECOR_ORDER.slice(0, S.decorN || 0).filter(k => DECOR[k]);
   Object.values(S.decor || {}).forEach(d => [d.wp, d.paint, d.rug, ...(d.items || [])].forEach(k => { if (k && DECOR[k] && !S.decorOwned.includes(k)) S.decorOwned.push(k); }));
-  save();
-}
+}   // (saved with the next ordinary save: writing one here would undo "Start over")
 const DECOR_TABS = { wall: { kinds: ['wp', 'paint'], art: 'wpStars' }, rug: { kinds: ['rug'], art: 'rugRound' }, item: { kinds: ['item'], art: 'sofa' } };
 const decorTab = { left: null, right: null };    // the last tab each girl had open
 const placedHere = (room, key) => { const d = (S.decor || {})[room] || {}; return d.wp === key || d.paint === key || d.rug === key || (d.items || []).includes(key); };

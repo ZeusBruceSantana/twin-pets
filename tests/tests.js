@@ -438,6 +438,20 @@ test('Closet tabs show one kind of thing, and the Colors tab repaints the outfit
   expectEqual(G('S.pets.left.gifted.crown'), 'green', 'the Colors tab repaints what she wears');
 });
 
+test('Decorate: every room can redecorate from what the house has won, and nothing is lost', async () => {
+  const s = played();
+  s.decorN = 3; s.decor = { playroom: { wp: 'wpStars' } }; delete s.decorOwned;
+  await openGame(s);
+  await startPlaying();
+  expect(G(`['rugRound', 'wpStars', 'plant'].every(k => S.decorOwned.includes(k))`), 'what they won so far is theirs');
+  expect(G(`ROOMS.kitchen.acts.includes('decorate') && ROOMS.bedroom.acts.includes('decorate')`), 'the button is in every decorated room');
+  G(`placeDecor('paintSky', 'playroom', true)`);
+  expectEqual(G('S.decor.playroom.wp'), undefined, 'paint covers the wallpaper');
+  expect(G(`S.decorOwned.includes('wpStars')`), 'the covered wallpaper is still theirs');
+  G(`placeDecor('plant', 'kitchen', true); removeDecor('plant', 'kitchen')`);
+  expectEqual(G(`S.decor.kitchen.items.length`), 0, 'tapping a placed thing takes it out');
+});
+
 test('The closet is the next new thing as soon as a pet is given something to wear', async () => {
   const s = played();
   ['closet', 'costumes', 'sleepover', 'cook', 'teeth', 'picnic', 'mirror'].forEach(k => delete s.features[k]);     // lots of new things still waiting (ahead of the closet in the old order)

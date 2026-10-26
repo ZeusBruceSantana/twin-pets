@@ -121,9 +121,10 @@ function renderDecor() {
   });
 }
 DRESS_HOOKS.push(side => { if (side === 'left') renderDecor(); });
-function placeDecor(key, room) {
+function placeDecor(key, room, quiet) {
   const D = DECOR[key];
   S.decor = S.decor || {};
+  if (!(S.decorOwned || (S.decorOwned = [])).includes(key)) S.decorOwned.push(key);   // everything they win is theirs to use again
   const d = S.decor[room] = S.decor[room] || {};
   if (D.kind === 'wp') { d.wp = key; delete d.paint; }          // wallpaper and paint cover the same wall
   else if (D.kind === 'paint') { d.paint = key; delete d.wp; }
@@ -131,9 +132,20 @@ function placeDecor(key, room) {
   else { d.items = (d.items || []).filter(i => i !== key); d.items.push(key); while (d.items.length > ITEM_SPOTS.length) d.items.shift(); }
   save();
   renderDecor();
+  if (quiet) return;
   if (room !== S.room) { S.doorNew[room] = true; save(); renderCenter(); }
   Sound.play('ding');
   showHint(ROOMS[room].icon, ROOMS[room].word);
+}
+function removeDecor(key, room) {
+  const d = (S.decor || {})[room];
+  if (!d) return;
+  if (d.wp === key) delete d.wp;
+  if (d.paint === key) delete d.paint;
+  if (d.rug === key) delete d.rug;
+  d.items = (d.items || []).filter(i => i !== key);
+  save();
+  renderDecor();
 }
 // the house's present
 PARTY_HOOKS.push(() => { if (has('decor')) setTimeout(() => startActivity('gift', 'left'), 1500); });

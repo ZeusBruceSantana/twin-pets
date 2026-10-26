@@ -45,3 +45,39 @@ Object.assign(DECOR_TAP, {
   lavalamp(e, room) { const k = room + ':lavalamp'; decorOn[k] = !decorOn[k]; e.classList.toggle('lit', decorOn[k]); Sound.play('click'); },
   dollhouse(e) { Sound.play('door'); decorBurst(e, 'heart', ['#ff7a9a', '#ffb3c8'], 3); },
 });
+
+/* =====================================================================
+   REDECORATING: a Decorate button in every room. Each girl opens her own panel of everything the
+   house has won (wall, rug, furniture); tap one to put it in this room, tap it again to take it out.
+   Nothing is ever lost: a covered wallpaper is still in the panel.
+   ===================================================================== */
+ICONS.decorate = '<svg viewBox="0 0 100 100"><rect x="14" y="14" width="58" height="26" rx="6" fill="#ff9ab4" stroke="#c23b5e" stroke-width="4"/><path d="M72 27 H86 V54 H50 V70" fill="none" stroke="#8a6a4a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><rect x="43" y="68" width="14" height="22" rx="4" fill="#ffd23f" stroke="#c9a000" stroke-width="4"/></svg>';
+BUTTONS.decorate = { icon: 'decorate', label: 'Decorate' };
+DECOR_ROOMS.forEach(r => ROOMS[r].acts.push('decorate'));
+// Everything already won (they come in a set order) plus whatever is standing in a room now.
+if (!S.decorOwned) {
+  S.decorOwned = DECOR_ORDER.slice(0, S.decorN || 0).filter(k => DECOR[k]);
+  Object.values(S.decor || {}).forEach(d => [d.wp, d.paint, d.rug, ...(d.items || [])].forEach(k => { if (k && DECOR[k] && !S.decorOwned.includes(k)) S.decorOwned.push(k); }));
+}   // (saved with the next ordinary save: writing one here would undo "Start over")
+const DECOR_TABS = { wall: { kinds: ['wp', 'paint'], art: 'wpStars' }, rug: { kinds: ['rug'], art: 'rugRound' }, item: { kinds: ['item'], art: 'sofa' } };
+const decorTab = { left: null, right: null };    // the last tab each girl had open
+const placedHere = (room, key) => { const d = (S.decor || {})[room] || {}; return d.wp === key || d.paint === key || d.rug === key || (d.items || []).includes(key); };
+const decorCards = (room, tab) => S.decorOwned.filter(k => DECOR[k] && DECOR_TABS[tab].kinds.includes(DECOR[k].kind))
+  .map(k => ({ key: k, icon: DECOR[k].svg, word: DECOR[k].word, cls: placedHere(room, k) ? 'on' : '' }));
+ACT_HANDLERS.decorate = side => {
+  const room = S.room;
+  if (!DECOR_ROOMS.includes(room)) return;
+  Sound.play('door');
+  let tab = decorTab[side] || Object.keys(DECOR_TABS).find(t => decorCards(room, t).length) || 'wall';
+  openPanel(side, {
+    keepOpen: true, items: decorCards(room, tab), tab,
+    tabs: Object.keys(DECOR_TABS).map(k => ({ key: k, icon: DECOR[DECOR_TABS[k].art].svg })),
+    onTab: k => { tab = decorTab[side] = k; return decorCards(room, k); },
+    onPick: (key, card) => {
+      if (placedHere(room, key)) { removeDecor(key, room); Sound.play('pick'); }
+      else { placeDecor(key, room, true); Sound.play('ding'); sparkles(W() / 2, H() * 0.45, 8); }
+      const p = panels[side];
+      if (p) { p.lastTouch = now(); p.querySelectorAll('.scard').forEach(c => c.classList.toggle('on', placedHere(room, c.dataset.key))); }
+    },
+  });
+};

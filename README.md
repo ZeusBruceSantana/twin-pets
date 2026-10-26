@@ -134,6 +134,8 @@ present too**: wallpaper, a rug or furniture (a plant, a lamp, a beanbag, a
 fish bowl). Both girls tap **Open**, then both choose a room on the map to put
 it in. Puzzle prizes come the same way.
 
+**Redecorating:** every room that can be decorated has a **Decorate** button on each girl's edge. It opens her own panel of everything the house has won, with picture tabs for wall, rug and furniture. Tap one to put it in the room she is standing in; tap it again to take it out. Nothing is ever lost: a covered wallpaper is still in the panel. The wall is shared, so the last choice wins.
+
 There are about sixty-six things to win: **wall paint colors**, **wallpapers** (dots, clouds,
 rainbow, flowers, waves, moons and more), **rugs**, **furniture** (sofa, chair, bookshelf,
 toy box, table, clock) and **little electronics you can tap**: a radio that plays a tune

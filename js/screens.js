@@ -62,6 +62,7 @@ function renderColumn(side) {
   col.classList.toggle('dim', !!plan.dim);
   col.classList.toggle('cards', !!plan.cards);
   col.classList.toggle('many', !plan.big && !plan.cards && plan.acts.length > 4);
+  col.classList.toggle('lots', !plan.big && !plan.cards && plan.acts.length > 6);
   for (const act of plan.acts) {
     if (act.startsWith('trick:')) {            // a trick word card: tap to hear it, and the pet tries
       const key = act.slice(6), tr = trickBy(key);
